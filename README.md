@@ -4,8 +4,6 @@ Emergency call management simulator
 
 ## Carta de Llamada
 
-<hr>
-
 ### Datos basicos a introducir
 
 - Datos administrativos
@@ -52,7 +50,7 @@ Emergency call management simulator
 ### **Finalización de la llamada**
 - Associar la llamada a un expediente
     - Mientras se introducen los datos, ir mostrando possibles expedientes relacionados
-        - Llamadas con el mismo numero, mismo lugar, mismo tipo de incidente, etc
+        - Llamadas con el mismo numero, mismo lugar, mismo tipo de incidente, etc 
 - Si al final no es necessario el envio de los servicios de emergencias, al acavar la llamada, crear un nuevo expediente
 
 <hr>
