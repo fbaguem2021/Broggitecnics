@@ -1,0 +1,73 @@
+:root{
+    --nav-height: 80px;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+body, html{
+    margin: 0;
+    padding: 0;
+}
+
+#wrapper{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* NAVBAR */
+#header {
+    position: static;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--nav-height);
+    background-color: black;
+}
+
+.header-inner {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    margin: 0 auto;
+}
+
+#logo {
+    position: absolute;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: auto;
+}
+
+#logo svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+#login {
+    display: block;
+    width: 120px;
+    height: 40px;
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    font: 16px/28px Ubuntu;
+    font-weight: bold;
+    background-color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* CONTENT */
+#content {
+    flex-grow: 1;
+}
