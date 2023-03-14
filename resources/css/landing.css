@@ -1,0 +1,38 @@
+#app-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 5%;
+}
+
+#app-logo img {
+    width: 80vw;
+}
+
+#footer{
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    margin-left: 4rem;
+    font: 16px/28px Ubuntu;
+}
+
+#devs {
+    display: flex;
+    height: 80px;
+    width: 400px;
+    justify-content: space-evenly;
+    list-style: none;
+}
+.dev {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.dev a {
+    margin-top: 5px;
+}
