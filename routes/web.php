@@ -20,3 +20,11 @@ Route::get('/', function () {
 Route::get('bootstrap', function () {
     return view('bootstrap');
 });
+
+Route::get('operador', function () {
+    return view('pages.operador');
+});
+
+Route::get('admin', function () {
+    return view('pages.admin');
+});
