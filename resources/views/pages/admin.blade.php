@@ -30,12 +30,12 @@
                 </div>
             </div>
             <div class="container block-rt">
-                <div class="title mt-5">
+                <div class="title">
                     <h3 class="fw-bold text-center">Analitiques</h3>
                 </div>
             </div>
             <div class="container block-rb">
-                <div class="title mt-5">
+                <div class="title">
                     <h3 class="fw-bold text-center">Operadors</h3>
                 </div>
             </div>

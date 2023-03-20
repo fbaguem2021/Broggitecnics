@@ -8,7 +8,7 @@
     --light: #FFFFFF;
     --dark: #000000;
     
-    --nav-height: 80px;
+    --nav-height: 70px;
 }
 
 *{
@@ -18,7 +18,7 @@
 body, html{
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 #wrapper{
@@ -51,7 +51,7 @@ body, html{
     left: 50px;
     top: 50%;
     transform: translateY(-50%);
-    width: 50px;
+    width: 40px;
     height: auto;
 }
 
