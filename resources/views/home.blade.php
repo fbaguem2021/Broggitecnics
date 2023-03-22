@@ -1,4 +1,4 @@
-@extends('layouts.navbarLogin')
+@extends('layout.navbarLogin')
 
 @section('contenido')
     {{$user->rol->nombre}}

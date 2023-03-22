@@ -7,90 +7,59 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class UsiarioController extends Controller
+class UsuarioController extends Controller
 {
-    public function showLogin(){
+    public function showLogin()
+    {
+        // $usuario = new Usuario();
+        // $usuario->username='jnirella';
+        // $usuario->contrasenya=\bcrypt('123456');
+        // $usuario->nom='Jose';
+        // $usuario->cognoms="Nirella Munoz";
+        // $usuario->tipus_usuaris_id=1;
+        // $usuario->save();
         return view('auth.login');
     }
-    public function login(Request $request){
-        $username = $request->input('username');
-        $pass= $request->input('passowrd1');
-
-        $user= Usuario::where('username',$username)->first();
-    }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function login(Request $request)
     {
-        //
-    }
+        $username = $request->input('userName');
+        $pass = $request->input('password1');
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $user = Usuario::where('username', $username)->first();
+
+        if ($user != null && Hash::check($pass, $user->contrasenya)) {
+            Auth::login($user);
+            $response = redirect('/home');
+        } else {
+            $request->flash('error', 'Usuari o contrasenya incorrectes');
+            $response = redirect('/login')->withInput();
+        }
+        return $response;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreUsiarioRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreUsiarioRequest $request)
+    public function logout()
     {
-        //
+        Auth::logout();
+        return redirect('/');
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Usiario  $usiario
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Usiario $usiario)
-    {
-        //
+    public function showRegistre(){
+        return view('layout.newUser');
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Usiario  $usiario
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Usiario $usiario)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateUsiarioRequest  $request
-     * @param  \App\Models\Usiario  $usiario
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateUsiarioRequest $request, Usiario $usiario)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Usiario  $usiario
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Usiario $usiario)
-    {
-        //
+    public function store(Request $request){
+        $usuario = new Usuario();
+        $strNom=$request->input('nom');
+        $strCogn=$request->input('cognoms');
+        
+        $usuario->nom = $strNom;
+        $usuario->cognoms= $strCogn;
+        //crear nombre usuario con la primera letra del nombre y el primer apellido
+        $first_character = mb_substr($strNom, 0, 1);
+        $array = explode(" ",$strCogn);
+        $first_cognom = $array[0];
+        $usuario->username = $first_character.$first_cognom;
+        $usuario->contrasenya=\bcrypt($request->input('pass'));       
+        $usuario->tipus_usuaris_id=$request->input('tipus');
+        $usuario->save();
+        return redirect('/login');
     }
 }

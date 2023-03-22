@@ -1,6 +1,10 @@
 <?php
 
+
+
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UsuarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +24,8 @@ Route::get('/', function () {
 Route::get('/login', [UsuarioController::class, 'showLogin'])->name('login');
 Route::post('/login', [UsuarioController::class, 'login']);
 Route::get('/logout', [UsuarioController::class, 'logout']);
+Route::get('/registre',[UsuarioController::class, 'showRegistre'])->name('registre');
+Route::post('/registre',[UsuarioController::class, 'store']);
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/home', function () {

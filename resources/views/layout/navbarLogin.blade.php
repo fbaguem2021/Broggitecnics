@@ -7,7 +7,7 @@
     <title>@yield('titulo')</title>
     <link rel="icon" type="image/x-icon" href="/Laravel/ABP_JoseNirella/public/img/favicon.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{asset('plantilla.css')}}">
+    {{-- <link rel="stylesheet" href="{{asset('plantilla.css')}}"> --}}
 </head>
 <body>
     {{-- Navbar --}}
@@ -18,11 +18,25 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <form class="d-flex" role="search">
             <ul class="navbar-nav">
+              @if (Auth::check())
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  {{Auth::user()->nom}} {{ Auth::user()->cognoms}}
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="{{url('/logout')}}"><i class="fa fa-sign-out" aria-hidden="true">
+                    </i> Tancar sessió</a>
+                </div>
+              </li>
+              @else
                 <li class="nav-item">
                     <a class="nav-link" href="{{url('/login')}}"><i class="fa fa-sign-in" aria-hidden="true"></i> Login</a>
                 </li>
+              @endif
             </ul>
+          </form>
           </div>
         </div>
       </nav>
