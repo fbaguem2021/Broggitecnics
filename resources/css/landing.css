@@ -117,8 +117,22 @@
     height: auto;
 }
 
+#sandbox .body, #trucada .body {
+    position: relative;
+    flex-grow: 1;
+    padding: 0 12px;
+    text-align: start;
+}
 
-@media (max-width: 991px) {
+#sandbox .btn, #trucada .btn {
+    position: absolute;
+    left: 50%;
+    bottom: 10%;
+    width: 80%;
+    transform: translateX(-50%);
+}
+
+@media (max-width: 992px) {
 
     #menu-operator, #menu-admin {
         grid-template-columns: repeat(2, 1fr);
@@ -126,15 +140,21 @@
     }
 
     #info-app, #operator-data {
-        height: 20%;
         margin: 20px;
         overflow-y: hidden;
         cursor: pointer;
         transition: height .4s;
     }
+    #info-app {
+        height: 20%;
+    }
+
+    #operator-data {
+        height: 23%;
+    }
 
     #info-app.expanded, #operator-data.expanded {
-        height: 50%;
+        height: 60%;
     }
 
     .block-lt {
@@ -163,6 +183,27 @@
     }
 }
 
+@media (min-width: 991px) {
+    #info-app, #operator-data {
+        height: calc(50% - 40px);
+        margin: 20px;
+        overflow-y: hidden;
+        transition: height .4s;
+    }
+}
+
+@media (max-width: 768px) {
+    #sandbox .btn, #trucada .btn {
+        bottom: 2%;
+    }
+}
+
+@media (max-width: 540px) {
+    #sandbox .btn, #trucada .btn {
+        bottom: -22%;
+    }
+}
+
 .menu .card {
     height: 100%;
     border: 1px solid #000000;
@@ -172,14 +213,6 @@
     transition: height 0.5s ease-out;
 }
 
-@media (min-width: 991px) {
-    #info-app, #operator-data {
-        height: calc(50% - 40px);
-        margin: 20px;
-        overflow-y: hidden;
-        transition: height .4s;
-    }
-}
 
 
 #operator-data{
@@ -192,20 +225,7 @@
 }
 
 
-#sandbox .body, #trucada .body {
-    position: relative;
-    flex-grow: 1;
-    text-align: center;
-}
 
-#sandbox .btn, #trucada .btn {
-    position: absolute;
-    left: 50%;
-    bottom: 10%;
-    margin: 0 5px 0 5px;
-    width: 80%;
-    transform: translateX(-50%);
-}
 
 
 

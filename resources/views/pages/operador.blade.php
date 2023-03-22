@@ -10,7 +10,7 @@
             <div id="info-app" class="expanded">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="card-title fw-bold">Info app, funcionament</h3>
+                        <h3 class="card-title fw-bold mb-3">Info app, funcionament</h3>
                         <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel porttitor
                             nibh, a scelerisque nisl. Suspendisse potenti. Praesent tempus at neque sit amet dapibus. Nulla
                             vehicula egestas bibendum.</p>
@@ -33,22 +33,21 @@
         </div>
 
         <div class="container block-rt" id="sandbox">
-            
-                <h3 class="title mt-5 fw-bold text-center">Sandbox</h3>
+                <h3 class="title mt-2 mt-md-5 fw-bold text-center">Sandbox</h3>
                 <div class="body">
                     <p>El sandbox es un espai pensat per familiaritzar-se amb la la funcionalitat de la carta de trucada.</p>
-                    <p>Premsa aquesta icona -icono- per obtenir mes informació</p>
+                    <p>Premsa aquesta icona <i class="bi bi-info-circle"></i> per obtenir mes informació</p>
                     <button class="btn btn-secondary">Accedir a la carta</button>
                 </div>
             
         </div>
 
         <div class="container block-rb" id="trucada">
-            <h3 class="title mt-5 fw-bold text-center">Trucada</h3>
+            <h3 class="title mt-2 mt-md-5 fw-bold text-center">Trucada</h3>
             <div class="body">
                 <p>Incia una carta de trucada amb un número de telèfon aleatori o intrudeix-ne un.</p>
                 <div class="row w-100 justify-content-center">
-                    <label id="phone-mode" class="col-md-3 col-form-label">Aleatori</label>
+                    <label class="col-md-1 col-form-label d-flex justify-content-center"><i class="bi bi-telephone-inbound pe-1"></i></label>
                     <div class="col-md-8 d-flex align-items-center">
                         <div class="input-group align-items-center">
                             <label class="switch">
@@ -57,6 +56,7 @@
                             </label>
                             <input type="text" class="form-control side" id="side" maxlength="9"
                                 placeholder="000 000 000" aria-describedby="basic-addon1">
+                                <label id="phone-mode" class="ms-3">Aleatori</label>
                         </div>
 
                     </div>
