@@ -13,8 +13,8 @@
         </a>
         <div class="card-body text-center">
             <h3 class="card-title">NOU COMPTE</h3> 
-            <p class="card-text my-4">El teu nom d'usuari serà la primera lletra del teu nom + el teu primer cognom.</p>
-            <div class="form-container mt-5">
+            <p class="card-text mt-4">El teu nom d'usuari serà la primera lletra del teu nom + el teu primer cognom.</p>
+            <div class="form-container mt-4">
                 <form action="{{action([App\Http\Controllers\UsuarioController::class, 'store'])}}" method="POST">
                     @csrf
                     <div class="mb-3">
@@ -30,7 +30,7 @@
                         <input type="password" class="form-control" id="pass" name="pass" placeholder="Contrasenya">
                     </div>
                     
-                    <button type="submit" class="btn btn-outline-primary mt-5">Acceptar</button>
+                    <button type="submit" id="submit-btn" class="btn btn-outline-primary mt-4">Acceptar</button>
                 </form>
             </div> 
         </div>

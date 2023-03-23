@@ -48,14 +48,23 @@
     box-shadow: 0 0 10px 0.1rem rgb(18 102 226 / 10%);
 }
 
-.btn , a{
+#submit-btn, a{
     color: var(--bs-card-color);
 }
 
 
-.btn {
+#submit-btn {
     width: 100px;
     border-width: 2px;
+}
+
+#submit-btn:hover {
+    transform: translateY(-.5px);
+    box-shadow: 0px 2px 6px 0 rgba(0, 0, 0, .2);
+}
+
+#link-newAccount:hover {
+    color: var(--tertiary);
 }
 
 input {
