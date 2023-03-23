@@ -10,7 +10,7 @@
             Inicia sessió
         </div>
         <div class="card-body">
-            <form action="{{action([App\Http\Controllers\UsuarioController::class, 'login'])}}" method="GET">
+            <form action="{{action([App\Http\Controllers\UsuarioController::class, 'login'])}}" method="POST">
                 @csrf
                 <div class="mb-3">
                   <label for="userName" class="form-label">Nom d'usuari</label>
