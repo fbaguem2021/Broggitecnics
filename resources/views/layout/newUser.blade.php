@@ -13,7 +13,6 @@
         </a>
         <div class="card-body text-center">
             <h3 class="card-title">NOU COMPTE</h3> 
-            <p class="m-0">esto se puede borrar es pa poner algo que sino queda muy seco ↓</p>
             <p class="card-text my-4">El teu nom d'usuari serà la primera lletra del teu nom + el teu primer cognom.</p>
             <div class="form-container mt-5">
                 <form action="{{action([App\Http\Controllers\UsuarioController::class, 'store'])}}" method="POST">
@@ -30,12 +29,20 @@
                         {{-- <label for="pass" class="form-label">Contrasenya</label> --}}
                         <input type="password" class="form-control" id="pass" name="pass" placeholder="Contrasenya">
                     </div>
-
-                    <input type="text" class="form-control" id="tipus" name="tipus" aria-describedby="email" value="1" hidden>
                     
                     <button type="submit" class="btn btn-outline-primary mt-5">Acceptar</button>
                 </form>
             </div> 
         </div>
+        <div style="position: absolute;
+        top: 14%;
+        right: -80%;
+        width: 300px;">
+            <p class="text-center">-- DEV --</p>
+            <p class="m-0">← esto se puede borrar es pa poner algo que sino queda muy seco</p>
+            <br>
+            <p>Falta visiblitat de quin sera el nom d'usuari</p>
+        </div>
     </div>
+
   @endsection

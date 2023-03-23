@@ -42,9 +42,32 @@
                         </defs>
                     </svg>
                 </a>
-                <a id="login-btn" href="{{url('/home')}}">
-                    <button>Login</button>
-                </a>
+                {{-- @if (Auth::check())
+                    <a id="login-btn" href="{{route('logout')}}">
+                        <button> {{Auth::user()->nom}} {{ Auth::user()->cognoms}}</button>
+                    </a>
+                @else
+                    <a id="login-btn" href="{{route('home')}}">
+                        <button>Login</button>
+                    </a>
+                @endif --}}
+
+    
+                    @if (Auth::check())
+                        <div id="login-btn" class="dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{Auth::user()->username}}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{route('logout')}}"><i class="fa fa-sign-out" aria-hidden="true">
+                                </i>Tancar sessió</a>
+                            </div>
+                        </div>
+                    @else
+                      <div id="login-btn" class="nav-item">
+                          <a class="nav-link" href="{{route('login')}}"><i class="fa fa-sign-in" aria-hidden="true"></i>Login</a>
+                      </div>
+                    @endif
                 
             </div>
         </div>

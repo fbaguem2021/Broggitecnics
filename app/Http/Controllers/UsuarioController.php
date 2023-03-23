@@ -58,7 +58,7 @@ class UsuarioController extends Controller
         $first_cognom = $array[0];
         $usuario->username = $first_character.$first_cognom;
         $usuario->contrasenya=\bcrypt($request->input('pass'));       
-        $usuario->tipus_usuaris_id=$request->input('tipus');
+        $usuario->tipus_usuaris_id=1;
         $usuario->save();
         return redirect('/login');
     }

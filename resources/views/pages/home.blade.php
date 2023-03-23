@@ -6,14 +6,14 @@
 
 @section('content')
     @if (Auth::check())
-        @switch(Auth::user()->rol)
+        @switch(Auth::user()->rol->id)
             @case(1)
                 @include('partials.menu.operador')
                 @break
             @case(2)
                 @include('partials.menu.supervisor')
                 @break
-            @case(2)
+            @case(3)
                 @include('partials.menu.admin')
                 @break
             @default

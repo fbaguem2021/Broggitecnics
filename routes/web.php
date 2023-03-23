@@ -23,15 +23,15 @@ Route::get('/', function () {
 
 Route::get('/login', [UsuarioController::class, 'showLogin'])->name('login');
 Route::post('/login', [UsuarioController::class, 'login']);
-Route::get('/logout', [UsuarioController::class, 'logout']);
+Route::get('/logout', [UsuarioController::class, 'logout'])->name('logout');
 Route::get('/registre',[UsuarioController::class, 'showRegistre'])->name('registre');
 Route::post('/registre',[UsuarioController::class, 'store']);
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/home', function () {
         $user=Auth::user();
-        return view('home', compact('user'));
-    });
+        return view('pages.home', compact('user'));
+    })->name('home');
 });
 
 Route::get('bootstrap', function () {
