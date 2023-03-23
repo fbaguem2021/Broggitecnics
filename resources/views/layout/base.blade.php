@@ -13,7 +13,7 @@
     <div id="wrapper">
         <div id="header">
             <div class="header-inner">
-                <a href="" id="logo" alt="Brogi112 - home">
+                <a href="{{url('/')}}" id="logo" alt="Brogi112 - home">
                     <svg x="0px" y="0px" viewBox="0 0 50 50" fill="none">
                         <g clip-path="url(#clip0_177_786)">
                             <path
@@ -42,7 +42,10 @@
                         </defs>
                     </svg>
                 </a>
-                <button id="login">Login</button>
+                <a id="login-btn" href="{{url('/home')}}">
+                    <button>Login</button>
+                </a>
+                
             </div>
         </div>
 

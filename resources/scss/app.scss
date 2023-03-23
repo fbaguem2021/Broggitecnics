@@ -1,3 +1,16 @@
+:root{
+    --primary: #E2AA12;
+    --secondary: #E1127A;
+    --tertiary: #12C7E2;
+    --success: #1266E2;
+    --warning: #ffc107;
+    --danger: #E21212;
+    --light: #FFFFFF;
+    --dark: #000000;
+    --nav-height: 70px;
+}
+
+
 /* COLORS */
 $primary: #e2aa12;
 $secondary: #e1127a;
@@ -19,12 +32,11 @@ $theme-colors: (
     "dark": $dark,
 );
 
-$input-btn-focus-width: 0.12rem;
-$input-btn-focus-color-opacity: 0.3;
+$input-btn-focus-width: 0.4rem;
+$input-btn-focus-color-opacity: 0.1;
 $input-btn-focus-color: rgba($success, $input-btn-focus-color-opacity);
 $input-focus-border-color: $success;
 
+
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
-
-

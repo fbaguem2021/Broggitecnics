@@ -1,0 +1,71 @@
+/* ------ LOGIN ------ */
+
+#login, #register {
+    position: relative;
+    max-width: 400px;
+    border-radius: 10px;
+    margin: 100px auto 0 auto;
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
+}
+
+#login .card-title, #register .card-title {
+    margin-top: 1rem;
+    font-size: 40px;
+}
+
+#close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: black;
+    transition: transform .1s ease-in-out;
+}
+#close-btn:hover {
+    transform: scale(1.05);
+}
+
+#close-btn i::before {
+    font-size: 20px;
+    font-weight: bold !important;
+}
+
+
+
+.form-container {
+    width: 280px;
+    margin: 0 auto;
+}
+
+::placeholder {
+    text-align: center; 
+}
+
+.form-control:focus{
+    color: rgb(33, 37, 41);
+    background-color: #fff;
+    border: 2px solid var(--tertiary);
+    outline: 0;
+    box-shadow: 0 0 10px 0.1rem rgb(18 102 226 / 10%);
+}
+
+.btn , a{
+    color: var(--bs-card-color);
+}
+
+
+.btn {
+    width: 100px;
+    border-width: 2px;
+}
+
+input {
+    text-align: center;
+}
+
+input:placeholder-shown {
+    border: 2px solid var(--secondary);
+}
+
+input:not(:focus):not(:placeholder-shown) {
+    border: 2px solid var(--tertiary);
+}

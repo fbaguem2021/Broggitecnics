@@ -8,13 +8,13 @@
     @if (Auth::check())
         @switch(Auth::user()->rol)
             @case(1)
-                @include('partials.menuOperador')
+                @include('partials.menu.operador')
                 @break
             @case(2)
-                @include('partials.menuSupervisor')
+                @include('partials.menu.supervisor')
                 @break
             @case(2)
-                @include('partials.menuAdmin')
+                @include('partials.menu.admin')
                 @break
             @default
             <div class="container menu">
