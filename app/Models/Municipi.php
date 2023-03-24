@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Comarca;
+use App\Models\CartaTrucada;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Municipi extends Model
 {
@@ -17,4 +19,10 @@ class Municipi extends Model
     {
         return $this->hasMany(CartaTrucada::class);
     }
+
+    public function comarca()
+    {
+        return $this->belongsTo(Comarca::class, 'comarques_id');
+    }
+
 }

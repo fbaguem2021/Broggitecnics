@@ -16,7 +16,7 @@ class ExpedientController extends Controller
      */
     public function index()
     {
-        return ExpedientResource::collection(Expedient::paginate(6));
+        return ExpedientResource::collection(Expedient::all());
     }
 
     /**

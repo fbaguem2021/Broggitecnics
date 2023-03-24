@@ -14,6 +14,14 @@ class ExpedientResource extends JsonResource {
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return 
+        [
+            'id' => $this->id,
+            'codi_expedient' => $this->codi,
+            'estat_expedient' => [
+                'id' => $this->estatExpedient->id,
+                'nom' => $this->estatExpedient->estat
+            ]
+        ];
     }
 }

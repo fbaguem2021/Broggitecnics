@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\CartaTrucada;
+use App\Models\EstatExpedient;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Expedient extends Model
 {
@@ -12,6 +14,11 @@ class Expedient extends Model
     protected $table = 'expedients';
     protected $guarded = ['id'];
     public $timestamps = false;
+
+    public function estatExpedient()
+    {
+        return $this->belongsTo(EstatExpedient::class, 'estat_expedients_id');
+    }
 
     public function cartesTrucades()
     {

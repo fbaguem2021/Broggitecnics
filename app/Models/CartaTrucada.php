@@ -16,7 +16,7 @@ class CartaTrucada extends Model
 {
     use HasFactory;
     protected $table = 'cartes_trucades';
-    protected $guarded = ['id'];
+    public $timestamps = false;
 
     public function interlocutor()
     {

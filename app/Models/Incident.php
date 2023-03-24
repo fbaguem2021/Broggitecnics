@@ -17,4 +17,8 @@ class Incident extends Model
     {
         return $this->hasMany(CartaTrucada::class);
     }
+
+    public function tipusIncident () {
+        return $this->belongsTo(TipusIncident::class, 'tipus_incidents_id');
+    }
 }

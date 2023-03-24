@@ -1,7 +1,5 @@
 <?php
 
-
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
@@ -32,7 +30,6 @@ Route::middleware(['auth'])->group(function() {
         $user=Auth::user();
         return view('pages.home', compact('user'));
     })->name('home');
-    
 });
 
 Route::get('/operadors', function () {

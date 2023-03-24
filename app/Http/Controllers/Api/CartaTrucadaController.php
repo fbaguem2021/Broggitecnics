@@ -16,7 +16,8 @@ class CartaTrucadaController extends Controller
      */
     public function index()
     {
-        return CartaTrucadaResource::collection(CartaTrucada::paginate(6));
+        return CartaTrucadaResource::collection(CartaTrucada::all());
+
     }
 
     /**
@@ -38,17 +39,7 @@ class CartaTrucadaController extends Controller
      */
     public function show($id)
     {
-        $carta_trucada = CartaTrucada::with([
-            'tipusLocalitzacio',
-            'municipi',
-            'provincia',
-            'incident',
-            'expedient',
-            'usuari',
-            'interlocutor',
-        ])->findOrFail($id);
-
-        return new CartaTrucadaResource($carta_trucada);
+        return new CartaTrucadaResource(CartaTrucada::find($id));
     }
 
     /**
