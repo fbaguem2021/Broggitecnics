@@ -32,5 +32,3 @@
         </ul>
     </div>
 @endsection
-
-
