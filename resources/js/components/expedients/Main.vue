@@ -40,9 +40,9 @@
                 </thead>
                 <tbody>
                     <tr v-for="(exp, index) in expedients" :key="index">
-                        <td>exp.id</td>
-                        <td>exp.codi</td>
-                        <td>exp.estat_expedients_id</td>
+                        <td>{{exp.id}}</td>
+                        <td>{{exp.codi}}</td>
+                        <td>{{exp.estat_expedients_id}}</td>
                         <td></td>
                     </tr>
                 </tbody>

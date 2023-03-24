@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\CartaTrucada;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Expedient extends Model
+class Interlocutor extends Model
 {
     use HasFactory;
 
-    protected $table = 'expedients';
+    protected $table = 'interlocutors';
     protected $guarded = ['id'];
     public $timestamps = false;
 

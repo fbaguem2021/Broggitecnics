@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Expedient extends Model
+class TipusLocalitzacio extends Model
 {
     use HasFactory;
 
-    protected $table = 'expedients';
+    protected $table = 'tipus_localitzacions';
     protected $guarded = ['id'];
     public $timestamps = false;
 

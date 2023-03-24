@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\CartaTrucadaController;
 use App\Http\Controllers\Api\ExpedientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,4 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.buscar');
 Route::apiResource('usuari', UsuariController::class);
 
-Route::apiResource('expedient', ExpedientController::class);
+Route::apiResource('/expedient', ExpedientController::class);
+
+Route::apiResource('/carta-trucada', CartaTrucadaController::class);
