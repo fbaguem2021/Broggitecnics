@@ -5,5 +5,11 @@
 @endsection
 @section('content')
     {{-- <div id="operadors"></div> --}}
+    @if(auth()->check())
+    <script>
+        window.Usuario = {!! auth()->user() !!}
+        console.log(window.User);
+    </script>
+    @endif
     <operadors></operadors>
 @endsection

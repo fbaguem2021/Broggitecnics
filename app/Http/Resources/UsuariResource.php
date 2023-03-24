@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Rol;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UsuariResource extends JsonResource {
@@ -13,6 +14,15 @@ class UsuariResource extends JsonResource {
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        // return parent::toArray($request);
+        $tipus = Rol::where('id', $this->tipus_usuaris_id)->first();
+        return [
+            'id'            => $this->id,
+            'username'      => $this->username,
+            'contrasenya'   => $this->contrasenya,
+            'nom'           => $this->nom,
+            'cognoms'       => $this->cognoms,
+            'tipus'         => $tipus->nom
+        ];
     }
 }

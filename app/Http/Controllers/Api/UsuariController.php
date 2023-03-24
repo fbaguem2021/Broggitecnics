@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UsuariResource;
+use stdClass;
 use App\Models\Usuari;
 use Illuminate\Http\Request;
-use stdClass;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UsuariResource;
 
 class UsuariController extends Controller
 {
@@ -17,7 +17,9 @@ class UsuariController extends Controller
      */
     public function index()
     {
-        return UsuariResource::collection(Usuari::paginate(5));
+        $rol = \App\Models\Rol::where('id',1)->get();
+        $usuaris = Usuari::/*whereBelongsTo($rol)->*/orderBy('id', 'asc')->paginate(5);
+        return UsuariResource::collection($usuaris);
     }
 
     /**
