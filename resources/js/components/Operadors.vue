@@ -4,7 +4,7 @@
             <div class="card-body">
                 <!-- <BuscadorOperadors/> -->
                 <form name="formbuscar" @submit.prevent="getData(current_page)">
-                    <div class="row col-5 ms-1 p-0 rounded border border-dark bg-dark"
+                    <div class="row mx-1 p-0 rounded border border-dark bg-dark"
                     name="filtros">
                         <div class="col-4 p-0 pe-1">
                             <select id="filtro" name="filtro"

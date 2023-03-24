@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Usuario extends Authenticatable
+class Usuari extends Authenticatable
 {
     use HasApiTokens,HasFactory, Notifiable;
 

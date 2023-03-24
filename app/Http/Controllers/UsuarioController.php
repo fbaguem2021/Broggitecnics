@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Usuario;
+use App\Models\Usuari;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -25,7 +25,7 @@ class UsuarioController extends Controller
         $username = $request->input('userName');
         $pass = $request->input('password1');
 
-        $user = Usuario::where('username', $username)->first();
+        $user = Usuari::where('username', $username)->first();
 
         if ($user != null && Hash::check($pass, $user->contrasenya)) {
             Auth::login($user);
@@ -46,7 +46,7 @@ class UsuarioController extends Controller
         return view('layout.newUser');
     }
     public function store(Request $request){
-        $usuario = new Usuario();
+        $usuario = new Usuari();
         $strNom=$request->input('nom');
         $strCogn=$request->input('cognoms');
         

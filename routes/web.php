@@ -32,7 +32,18 @@ Route::middleware(['auth'])->group(function() {
         $user=Auth::user();
         return view('pages.home', compact('user'));
     })->name('home');
+    
 });
+
+Route::get('/operadors', function () {
+    return view('operadors');
+});
+
+Route::get('/expedients', function () {
+    return view('pages.expedients');
+});
+
+
 
 Route::get('bootstrap', function () {
     return view('bootstrap');

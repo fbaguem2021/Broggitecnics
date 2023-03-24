@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Resources\UsuariResource;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Resources\ExpedientResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        ExpedientResource::withoutWrapping();
+        UsuariResource::withoutWrapping();
     }
 }
