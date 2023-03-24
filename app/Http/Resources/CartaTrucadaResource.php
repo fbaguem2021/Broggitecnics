@@ -31,7 +31,7 @@ class CartaTrucadaResource extends JsonResource
             'durada' => $this->durada,
             'interlocutor' => [
                 'nom' => $this->interlocutor->nom,
-                'cognom' => $this->interlocutor->cognom,
+                'cognom' => $this->interlocutor->cognoms,
                 'telefon' => $this->interlocutor->telefon,
                 'antecedents' => $this->interlocutor->antecedents,
             ],
@@ -49,7 +49,7 @@ class CartaTrucadaResource extends JsonResource
                 'tipus_incident' => $this->incident->tipusIncident->nom,
                 'codi_incident' => $this->incident->codi,
                 'incident' => $this->incident->nom,
-                'descripcio' => $this->incident->descripcio,
+                'defincio' => $this->incident->definicio,
                 'instruccions' => $this->incident->instruccions
             ],
             'expedient' => [
@@ -59,7 +59,7 @@ class CartaTrucadaResource extends JsonResource
             'nota_comuna' => $this->nota_comuna,
             'operador' => [
                 'nom' => $this->usuari->nom,
-                'cognom' => $this->usuari->cognom
+                'cognom' => $this->usuari->cognoms
             ] 
         ];
     }
