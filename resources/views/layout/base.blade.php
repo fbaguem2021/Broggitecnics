@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite(['resources/css/app.css', 'resources/scss/app.scss'])
+    @vite(['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'])
+    @yield('style')
     <title>Broggi112</title>
 </head>
 
@@ -12,7 +13,7 @@
     <div id="wrapper">
         <div id="header">
             <div class="header-inner">
-                <a href="" id="logo" alt="Brogi112 - home">
+                <a href="{{url('/')}}" id="logo" alt="Brogi112 - home">
                     <svg x="0px" y="0px" viewBox="0 0 50 50" fill="none">
                         <g clip-path="url(#clip0_177_786)">
                             <path
@@ -41,8 +42,33 @@
                         </defs>
                     </svg>
                 </a>
-                <button id="login">Login</button>
-                <div id="line"></div>
+                {{-- @if (Auth::check())
+                    <a id="login-btn" href="{{route('logout')}}">
+                        <button> {{Auth::user()->nom}} {{ Auth::user()->cognoms}}</button>
+                    </a>
+                @else
+                    <a id="login-btn" href="{{route('home')}}">
+                        <button>Login</button>
+                    </a>
+                @endif --}}
+
+    
+                    @if (Auth::check())
+                        <div id="login-btn" class="dropdown">
+                            <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{Auth::user()->username}}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{{route('logout')}}"><i class="fa fa-sign-out" aria-hidden="true">
+                                </i>Tancar sessió</a>
+                            </div>
+                        </div>
+                    @else
+                      <div id="login-btn" class="nav-item">
+                          <a class="nav-link" href="{{route('login')}}"><i class="fa fa-sign-in" aria-hidden="true"></i>Login</a>
+                      </div>
+                    @endif
+                
             </div>
         </div>
 

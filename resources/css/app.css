@@ -1,14 +1,13 @@
-:root{
-    --nav-height: 80px;
-}
-
 *{
     box-sizing: border-box;
+    font-family: 'Ubuntu';
 }
+
 
 body, html{
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
 }
 
 #wrapper{
@@ -41,17 +40,23 @@ body, html{
     left: 50px;
     top: 50%;
     transform: translateY(-50%);
-    width: 50px;
+    width: 40px;
     height: auto;
+    
+}
+
+#logo svg:hover , #login-btn a:hover{
+    transform: scale(1.05);
 }
 
 #logo svg {
     display: block;
     width: 100%;
     height: auto;
+    transition: transform .2s ease-in-out;
 }
 
-#login {
+#login-btn {
     display: block;
     width: 120px;
     height: 40px;
@@ -59,12 +64,24 @@ body, html{
     right: 50px;
     top: 50%;
     transform: translateY(-50%);
+    cursor: pointer;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+}
+
+#login-btn a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
     font: 16px/28px Ubuntu;
     font-weight: bold;
     background-color: white;
     border-radius: 5px;
     border: none;
-    cursor: pointer;
+    transition: transform .2s ease-in-out;
 }
 
 /* CONTENT */
