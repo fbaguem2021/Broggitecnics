@@ -10,7 +10,8 @@ export default defineConfig({
                 "resources/css/login.css",
                 "resources/scss/app.scss",
                 "resources/js/app.js",
-                "resources/js/menu.js"
+                "resources/js/menu.js",
+                "node_modules/bootstrap/dist/js/bootstrap.min.js"
             ],
             refresh: true,
         }),

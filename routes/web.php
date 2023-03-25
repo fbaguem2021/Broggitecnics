@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\ExpedientController;
+use App\Http\Controllers\ExpedientsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsuarioController;
@@ -36,9 +38,7 @@ Route::get('/operadors', function () {
     return view('operadors');
 });
 
-Route::get('/expedients', function () {
-    return view('pages.expedients');
-});
+Route::get('/expedients', [ExpedientsController::class, 'index']);
 
 
 
