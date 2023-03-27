@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Usuario;
+use App\Models\Usuari;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +14,7 @@ class Rol extends Model
     protected $table = 'tipus_usuaris';
     public $timestamps = false;
 
-    public function usuarios(): HasMany{
-        return $this->hasMany(Usuario::class, 'tipus_usuaris_id');
+    public function usuaris(): HasMany{
+        return $this->hasMany(Usuari::class, 'tipus_usuaris_id');
     }
 }

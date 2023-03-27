@@ -6,7 +6,7 @@ use App\Models\CartaTrucada;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ExpedientResource extends JsonResource {
-    public static $wrap = null;
+
     /**
      * Transform the resource into an array
      *
@@ -15,15 +15,21 @@ class ExpedientResource extends JsonResource {
      */
     public function toArray($request)
     {
-        $cartes = CartaTrucada::where('expedients_id', $this->id)->get();
-        $count = $cartes->count();
+        $include_cartes = $request->get('include_cartes');
+        $count = CartaTrucada::where('expedients_id', $this->id)->count();
 
-        return [
+        $response = [
             'id' => $this->id,
             'codi_expedient' => $this->codi,
+            'estat_expedient_id' => $this->estatExpedient->id,
             'estat_expedient' => $this->estatExpedient->estat,
-            'numero_cartes' => $count,
-            'cartes_trucada' => CartaTrucadaResource::collection($cartes)
+            'numero_cartes' => $count
         ];
+
+        if ($include_cartes) {
+            $response['cartes_trucada'] = CartaTrucadaResource::collection(CartaTrucada::where('expedients_id', $this->id)->get());
+        }
+
+        return $response;
     }
 }

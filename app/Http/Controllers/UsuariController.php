@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-class UsuarioController extends Controller
+class UsuariController extends Controller
 {
     public function showLogin()
     {

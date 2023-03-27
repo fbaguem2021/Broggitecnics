@@ -14,10 +14,23 @@ class ExpedientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($filter , $value = null, $direction = null)
     {
-        return ExpedientResource::collection(Expedient::all());
+        $query = Expedient::query();
+
+        if ($filter == 'all') {
+            $expedients = $query->paginate(8);
+        } else if ($filter == 'orderBy'){
+            $expedients = $query->orderBy($value, $direction)->paginate(8);
+        }
+        else{
+            $expedients = $query->where($filter, $value)->paginate(8);
+        }
+
+            
+        return ExpedientResource::collection($expedients);
     }
+    
 
     /**
      * Store a newly created resource in storage.
@@ -36,9 +49,10 @@ class ExpedientController extends Controller
      * @param  \App\Models\Expedient  $expedient
      * @return \Illuminate\Http\Response
      */
-    public function show(Expedient $expedient)
+    public function show($id)
     {
-        //
+        request()->request->add([ 'include_cartes' => true]);
+        return new ExpedientResource(Expedient::find($id));
     }
 
     /**

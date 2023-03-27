@@ -16,7 +16,7 @@
           <h3 class="card-title">LOGIN</h3>  
           <p class="card-text my-4">Introdueix el teu usuari i contrasenya </p>
           <div class="form-container">
-            <form action="{{action([App\Http\Controllers\UsuarioController::class, 'login'])}}" method="POST">
+            <form action="{{action([App\Http\Controllers\UsuariController::class, 'login'])}}" method="POST">
                 @csrf
                 <div class="mb-3">
                   {{-- <label for="userName" class="form-label">Nom d'usuari</label> --}}

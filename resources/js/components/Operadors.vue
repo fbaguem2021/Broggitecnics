@@ -178,9 +178,10 @@ export default {
 }
 </script>
 <style>
-.card {
+/* THIS CLASS HAS TO CHANGE ALTERS ALL .CARDS */
+/* .card {
     width: 75%;
-}
+} */
 .page-link {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */

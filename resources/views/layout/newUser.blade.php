@@ -15,7 +15,7 @@
             <h3 class="card-title">NOU COMPTE</h3> 
             <p class="card-text mt-4">El teu nom d'usuari serà la primera lletra del teu nom + el teu primer cognom.</p>
             <div class="form-container mt-4">
-                <form action="{{action([App\Http\Controllers\UsuarioController::class, 'store'])}}" method="POST">
+                <form action="{{action([App\Http\Controllers\UsuariController::class, 'store'])}}" method="POST">
                     @csrf
                     <div class="mb-3">
                         {{-- <label for="nom" class="form-label">Nom</label> --}}

@@ -5,7 +5,7 @@
 
     <!-- Button trigger modal -->
 
-  <button style="position: absolute; left: 10%; top: 20%;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  <button style="position: absolute; left: 1%; top: 20%;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
     Launch demo modal
   </button>
   

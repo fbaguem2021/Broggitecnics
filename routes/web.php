@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\ExpedientController;
 use App\Http\Controllers\ExpedientsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\UsuariController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +21,11 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('/login', [UsuarioController::class, 'showLogin'])->name('login');
-Route::post('/login', [UsuarioController::class, 'login']);
-Route::get('/logout', [UsuarioController::class, 'logout'])->name('logout');
-Route::get('/registre',[UsuarioController::class, 'showRegistre'])->name('registre');
-Route::post('/registre',[UsuarioController::class, 'store']);
+Route::get('/login', [UsuariController::class, 'showLogin'])->name('login');
+Route::post('/login', [UsuariController::class, 'login']);
+Route::get('/logout', [UsuariController::class, 'logout'])->name('logout');
+Route::get('/registre',[UsuariController::class, 'showRegistre'])->name('registre');
+Route::post('/registre',[UsuariController::class, 'store']);
 
 Route::middleware(['auth'])->group(function() {
     Route::get('/home', function () {

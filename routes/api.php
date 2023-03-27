@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\ExpedientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsuariController;
-
+use App\Http\Controllers\Api\EstatExpedientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.buscar');
 Route::apiResource('usuari', UsuariController::class);
 
-Route::apiResource('/expedient', ExpedientController::class);
+Route::get('/expedients/{filter}/{value?}/{dir?}', [ExpedientController::class, 'index']);
+Route::get('/expedient/{id}', [ExpedientController::class, 'show']);
 
 Route::apiResource('/cartaTrucada', CartaTrucadaController::class);
-Route::get('/cartaTrucada/{id}', [CartaTrucadaController::class, 'show']);
+
+Route::apiResource('/estatExpedient', EstatExpedientController::class);
