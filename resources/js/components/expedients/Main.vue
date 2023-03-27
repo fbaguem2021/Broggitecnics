@@ -8,10 +8,10 @@
                     <select name="filtro"
                         class="form-select"
                         aria-label="Filtro">
-                        <option disabled selected value="">Tots</option>
+                        <option selected value="">Tots</option>
                         <option v-for="(filtre, index) in filtres" :key="index"
-                            :value="filtre">
-                            {{ filtre }}
+                            :value="filtre.col">
+                            {{ filtre.label }}
                         </option>
                     </select>
                 </div>
@@ -28,31 +28,33 @@
         </div>
 
         <div class="table-container">
-            <table class="table">
+            <table class="table table-hover">
                 <thead>
                 <tr>
-                    <th scope="col">Codi<span class="triangle" @click="orderBy('codi')"></span></th>
-                    <th scope="col">Localització <span class="triangle"></span></th>
-                    <th scope="col">Incidents <span class="triangle"></span></th>
-                    <th scope="col">Cartes <span class="triangle"></span></th>
-                    <th scope="col">Ultima mod <span class="triangle"></span></th>
-                    <th scope="col">Creació <span class="triangle"></span></th>
-                    <th scope="col">Estat <span class="triangle"></span></th>
-                    <th scope="col"></th>
+                    <th scope="col" v-for="(filtre, index) in filtres" :key="index" :style="{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }">
+                        {{filtre.label}}
+                        <span
+                            :class="orderByColumn === filtre.col && orderDir === 'desc' ? 'triangle rotate' : 'triangle'"
+                            @click="orderBy(filtre.col)">
+                        </span>
+                    </th>
+
                 </tr>
                 </thead>
                 <tbody>
                     <tr v-for="(exp, index) in expedients" :key="index">
                         <td>{{exp.codi_expedient}}</td>
-                        <td>localitzacio</td>
-                        <td></td>
-                        <td>{{exp.numero_cartes}}</td>
-                        <td>ultima mod</td>
-                        <td>creacio</td>
+                        <td>loc</td>
+                        <td>ins</td>
+                        <td>{{exp.cartes_count}}</td>
+                        <td>{{elapsedTime(exp.modificat)}}</td>
+                        <td>{{elapsedTime(exp.creat)}}</td>
                         <td>
-                            <select name="" id="" :class="'estat-'+exp.estat_expedient_id">
+                            <select
+                            :class="'estat-'+exp.estat_expedient_id"
+                            @change="updateSelect(exp.id, $event.target.value)">
                                 <option v-for="(estat, index) in estats" :key="index" 
-                                    value="{{estat.estat}}"
+                                    :value="estat.id"
                                     :class="'state-'+estat.id"
                                     :selected="estat.id === exp.estat_expedient_id">
                                     {{estat.estat}}
@@ -71,7 +73,9 @@
         
 </template>
 <script>
-import legendStatus from './legendStatus.vue';
+    import axios from 'axios';
+    import legendStatus from './legendStatus.vue';
+    import moment from 'moment'
 export default {
     components: {
         legendStatus
@@ -81,16 +85,41 @@ export default {
             expedients: [],
             estats: [],
             filtres: [
-                "Codi",
-                "Localització",
-                "Incidents",
-                "Modificació",
-                "Creació",
-                "Estat"
+                {
+                    label: "Codi",
+                    col: "codi"
+                },
+                {
+                    label: "Localització",
+                    col: ""
+                },
+                {
+                    label: "Incidents",
+                    col: ""
+                },
+                {
+                    label: "Cartes",
+                    col: "cartes_count"
+                },
+                {
+                    label: "Modificació",
+                    col: "updated_at"
+                },
+                {
+                    label: "Creació",
+                    col: "created_at"
+                },
+                {
+                    label: "Estat",
+                    col: "estat_expedients_id"
+                },
+               
             ],
+            selectedEstat: '',
             message: '',
-            lastOrder: '',
-            orderDir: 'asc'
+            orderByColumn: 'updated_at',
+            orderDir: 'asc',
+
         }
     },
     methods: {
@@ -101,20 +130,20 @@ export default {
                 .then(response => {
                     self.expedients = response.data.data;
                 })
-                .catch((error) => {});
+                .catch((error) => { });
         },
         orderBy(order_col) {
-            if (order_col == this.lastOrder && this.direction == 'asc') {
-                this.direction = 'desc';
+            if (order_col == this.orderByColumn && this.orderDir == 'desc') {
+                this.orderDir = 'asc';
             } else {
-                this.direction = 'asc';
+                this.orderDir = 'desc';
             }
-            this.lastOrder = order_col;
-            console.log("ordering");
-            console.log("direction: "+this.direction);
+            this.orderByColumn = order_col;
+            console.log("ordering by: "+this.orderByColumn);
+            console.log("direction: " + this.orderDir);
             const self = this;
             axios
-                .get(`expedients/orderBy/${order_col}/${self.direction}`)
+                .get(`expedients/orderBy/${order_col}/${self.orderDir}`)
                 .then(response => {
                     self.expedients = response.data.data;
                 })
@@ -122,22 +151,82 @@ export default {
                     console.log(error);
                 });
         },
-        submit(filter) {
+        submit(keepOrder) {
             const self = this;
-            axios
+            if (keepOrder) {
+                axios
+                .get(`expedients/orderBy/${self.orderByColumn}/${self.orderDir}`)
+                .then(response => {
+                    console.log(response);
+                    self.expedients = response.data.data;
+                    self.expedientsByEstat();
+                })
+                .catch((error) => { });
+            } else {
+                axios
                 .get("expedients/all")
                 .then(response => {
                     console.log(response);
                     self.expedients = response.data.data;
+                    self.expedientsByEstat();
                 })
-                .catch((error) => {});
+                .catch((error) => { });
+            }
+        },
+        expedientsByEstat() {
+            const self = this;
+            axios
+                .get("estatExpedient")
+                .then(response => {
+                    self.estats = response.data;
+                    console.log(response);
+                })
+                .catch((error) => { });
+        },
+        updateSelect(exp_id, estat_id) {
+            const self = this;
+            axios
+                .put(`expedient/${exp_id}`, { estat_expedient_id: estat_id })
+                .then(response => {
+                    console.log(response);
+                    this.submit(true);
+                })
+                .catch((error) => { });
+
+        },
+        elapsedTime(dateTime) {
+            const now = moment();
+            const DATETIME = moment(dateTime);
+
+            const timePassed = {
+            days: now.diff(DATETIME, 'days'),
+            hours: now.diff(DATETIME, 'hours') % 24,
+            minutes: now.diff(DATETIME, 'minutes') % 60,
+            seconds: now.diff(DATETIME, 'seconds') % 60
+            };
+
+            let timePassedString = '-';
+            if (timePassed.days > 0) {
+                timePassedString = `${timePassed.days}d`;
+            } else {
+                if (timePassed.hours > 0) {
+                    timePassedString = `${timePassed.hours}h `;
+                }
+                if (timePassed.minutes > 0) {
+                    timePassedString += `${timePassed.minutes}m`;
+                }
+                if (timePassed.minutes < 1 && timePassed.seconds > 0) {
+                    timePassedString += `${timePassed.seconds}s`;
+                }
+            }
+            return timePassedString;
         }
     },
     computed: {
-
+        
     },
     mounted() {
-        this.submit('all');
+        this.orderBy('updated_at');
         const self = this;
         axios
             .get("estatExpedient")
@@ -145,90 +234,107 @@ export default {
                 self.estats = response.data;
                 console.log(response);
             })
-            .catch((error) => {});
+            .catch((error) => { });
+
     },
 }
 </script>
-<style lang="css">
-    expedients {
-        display: block;
-        height: 100%;
-        padding: 0 100px;
-    }
-    .content {
-        display: flex;
-        flex-direction: column;
-        height: 70%;
-        margin-top: 20px;
-        padding: 20px 20px 0 20px;
-        background-color: #D9D9D9;
-    }
+<style scoped>
+.content {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    margin: 20px 100px;
+    padding-top: 20px;
+    background-color: #D9D9D9;
+}
 
-    .search-box {
-        width: 600px;
-    }
+.search-box {
+    width: 600px;
+}
 
-    .search-box * {
-        height: 100% !important;
-        min-height: 36px;
-    }
+.search-box * {
+    height: 100% !important;
+    min-height: 36px;
+}
 
-    .search-box .form-select {
-        height: 100%;
-        border-radius: 5px 0 0 5px;
-        padding-left: 20px;
-    }
-    .search-box .form-input, .search-box .form-select{
-        border: 1px solid black;
-        background-color: #fff;
-    }
+.search-box .form-select {
+    height: 100%;
+    border-radius: 5px 0 0 5px;
+    padding-left: 20px;
+}
 
-    .search-box button {
-        border-radius: 0 5px 5px 0;
-    }
+.search-box input {
+    padding-left: 18px;
+}
 
-    .search-box, .table-container {
-        padding: 0 80px;
-    }    
+.search-box .form-input,
+.search-box .form-select {
+    border: 1px solid black;
+    background-color: #fff;
+}
 
-    .table-container {
-        margin-top: 20px;
-        flex-grow: 1;
-    }
+.search-box button {
+    border-radius: 0 5px 5px 0;
+}
 
-    .triangle {
-        display: inline-flex;
-        align-items: center;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 6px 6px 0 6px;
-        border-color: #000 transparent transparent transparent;
-    }
+.search-box,
+.table-container {
+    padding: 0 80px;
+    text-align: center;
+}
 
-    .triangle:hover {
-        cursor: pointer;
-    }
+.table-container {
+    padding: 0 40px;
+    margin-top: 20px;
+    flex-grow: 1;
+}
+.table tbody tr td:first-child {
+  text-align: end;
+  padding-right: 10px;
+}
 
-    .bi-folder{
-        font-size: 25px;
-    }
-    .bi-folder2 {
-        font-size: 25px;
-    }
+.triangle {
+    display: inline-flex;
+    align-items: center;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 6px 6px 0 6px;
+    border-color: #000 transparent transparent transparent;
+    margin-left: 6px;
+    transform: rotate(0deg);
+}
 
-    .bi-folder2:hover:before {
-        content: "\F3D8";
-        cursor: pointer
-    }
-    .bi-folder:hover:before {
-        content: "\F3D5";
-        cursor: pointer;
-    }
-    expedients select {
-        border-radius: 4px;
-        padding: 2px 0 2px 2px;
-    }
+.triangle:hover {
+    cursor: pointer;
+}
 
+.triangle.rotate {
+    transform: rotate(180deg);
+}
 
-</style>
+.bi-folder {
+    font-size: 25px;
+}
+
+.bi-folder2:before {
+    font-size: 25px;
+    transform: scale(1);
+}
+
+.bi-folder2:hover:before {
+    content: "\F3D8";
+    cursor: pointer;
+    transform: scale(1.08);
+}
+
+.bi-folder:hover:before {
+    content: "\F3D5";
+    cursor: pointer;
+}
+
+ select {
+    border-radius: 4px;
+    padding: 2px 0 2px 2px;
+}</style>

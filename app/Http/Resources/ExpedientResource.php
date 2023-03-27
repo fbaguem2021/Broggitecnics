@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use DateTime;
 use App\Models\CartaTrucada;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,14 +17,16 @@ class ExpedientResource extends JsonResource {
     public function toArray($request)
     {
         $include_cartes = $request->get('include_cartes');
-        $count = CartaTrucada::where('expedients_id', $this->id)->count();
+
 
         $response = [
             'id' => $this->id,
             'codi_expedient' => $this->codi,
+            'modificat' => $this->updated_at,
+            'creat' => $this->created_at,
             'estat_expedient_id' => $this->estatExpedient->id,
             'estat_expedient' => $this->estatExpedient->estat,
-            'numero_cartes' => $count
+            'cartes_count' => $this->cartes_count
         ];
 
         if ($include_cartes) {
@@ -32,4 +35,9 @@ class ExpedientResource extends JsonResource {
 
         return $response;
     }
+    public function formatDate($dateString){
+        $date = new DateTime($dateString);
+        return $date->format('H:i d-m');
+    }
+
 }

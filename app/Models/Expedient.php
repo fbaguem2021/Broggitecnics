@@ -13,7 +13,7 @@ class Expedient extends Model
 
     protected $table = 'expedients';
     protected $guarded = ['id'];
-    public $timestamps = false;
+    public $timestamps = true;
 
     public function estatExpedient()
     {

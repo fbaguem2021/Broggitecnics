@@ -25,8 +25,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.buscar');
 Route::apiResource('usuari', UsuariController::class);
 
-Route::get('/expedients/{filter}/{value?}/{dir?}', [ExpedientController::class, 'index']);
-Route::get('/expedient/{id}', [ExpedientController::class, 'show']);
+Route::get('expedients/{filter}/{value?}/{dir?}', [ExpedientController::class, 'index']);
+Route::get('expedient/{id}', [ExpedientController::class, 'show']);
+Route::put('expedient/{id}', [ExpedientController::class, 'update']);
 
 Route::apiResource('/cartaTrucada', CartaTrucadaController::class);
 

@@ -8,7 +8,7 @@ class ExpedientsController extends Controller
 {
     public function index()
     {
-        $reopenModal = false;
+        $reopenModal = true;
         return view('pages.expedients', compact('reopenModal'));
     }
 }
