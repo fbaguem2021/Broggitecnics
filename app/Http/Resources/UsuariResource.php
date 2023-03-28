@@ -22,6 +22,7 @@ class UsuariResource extends JsonResource {
             'contrasenya'   => $this->contrasenya,
             'nom'           => $this->nom,
             'cognoms'       => $this->cognoms,
+            'tipus_usuaris_id'  => $this->rol->id,
             'tipus'         => $tipus->nom
         ];
     }

@@ -3,14 +3,14 @@
         <div class="card mx-auto mt-3">
             <div class="card-body">
                 <!-- <BuscadorOperadors/> -->
-                <form name="formbuscar" @submit.prevent="getData(current_page)">
+                <form name="formbuscar" @submit.prevent="getData(pageinfo.current_page)">
                     <div class="row  mx-1 p-0 rounded border border-dark bg-dark"
                     name="filtros">
                         <div class="col-4 p-0">
                             <select id="filtro" name="filtro"
                                 class="form-select custom-border"
                                 aria-label="Filtro"
-                                v-model="filtrado">
+                                v-model="buscador.filtrado">
                                 <option disabled selected :value="null">Escoja un filtro</option>
                                 <option v-for="filtro in filtros" :value="filtro.value">{{ filtro.label }}</option>
                             </select>
@@ -18,7 +18,7 @@
                         <input id="valor" name="valor"
                             type="text"
                             class="col-7 form-input custom-border"
-                            v-model="buscado"
+                            v-model="buscador.buscado"
                             :required="selectHasValue"
                             :disabled="!selectHasValue">
                         <button
@@ -44,25 +44,36 @@
                                     class="col-3"
                                     >Apellidos</th> -->
                                 <th scope="col"
-                                    class="col-4"
+                                    class="col-3"
                                     >Tipo</th>
-                                <th scope="col"></th>
+                                <th scope="col-1"></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="usuari in usuaris.data">
+                            <tr v-for="usuari in usuaris.data" :key="usuari.id">
                                 <!-- <td scope="row">{{ usuari.id }}</td> -->
                                 <td>{{ usuari.username }}</td>
                                 <td>{{ `${usuari.nom} ${usuari.cognoms}` }}</td>
                                 <!-- <td>{{ usuari.cognoms }}</td> -->
                                 <td>{{ usuari.tipus }}</td>
-                                <td>{{  }}</td>
+                                <td>
+                                    <FormUsuario :id-usuario="usuari.id"></FormUsuario>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                     <nav>
                         <ul class="pagination">
-                            <li class="page-item">
+                            <li v-if="pageinfo.hasPrev"
+                                class="page-item">
+                                <a @click="firstPage" class="page-link page-link-btn">
+                                    <span><span aria-hidden="true">
+                                        Principio
+                                    </span></span>
+                                </a>
+                            </li>
+                            <li v-if="pageinfo.hasPrev"
+                                class="page-item">
                                 <a @click="prevPage" class="page-link page-link-btn">
                                     <span>
                                         <span aria-hidden="true">«</span>
@@ -72,54 +83,81 @@
                             <li class="page-item">
                                 <a class="page-link">
                                     <span><span aria-hidden="true">
-                                        {{ current_page }}
+                                        {{ pageinfo.current_page }}
                                     </span></span>
 
                                 </a>
                             </li>
-                            <li class="page-item">
+                            <li v-if="pageinfo.hasNext"
+                                class="page-item">
                                 <a @click="nextPage" class="page-link page-link-btn">
                                     <span>
                                         <span aria-hidden="true">»</span>
                                     </span>
                                 </a>
                             </li>
+                            <li v-if="pageinfo.hasNext"
+                                class="page-item">
+                                <a @click="lastPage" class="page-link page-link-btn">
+                                    <span><span aria-hidden="true">
+                                        Final
+                                    </span></span>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>
+                <!-- <form action="" method=""></form> -->
             </div>
         </div>
+        <FormUsuario/>
+        <!-- <FormUsuario :id-usuario="loggedUser.id"/> -->
     </div>
 </template>
 <script>
 // import BuscadorOperadors from './BuscadorOperadors.vue'
+import FormUsuario from './operadors/form.vue'
+
+import { markRaw } from 'vue'
 export default {
     name: 'operadors',
     data() {
         return {
-            usuario: {},
-            filtrado: '',
-            buscado: '',
             usuaris: [],
-            current_page: 1,
-            test: 0
+            // loggedUser: {},
+            loggedUser: window.Usuario,
+            buscador: {
+                filtrado: '',
+                buscado: ''
+            },
+            pageinfo: {
+                current_page: 1,
+                hasNext: false,
+                hasPrev: false
+            },
+            // filtrado: '',
+            // buscado: '',
+            // current_page: 1,
+            // hasNext: false,
+            // hasPrev: false,
+            // test: {},
         }
     },
     mounted() {
-        // this.usuario = window.Usuario;
-        this.usuario = window.Usuario
-        delete window.Usuario;
+        // this.loggedUser = window.Usuario;
+        // this.loggedUser = window.Usuario
+        // delete window.Usuario;
     },
     created() {
-        // console.log(window.User)
         this.getData();
     },
     methods: {
         getUrl() {
             const self = this;
             let url;
-            if (self.filtrado == '') {
-                url = `/api/usuari?page=${this.current_page}`
+            if (self.buscador.filtrado == '') {
+                let id = window.Usuario.id;
+                url = `/api/usuari?id=${id}&page=${this.pageinfo.current_page}`
                 // console.log(`/api/usuari?page=${this.current_page}`);
             } else {
                 url = `/api/usuari-buscar${this.query}`;
@@ -138,7 +176,9 @@ export default {
                 .then(data => {
                     // console.log(data);
                     self.usuaris = data
-                    self.current_page = data.meta.current_page
+                    self.pageinfo.current_page = data.meta.current_page
+                    self.pageinfo.hasNext = data.links.next != null
+                    self.pageinfo.hasPrev = data.links.prev != null
                 })
         },
         nextPage() {
@@ -147,9 +187,9 @@ export default {
             if (meta['current_page'] < meta['last_page']) {
                 // let next_page = meta['current_page'] + 1;
                 // this.getData(next_page)
-                this.current_page++;
+                this.pageinfo.current_page++;
                 this.getData();
-                console.log('+')
+                // console.log('+')
             }
         },
         prevPage() {
@@ -158,10 +198,19 @@ export default {
             if (meta['current_page'] > 1) {
                 // let prev_page = meta['current_page'] - 1;
                 // this.getData(prev_page)
-                this.current_page--;
+                this.pageinfo.current_page--;
                 this.getData();
-                console.log('-');
+                // console.log('-');
             }
+        },
+        firstPage() {
+            this.pageinfo.current_page = 1
+            this.getData()
+        },
+        lastPage() {
+            const meta = this.usuaris.meta;
+            this.pageinfo.current_page = meta['last_page']
+            this.getData()
         }
     },
     computed: {
@@ -174,18 +223,19 @@ export default {
             ]
         },
         selectHasValue() {
-            return this.filtrado != '';
+            return this.buscador.filtrado != '';
         },
         query() {
-            return `?${this.filtrado}=${this.buscado}&page=${this.current_page}`;
-        }
+            return `?${this.buscador.filtrado}=${this.buscador.buscado}&page=${this.pageinfo.current_page}`;
+        },
     },
-    // components: {
+    components: {
+        FormUsuario
     //     BuscadorOperadors
-    // },
+    },
 }
 </script>
-<style>
+<style scoped>
 .card {
     width: 75%;
 }
