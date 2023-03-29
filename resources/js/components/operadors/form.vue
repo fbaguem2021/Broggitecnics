@@ -2,7 +2,6 @@
     <div>
 
         <button v-if="idUsuario == -1"
-
             @click="abrirModal('crear')"
             class="btn btn-secondary btn-flotant"
             :class="{ hide: idUsuario > 0 }">
@@ -165,11 +164,13 @@ export default {
         insertarUsuario() {
             this.modal.hide()
             axios.post('/api/usuari',this._userdata)
-                .then( response => {
+            .then( response => {
                     console.log(response.data);
+                    return response
                 })
                 .catch( error => {
                     console.error(error);
+                    // this.$emit('apiCalled', error)
                 })
         },
         modificarUsuario() {
@@ -181,13 +182,29 @@ export default {
             axios.put(url, this.edituser)
                 .then( response => {
                     console.log(response);
-                    // return response
+                    return response
                 })
-                .catch( error => console.error(error) )
+                .catch( error => {
+                    console.error(error)
+
+                })
+        },
+        borrarUsuario() {
+            this.modal.hide()
+
+            axios.delete(`/api/usuari/${this.idUsuario}`)
+                .then( response => {
+                    console.log(response);
+                    return response
+                })
+                .catch( error => {
+                    console.error(error)
+                })
         },
         getUsuario(edit=true) {
             axios.get(`/api/usuari/${this.idUsuario}`)
                 .then( response => {
+                    console.log(response);
                     return response.data
                 })
                 .then( data => {
@@ -197,8 +214,11 @@ export default {
                     } else {
                         this.deluser = data
                     }
+                    // console.log(data);
                 })
-                .catch( error => { console.error(error) })
+                .catch( error => {
+                    console.error(error)
+                })
         },
         actuar() {
             // console.log('hola');
@@ -213,6 +233,7 @@ export default {
                     break;
                 case 'borrar':
                     console.log('borrar');
+                    this.borrarUsuario()
                     break;
             }
             // this.modal.hide()
