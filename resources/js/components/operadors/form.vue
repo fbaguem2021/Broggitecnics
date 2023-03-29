@@ -1,6 +1,13 @@
 <template>
     <div>
-
+        <div role="alert"
+            class="alert alert-primary alert-dismissible fade col-4 mx-auto floating border"
+            :class="{ show: alert.show, 'alert-tertiary': !alert.error, 'alert-danger': alert.error }">
+            <button @click="toggleAlert()"
+                type="button" class="btn-close"
+                data-dismiss="alert" aria-label="Close">
+            </button>
+        </div>
         <button v-if="idUsuario == -1"
             @click="abrirModal('crear')"
             class="btn btn-secondary btn-flotant"
@@ -131,6 +138,12 @@ export default {
             deluser: {},
             loggedUser: window.Usuario,
             tipoModal: 'crear',
+            alert: {
+                show: false,
+                code: 0,
+                error: false,
+                message: '',
+            }
         }
     },
     // mounted() {
@@ -288,5 +301,24 @@ export default {
 .modal > .modal-dialog {
     margin-top: 6rem !important;
     max-width: 50%;
+}
+
+.my-alert-dismissible {
+    padding-right: 3rem;
+}
+.my-alert-dismissible .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: 1.25rem 1rem;
+
+}
+.floating {
+    z-index: 1000;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 </style>
