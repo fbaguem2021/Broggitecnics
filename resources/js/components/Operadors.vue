@@ -85,7 +85,6 @@
                                     <span><span aria-hidden="true">
                                         {{ pageinfo.current_page }}
                                     </span></span>
-
                                 </a>
                             </li>
                             <li v-if="pageinfo.hasNext"

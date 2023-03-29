@@ -9,37 +9,50 @@
             <i class="bi bi-plus-circle"></i> Crear Usuario
         </button>
         <div v-else>
-            <button :modalref="modalId" @click="abrirModal('editar')" class="btn btn-sm btn-tertiary ms-3 me-1">
+            <!-- ms-3 me-1 -->
+            <button :modalref="modalId" @click="abrirModal('pssw')" class="btn btn-sm btn-purple">
+                <i class="bi bi-key"></i>
+            </button>
+            <button :modalref="modalId" @click="abrirModal('editar')" class="btn btn-sm btn-tertiary">
                 <i class="bi bi-pencil-square"></i>
             </button>
-            <button @click="abrirModal('borrar')" class="btn btn-sm btn-danger">
+            <button :modalref="modalId" @click="abrirModal('borrar')" class="btn btn-sm btn-danger">
                 <i class="bi bi-trash"></i>
             </button>
         </div>
-        <!-- <form id="modalUsuario" -->
-        <form :id="modalId"
-            @submit.prevent="insertarUsuario()"
+        <form
+            :id="modalId"
+            @submit.prevent="actuar()"
             class="modal"
             tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 v-if="idUsuario == -1"
+                        <!-- <h5 v-if="idUsuario == -1"
+                            class="modal-title">Crear usuario</h5> -->
+                        <h5 v-if="tipoModal == 'crear'"
                             class="modal-title">Crear usuario</h5>
-                        <h5 v-else
+                        <h5 v-else-if="tipoModal == 'editar'"
                             class="modal-title">Editar usuario</h5>
+                        <h5 v-else-if="tipoModal == 'pssw'"
+                            class="modal-title">Editar contraseña</h5>
+                        <h5 v-else
+                            class="modal-title">Borrar usuario</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div v-if="tipoModal == 'crear' || tipoModal == 'editar'"
+                        class="modal-body">
                         <div class="form-floating">
                             <input type="text" name="username" id="username"
                                 class="form-control mb-2"
                                 v-model="_userdata.username" required>
                             <label for="username">Nombre de usuario</label>
                         </div>
+                        <!-- <div class="form-floating"
+                            :class="{ hide: idUsuario > 0 }"> -->
                         <div class="form-floating"
-                            :class="{ hide: idUsuario > 0 }">
-                            <input type="text" name="password" id="password"
+                            v-show="idUsuario == -1">
+                            <input type="password" name="password" id="password"
                                 class="form-control mb-2"
                                 v-model="_userdata.contrasenya" required>
                             <label for="password">Contraseña</label>
@@ -68,9 +81,20 @@
                                     :selected="checkTipo(tipus.id)"
                                     >{{ tipus.nom }}</option>
                             </select>
-                            <label for="tipususuari">Works with selects</label>
+                            <label for="tipususuari">Tipo de usuario</label>
                         </div>
-                        <!-- <p>Modal body text goes here.</p> -->
+                    </div>
+                    <div v-else-if="tipoModal == 'pssw'"
+                        class="modal-body">
+                        <div class="form-floating">
+                            <input type="password" name="password" id="password"
+                                class="form-control mb-2"
+                                v-model="_userdata.contrasenya" required>
+                            <label for="password">Contraseña</label>
+                        </div>
+                    </div>
+                    <div v-else class="modal-body">
+                        <p>Estas seguro de borrar al usuario: <b>{{ deluser.username }}</b>?</p>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -105,6 +129,7 @@ export default {
             },
             modal: {},
             edituser: {},
+            deluser: {},
             loggedUser: window.Usuario,
             tipoModal: 'crear',
         }
@@ -121,12 +146,21 @@ export default {
             this.modal.show()
             console.log(this.modalId);
 
-            if (modo == 'editar') {
+            if (modo == 'editar' || modo == 'pssw' ) {
                 this.getUsuario()
-                console.log('editar');
+                // console.log('editar');
             } else if ( modo == 'borrar' ) {
-                console.log('borrar');
+                this.getUsuario(false)
+                // console.log('borrar');
             }
+        },
+        abrir(modo="crear") {
+            this.tipoModal = modo
+
+            this.modal = new bootstrap.Modal('#modaltest')
+            this.modal.show()
+
+            this.getUsuario(false)
         },
         insertarUsuario() {
             this.modal.hide()
@@ -138,16 +172,50 @@ export default {
                     console.error(error);
                 })
         },
-        getUsuario() {
+        modificarUsuario() {
+            this.modal.hide()
+            let url = `/api/usuari/${this.edituser.id}`;
+            if (this.modal_pssw) {
+                url += '?password=true'
+            }
+            axios.put(url, this.edituser)
+                .then( response => {
+                    console.log(response);
+                    // return response
+                })
+                .catch( error => console.error(error) )
+        },
+        getUsuario(edit=true) {
             axios.get(`/api/usuari/${this.idUsuario}`)
                 .then( response => {
                     return response.data
                 })
                 .then( data => {
-                    this.edituser = data
-                    this._userdata = data
+                    if (edit) {
+                        this.edituser = data
+                        this._userdata = data
+                    } else {
+                        this.deluser = data
+                    }
                 })
                 .catch( error => { console.error(error) })
+        },
+        actuar() {
+            // console.log('hola');
+            switch (this.tipoModal) {
+                case 'crear':
+                    // console.log('crear');
+                    this.insertarUsuario()
+                    break;
+                case 'editar':
+                    // console.log('editar');
+                    this.modificarUsuario()
+                    break;
+                case 'borrar':
+                    console.log('borrar');
+                    break;
+            }
+            // this.modal.hide()
         },
         checkTipo(id) {
             return this._userdata.tipus_usuaris_id == id
@@ -179,6 +247,17 @@ export default {
     position: fixed;
     bottom: 50px;
     right: 50px;
+}
+.btn-tertiary {
+    --bs-btn-color: #fff;
+}
+.btn-purple {
+    --bs-btn-color: #fff;
+    --bs-btn-bg: #ae00ff;
+    --bs-btn-border-color: #ae00ff;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #8900c9;
+    --bs-btn-hover-border-color: #8900c9;
 }
 .modal {
     background-color: rgb(128, 128, 128, 0.75);

@@ -103,16 +103,36 @@ class UsuariController extends Controller
     {
         $pssw = $request->query('password', false);
 
+        $data = $request->json()->all();
         $usr = Usuari::find($usuari->id);
-        $usr->username = $usuari->username;
+        /*
+            $usr->username = $usuari->username;
+            if ($pssw) {
+                $usr->contrasenya = bcrypt($usuari->contrasenya);
+            }
+            $usr->nom = $usuari->nom;
+            $usr->cognoms = $usuari->cognoms;
+            $usr->tipus_usuaris_id = $usuari->tipus_usuaris_id;
+        */
+        $usr->username = $data['username'];
         if ($pssw) {
-            $usr->contrasenya = bcrypt($usuari->contrasenya);
+            $usr->contrasenya = bcrypt($data['contrasenya']);
         }
-        $usr->nom = $usuari->nom;
-        $usr->cognoms = $usuari->cognoms;
-        $usr->tipus_usuaris_id = $usuari->tipus_usuaris_id;
+        $usr->nom = $data['nom'];
+        $usr->cognoms = $data['cognoms'];
+        $usr->tipus_usuaris_id = $data['tipus_usuaris_id'];
 
-        return response()->json(['error'=>'esto es una prueva', 400]);
+        try {
+            $usr->save();
+            $response = (new UsuariResource($usr))
+                        ->response()
+                        ->setStatusCode(201);
+        } catch (QueryException $ex) {
+            $mensaje = "Error al crear usuario";
+            $response = response()->json(['error'=>$mensaje, 400]);
+        }
+        // return response()->json(['error'=>'esto es una prueva', 400]);
+        return $response;
     }
 
     /**
