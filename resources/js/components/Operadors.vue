@@ -57,7 +57,10 @@
                                 <!-- <td>{{ usuari.cognoms }}</td> -->
                                 <td>{{ usuari.tipus }}</td>
                                 <td>
-                                    <FormUsuario :id-usuario="usuari.id"></FormUsuario>
+                                    <!-- <FormUsuario :id-usuario="usuari.id"></FormUsuario> -->
+                                    <FormUsuario :id-usuario="usuari.id"
+                                        @api-called="myhandler"
+                                         @api-error="myhandler"></FormUsuario>
                                 </td>
                             </tr>
                         </tbody>
@@ -109,7 +112,19 @@
                 <!-- <form action="" method=""></form> -->
             </div>
         </div>
-        <FormUsuario/>
+        <div role="alert"
+            class="alert alert-primary alert-dismissible fade col-4 mx-auto floating border"
+            :class="{ show: alert.show, 'alert-tertiary': !alert.error, 'alert-danger': alert.error }">
+            {{ alert.message }}
+            <button @click="toggleAlert(alert.show)"
+                type="button" class="btn-close"
+                data-dismiss="alert" aria-label="Close">
+            </button>
+        </div>
+        <!-- <FormUsuario/> -->
+        <FormUsuario
+            @api-called="myhandler"
+            @api-error="myhandler"/>
         <!-- <FormUsuario :id-usuario="loggedUser.id"/> -->
     </div>
 </template>
@@ -134,12 +149,12 @@ export default {
                 hasNext: false,
                 hasPrev: false
             },
-            // filtrado: '',
-            // buscado: '',
-            // current_page: 1,
-            // hasNext: false,
-            // hasPrev: false,
-            // test: {},
+            alert: {
+                show: false,
+                code: 0,
+                error: false,
+                message: '',
+            }
         }
     },
     mounted() {
@@ -170,6 +185,7 @@ export default {
             // axios.get(`/api/usuari?page=${page}`)
             axios.get(this.getUrl())
                 .then(response => {
+                    // console.log(response);
                     return response.data
                 })
                 .then(data => {
@@ -210,7 +226,50 @@ export default {
             const meta = this.usuaris.meta;
             this.pageinfo.current_page = meta['last_page']
             this.getData()
-        }
+        },
+        myhandler(n, isDelete=false) {
+            switch (n.data.code) {
+                case 400:
+                case 404:
+                    console.log('error');
+                    break;
+
+                default:
+                    console.log('not error');
+                    if ( isDelete && (this.usuaris.data.length == 1 && this.pageinfo.current_page > 1)) {
+                        this.pageinfo.current_page--
+                    }
+                    this.getData();
+                    break;
+            }
+            this.setAlert(n.data)
+            this.toggleAlert(false)
+        },
+        setAlert(data) {
+            this.alert.code = data.code
+            this.alert.message = data.missatge
+            if (data.code >= 400) {
+                this.alert.error = true;
+            } else {
+                this.alert.error = false;
+            }
+        },
+        toggleAlert(alertIsShown=true) {
+            // if (show) {
+            //     this.alert.show = false
+            // } else {
+            //     this.alert.show = true
+            // }
+            // if (this.alert.show == true) {
+            if (alertIsShown) {
+                this.alert.show = false
+            } else {
+                this.alert.show = true
+                setTimeout(()=>{
+                    this.alert.show = false
+                }, 2000)
+            }
+        },
     },
     computed: {
         filtros() {
@@ -257,5 +316,23 @@ input:focus {
 }
 input[disabled] {
     background-color: #e7e7e7;
+}
+.my-alert-dismissible {
+    padding-right: 3rem;
+}
+.my-alert-dismissible .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 2;
+    padding: 1.25rem 1rem;
+
+}
+.floating {
+    z-index: 1000;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 </style>

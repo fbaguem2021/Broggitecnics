@@ -1,13 +1,5 @@
 <template>
     <div>
-        <div role="alert"
-            class="alert alert-primary alert-dismissible fade col-4 mx-auto floating border"
-            :class="{ show: alert.show, 'alert-tertiary': !alert.error, 'alert-danger': alert.error }">
-            <button @click="toggleAlert()"
-                type="button" class="btn-close"
-                data-dismiss="alert" aria-label="Close">
-            </button>
-        </div>
         <button v-if="idUsuario == -1"
             @click="abrirModal('crear')"
             class="btn btn-secondary btn-flotant"
@@ -95,7 +87,8 @@
                         <div class="form-floating">
                             <input type="password" name="password" id="password"
                                 class="form-control mb-2"
-                                v-model="_userdata.contrasenya" required>
+                                v-model="_newpssw" required>
+                                <!-- v-model="_userdata.contrasenya" -->
                             <label for="password">Contraseña</label>
                         </div>
                     </div>
@@ -113,6 +106,7 @@
 
 </template>
 <script>
+import axios from 'axios'
 import * as bootstrap from 'bootstrap'
 import { markRaw } from 'vue'
 export default {
@@ -125,6 +119,7 @@ export default {
     },
     data() {
         return {
+            _newpssw: '',
             _userdata: {
                 id: '',
                 username: '',
@@ -175,10 +170,15 @@ export default {
             this.getUsuario(false)
         },
         insertarUsuario() {
+            const self = this
             this.modal.hide()
+            // console.log(this);
             axios.post('/api/usuari',this._userdata)
-            .then( response => {
-                    console.log(response.data);
+                .then( (response) => {
+                    console.log(response);
+                    // console.log(self)
+                    // self.$emit('apiCalled', response)
+                    self.$emit('apiCalled', response)
                     return response
                 })
                 .catch( error => {
@@ -187,27 +187,31 @@ export default {
                 })
         },
         modificarUsuario() {
+            const self = this
             this.modal.hide()
             let url = `/api/usuari/${this.edituser.id}`;
-            if (this.modal_pssw) {
+            if (this.tipoModal == 'pssw') {
                 url += '?password=true'
             }
             axios.put(url, this.edituser)
-                .then( response => {
-                    console.log(response);
+                .then( (response) => {
+                    // console.log(response);
+                    self.$emit('apiCalled', response)
                     return response
                 })
                 .catch( error => {
                     console.error(error)
-
                 })
         },
         borrarUsuario() {
+            const self = this
             this.modal.hide()
 
             axios.delete(`/api/usuari/${this.idUsuario}`)
-                .then( response => {
+                .then( (response) => {
                     console.log(response);
+                    // Lanza un evento luego de que se borre el usuario
+                    self.$emit('apiCalled', response, true)
                     return response
                 })
                 .catch( error => {
@@ -215,9 +219,9 @@ export default {
                 })
         },
         getUsuario(edit=true) {
+            const self = this
             axios.get(`/api/usuari/${this.idUsuario}`)
-                .then( response => {
-                    console.log(response);
+                .then( (response) => {
                     return response.data
                 })
                 .then( data => {
@@ -227,7 +231,6 @@ export default {
                     } else {
                         this.deluser = data
                     }
-                    // console.log(data);
                 })
                 .catch( error => {
                     console.error(error)
@@ -241,7 +244,7 @@ export default {
                     this.insertarUsuario()
                     break;
                 case 'editar':
-                    // console.log('editar');
+                case 'pssw':
                     this.modificarUsuario()
                     break;
                 case 'borrar':
@@ -253,7 +256,7 @@ export default {
         },
         checkTipo(id) {
             return this._userdata.tipus_usuaris_id == id
-        }
+        },
     },
     computed: {
         modalId() {

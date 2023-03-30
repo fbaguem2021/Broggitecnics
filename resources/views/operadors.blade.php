@@ -8,7 +8,7 @@
     @if(auth()->check())
     <script>
         window.Usuario = {!! auth()->user() !!}
-        console.log(window.User);
+        // console.log(window.Usuario);
     </script>
     @endif
     <operadors></operadors>
