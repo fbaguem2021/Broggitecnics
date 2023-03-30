@@ -130,7 +130,7 @@
 </template>
 <script>
 // import BuscadorOperadors from './BuscadorOperadors.vue'
-import FormUsuario from './operadors/form.vue'
+import FormUsuario from './form.vue'
 
 import { markRaw } from 'vue'
 export default {
