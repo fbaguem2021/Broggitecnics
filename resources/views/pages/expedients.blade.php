@@ -1,7 +1,6 @@
 @extends('layout.base')
 
 @section('content')
-
     <expedients-main></expedients-main>
 
     <!-- Button trigger modal -->

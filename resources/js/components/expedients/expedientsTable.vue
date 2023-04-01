@@ -41,7 +41,8 @@
 </template>
 <script>
 import axios from 'axios'
-import moment from 'moment'
+import moment from 'moment';
+
 export default {
   props: {
     estats: {
@@ -130,6 +131,10 @@ export default {
     elapsedTime (dateTime) {
       const now = moment();
       const DATETIME = moment(dateTime);
+      console.log("now:");
+      console.log(now);
+      console.log("touched:");
+      console.log(DATETIME);
 
       const timePassed = {
         days: now.diff(DATETIME, 'days'),
@@ -137,7 +142,8 @@ export default {
         minutes: now.diff(DATETIME, 'minutes') % 60,
         seconds: now.diff(DATETIME, 'seconds') % 60
       };
-
+      console.log("timepassed");
+      console.log(timePassed);
       let timePassedString = '';
       if (timePassed.days > 0) {
         timePassedString = `${timePassed.days}d`;
