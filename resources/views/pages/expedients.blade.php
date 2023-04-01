@@ -1,7 +1,8 @@
 @extends('layout.base')
 
 @section('content')
-    <expedients></expedients>
+
+    <expedients-main></expedients-main>
 
     <!-- Button trigger modal -->
 
@@ -30,17 +31,16 @@
 @endsection
 
 @section('scripts')
-
+@vite('node_modules/bootstrap/dist/js/bootstrap.js')
   {{-- NOW LISTENS TO A VARIABLE IN THE GOOD RUN SHOULD LISTEN TO FLASH SESSION --}}
     @if($reopenModal)
-    
-      {{--   <script>
-             document.addEventListener("DOMContentLoaded", function() {
+          <script>
+             /* document.addEventListener("DOMContentLoaded", function() {
                 var myModal = document.getElementById("exampleModal");
                 var myModalInstance = new bootstrap.Modal(myModal);
                 myModalInstance.show();
-            });
-        </script> --}}
+            }); */
+        </script>
     @endif
   
 @endsection

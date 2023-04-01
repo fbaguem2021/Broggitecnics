@@ -60,7 +60,13 @@ class ExpedientController extends Controller
     public function show($id)
     {
         request()->request->add([ 'include_cartes' => true]);
-        return new ExpedientResource(Expedient::find($id));
+        $expedient = Expedient::select('expedients.*', DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
+                        ->leftJoin('cartes_trucades', 'cartes_trucades.expedients_id', '=', 'expedients.id')
+                        ->where('expedients.id', $id)
+                        ->groupBy('expedients.id')
+                        ->first();
+                
+        return new ExpedientResource($expedient);
     }
 
     /**

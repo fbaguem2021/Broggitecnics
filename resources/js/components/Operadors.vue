@@ -4,25 +4,15 @@
             <div class="card-body">
                 <!-- <BuscadorOperadors/> -->
                 <form name="formbuscar" @submit.prevent="getData(current_page)">
-                    <div class="row mx-1 p-0 rounded border border-dark bg-dark"
-                    name="filtros">
+                    <div class="row mx-1 p-0 rounded border border-dark bg-dark" name="filtros">
                         <div class="col-4 p-0 pe-1">
-                            <select id="filtro" name="filtro"
-                                class="form-select"
-                                aria-label="Filtro"
-                                v-model="filtrado">
+                            <select id="filtro" name="filtro" class="form-select" aria-label="Filtro" v-model="filtrado">
                                 <option disabled selected value="">Escoja un filtro</option>
                                 <option v-for="filtro in filtros" :value="filtro.value">{{ filtro.label }}</option>
                             </select>
                         </div>
-                        <input
-                            type="text"
-                            class="col-7 form-input"
-                            v-model="buscado"
-                            :required="selectHasValue">
-                        <button
-                            type="submit"
-                            class="col-1 btn btn-transparent text-white">
+                        <input type="text" class="col-7 form-input" v-model="buscado" :required="selectHasValue">
+                        <button type="submit" class="col-1 btn btn-transparent text-white">
                             <i class="bi bi-search"></i>
                         </button>
 
@@ -33,18 +23,10 @@
                         <thead>
                             <tr class="active">
                                 <!-- <th scope="col">ID</th> -->
-                                <th scope="col"
-                                    class="col-3"
-                                    >UserName</th>
-                                <th scope="col"
-                                    class="col-3"
-                                    >Nombre</th>
-                                <th scope="col"
-                                    class="col-3"
-                                    >Apellidos</th>
-                                <th scope="col"
-                                    class="col-3"
-                                    >Estado</th>
+                                <th scope="col" class="col-3">UserName</th>
+                                <th scope="col" class="col-3">Nombre</th>
+                                <th scope="col" class="col-3">Apellidos</th>
+                                <th scope="col" class="col-3">Estado</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -54,8 +36,8 @@
                                 <td>{{ usuari.username }}</td>
                                 <td>{{ `${usuari.nom} ${usuari.cognoms}` }}</td>
                                 <td>{{ usuari.cognoms }}</td>
-                                <td>{{  }}</td>
-                                <td>{{  }}</td>
+                                <td>{{ }}</td>
+                                <td>{{ }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -71,8 +53,8 @@
                             <li class="page-item">
                                 <a class="page-link">
                                     <span><span aria-hidden="true">
-                                        {{ current_page }}
-                                    </span></span>
+                                            {{ current_page }}
+                                        </span></span>
 
                                 </a>
                             </li>
@@ -159,10 +141,10 @@ export default {
     computed: {
         filtros() {
             return [
-                { 'value': '',      'label': 'Ninguno' },
-                { 'value': 'username',  'label': 'Nombre de usuario', },
-                { 'value': 'nom',       'label': 'Nombre' },
-                { 'value': 'cognoms',   'label': 'Apellidos' }
+                { 'value': '', 'label': 'Ninguno' },
+                { 'value': 'username', 'label': 'Nombre de usuario', },
+                { 'value': 'nom', 'label': 'Nombre' },
+                { 'value': 'cognoms', 'label': 'Apellidos' }
             ]
         },
         selectHasValue() {
@@ -183,10 +165,14 @@ export default {
     width: 75%;
 } */
 .page-link {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
 }
+
 .page-link-btn {
     cursor: pointer;
 }

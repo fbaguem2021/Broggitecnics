@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\ExpedientController;
 use App\Http\Controllers\ExpedientsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -39,7 +38,7 @@ Route::get('/operadors', function () {
 });
 
 Route::get('/expedients', [ExpedientsController::class, 'index']);
-
+Route::get('/expedient/{id}', [ExpedientsController::class, 'show']);
 
 
 Route::get('bootstrap', function () {

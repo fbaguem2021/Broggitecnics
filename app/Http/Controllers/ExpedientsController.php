@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Expedient;
+use Illuminate\Routing\Controller;
+use App\Http\Resources\ExpedientResource;
 
 class ExpedientsController extends Controller
 {
@@ -10,5 +12,13 @@ class ExpedientsController extends Controller
     {
         $reopenModal = true;
         return view('pages.expedients', compact('reopenModal'));
+    }
+
+    public function show($id) {
+        request()->request->add([ 'include_cartes' => true]);
+
+        $expedient = Expedient::find($id);
+
+        return view('pages.showExpedient', compact('expedient'));
     }
 }

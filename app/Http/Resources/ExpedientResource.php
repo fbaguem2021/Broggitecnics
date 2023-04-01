@@ -18,7 +18,6 @@ class ExpedientResource extends JsonResource {
     {
         $include_cartes = $request->get('include_cartes');
 
-
         $response = [
             'id' => $this->id,
             'codi_expedient' => $this->codi,
@@ -34,10 +33,6 @@ class ExpedientResource extends JsonResource {
         }
 
         return $response;
-    }
-    public function formatDate($dateString){
-        $date = new DateTime($dateString);
-        return $date->format('H:i d-m');
     }
 
 }

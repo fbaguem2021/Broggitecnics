@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Usuari;
+use App\Models\Agencies;
 use App\Models\Incident;
 use App\Models\Municipi;
 use App\Models\Expedient;
@@ -51,5 +52,11 @@ class CartaTrucada extends Model
     public function usuari()
     {
         return $this->belongsTo(Usuari::class, 'usuaris_id');
+    }
+
+    public function agencies()
+    {
+        return $this->belongsToMany(Agencies::class, 'cartes_trucades_has_agencies', 'cartes_trucades_id', 'agencies_id')
+            ->withPivot('estat_agencies_id');
     }
 }

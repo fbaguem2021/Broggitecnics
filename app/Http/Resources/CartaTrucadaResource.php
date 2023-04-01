@@ -24,7 +24,7 @@ class CartaTrucadaResource extends JsonResource
         [
             'id' => $this->id,
             'codi_trucada' => $this->codi_trucada,
-            'data_hora_trucada' => [
+            'data_hora' => [
                'data' => $date,
                'hora' => $time
             ],
@@ -57,6 +57,7 @@ class CartaTrucadaResource extends JsonResource
                 'estat_expedient' => $this->expedient->estatExpedient->estat
             ],
             'nota_comuna' => $this->nota_comuna,
+            'agencies' => AgenciaResource::collection($this->agencies),
             'operador' => [
                 'nom' => $this->usuari->nom,
                 'cognom' => $this->usuari->cognoms
