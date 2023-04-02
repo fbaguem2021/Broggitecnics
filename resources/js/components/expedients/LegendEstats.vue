@@ -44,11 +44,11 @@ export default {
 </script>
 <style lang="css">
 .block {
-    width: 200px;
+    width: 100%;
     height: fit-content;
     margin: 0 10px;
-    background-color: #F8F8F8;
     border-radius: 4px;
+    box-shadow: 0 0 10px 4px rgb(0 0 0 / 7%);
 }
 
 .block-container {
@@ -60,6 +60,7 @@ export default {
 }
 
 .block-container .title {
+    padding-left: 7px;
     font-size: 16px;
 }
 

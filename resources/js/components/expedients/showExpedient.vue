@@ -1,7 +1,6 @@
 <template lang="">
     <div>
         <p v-if="s">Selecciona un expedient</p>
-        <p v-else>Expedient id: {{expedient.id}}</p>
         <div class='container'>
           <h4>Cartes de trucada</h4>
           <table class="table table-hover text-center">

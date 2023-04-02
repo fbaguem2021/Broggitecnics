@@ -22,7 +22,7 @@
                         class="col-7 form-input">
                     <button
                         type="submit"
-                        class="col-1 btn btn-dark bg-dark text-white"
+                        class="col-1 btn btn-light text-dark"
                         @click="submit">
                         <i class="bi bi-search"></i>
                     </button>
@@ -38,17 +38,17 @@
                 </li>
                 <li v-show="showExpedientCodi" class="nav-item" role="presentation">
                     <button class="nav-link" id="show-expedient-tab" ref="expedientTab" data-bs-toggle="tab" data-bs-target="#show-expedient-container" type="button" role="tab" aria-selected="false" tabindex="-1">
-                        EXPEDIENT #{{showExpedientCodi}}
+                        #{{showExpedientCodi}}
                         <span id="closeTab" @click="closeTab"><i class="bi bi-x"></i></span>
                     </button>
 
                 </li>
             </ul>
             <div class="tab-content" id="tabContent">
-                <div class="tab-pane fade show active" id="all-expedients-container" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                <div class="tab-pane show active" id="all-expedients-container" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
                     <expedients-table :estats="estats" :filtres="filtres" @change-tab="switchTab"></expedients-table>
                 </div>
-                <div class="tab-pane fade" id="show-expedient-container" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                <div class="tab-pane" id="show-expedient-container" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                     <show-expedient ref="showExpedientComponent"></show-expedient>
                 </div>
             </div>
@@ -146,23 +146,21 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #cbcbcb;
-    margin: 20px auto;
-    padding: 14px 2px;
-    width: fit-content;
+    width: 100%;
+    margin: 40px 0;
     border-radius: 10px;
 }
 
 #legend {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    width: fit-content;
+    width: 100%;
 }
 
 .search-box {
     width: 600px;
-    margin-top: 16px;
+    margin-top: 40px;
 }
 
 .search-box * {
@@ -179,17 +177,14 @@ export default {
 }
 
 .search-box .form-input,
-.search-box .form-select {
-    border: 1px solid black;
+.search-box .form-select, .search-box button {
+    border: 1px solid rgb(0, 0, 0, 0.08);
     background-color: #fff;
 }
 
 .search-box button {
-    border-radius: 0 5px 5px 0;
-}
 
-.table-container {
-    margin-top: 60px;
+    border-radius: 0 5px 5px 0;
 }
 
 .table-container .nav-item {
@@ -203,30 +198,40 @@ export default {
 #tableSelector {
     border-bottom: none;
 }
-#tableSelector .active, #tabContent .active {
-    background-color: #e6e4e4;
-}
 
 .table-container #tabContent {
     height: 450px;
 }
 
 #all-expedients-container {
+    padding-top: 16px;
     padding-right: 30px;
 }
 
-#all-expedients-container, #show-expedient-container{
+#all-expedients-tab, #all-expedients-container {
+    background-color: #e6e4e4;
+}
 
+#show-expedient-tab, #show-expedient-container {
+    background-color: #f3f3f3
+}
+
+
+#all-expedients-container, #show-expedient-container{
     height: 100%;
 }
 
 #all-expedients-tab, #show-expedient-tab {
     position: relative;
     display: flex;
-    height: 40px;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
+    height: 50px;
+    align-items: start;
+    padding-left: 42px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: black;
+    justify-content: start;
+    border-bottom: 2px solid rgba(0, 0, 0, .05);
 }
 #closeTab i::before {
     font-size: 30px;
