@@ -166,7 +166,6 @@ export default {
 }
 
 .search-box * {
-    height: 100% !important;
     min-height: 36px;
 }
 
@@ -211,7 +210,13 @@ export default {
 .table-container #tabContent {
     height: 450px;
 }
+
+#all-expedients-container {
+    padding-right: 30px;
+}
+
 #all-expedients-container, #show-expedient-container{
+
     height: 100%;
 }
 

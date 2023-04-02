@@ -31,7 +31,7 @@
                         </option>
                     </select>
                 </td>
-                <td style="width: 40px; padding: 0">
+                <td>
                     <!-- <i class="bi bi-folder"></i> -->
                     <i class="bi bi-folder2" @click="changeTab(exp.id, exp.codi_expedient)"></i>
                 </td>
@@ -58,7 +58,7 @@ export default {
     return {
       expedients: [],
       orderByColumn: 'updated_at',
-      orderDir: 'asc'
+      orderDir: 'desc'
     }
   },
   methods: {
@@ -154,7 +154,7 @@ export default {
         if (timePassed.minutes > 0) {
           timePassedString += `${timePassed.minutes}m`;
         }
-        if (timePassed.minutes < 1 && timePassed.seconds > 0) {
+        if (timePassed.minutes < 1) {
           timePassedString = '< 1m';
         }
       }
@@ -162,77 +162,60 @@ export default {
     }
   },
   mounted () {
-    const self = this;
-    axios
-      .get('expedients/all')
-      .then(response => {
-        console.log(response);
-        self.expedients = response.data.data;
-        self.expedientsByEstat();
-      })
-      .catch((error) => { });
+    this.submit(true)
   }
 }
 </script>
 
 <style scoped>
-        .table-container {
-        padding: 0 80px;
-        text-align: center;
-    }
 
-    .table-container {
-        padding: 0 40px;
-        margin-top: 20px;
-        flex-grow: 1;
-    }
     .table tbody tr td:first-child {
-    text-align: end;
-    padding-right: 10px;
+      text-align: end;
+      padding-right: 10px;
     }
 
     .triangle {
-        display: inline-flex;
-        align-items: center;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 6px 6px 0 6px;
-        border-color: #000 transparent transparent transparent;
-        margin-left: 6px;
-        transform: rotate(0deg);
+      display: inline-flex;
+      align-items: center;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 6px 6px 0 6px;
+      border-color: #000 transparent transparent transparent;
+      margin-left: 6px;
+      transform: rotate(0deg);
     }
 
     .triangle:hover {
-        cursor: pointer;
+      cursor: pointer;
     }
 
     .triangle.rotate {
-        transform: rotate(180deg);
+      transform: rotate(180deg);
     }
 
     .bi-folder {
-        font-size: 25px;
+      font-size: 25px;
     }
 
     .bi-folder2::before {
-        font-size: 25px;
-        transform: scale(1);
+      font-size: 25px;
+      transform: scale(1);
     }
 
     .bi-folder2:hover::before {
-        content: "\F3D8";
-        cursor: pointer;
-        transform: scale(1.08);
+      content: "\F3D8";
+      cursor: pointer;
+      transform: scale(1.08);
     }
 
     .bi-folder:hover::before {
-        content: "\F3D5";
-        cursor: pointer;
+      content: "\F3D5";
+      cursor: pointer;
     }
 
     select {
-        border-radius: 4px;
-        padding: 2px 0 2px 2px;
+      border-radius: 4px;
+      padding: 2px 0 2px 2px;
     }
 </style>

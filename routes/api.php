@@ -29,6 +29,6 @@ Route::get('expedients/{filter}/{value?}/{dir?}', [ExpedientController::class, '
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
 Route::put('expedient/{id}', [ExpedientController::class, 'update']);
 
-Route::apiResource('/cartesTrucada', CartaTrucadaController::class);
+Route::apiResource('/cartesTrucades', CartaTrucadaController::class);
 
 Route::apiResource('/estatExpedient', EstatExpedientController::class);

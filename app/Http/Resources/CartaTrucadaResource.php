@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Agencies;
 use App\Models\Interlocutor;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -57,7 +58,9 @@ class CartaTrucadaResource extends JsonResource
                 'estat_expedient' => $this->expedient->estatExpedient->estat
             ],
             'nota_comuna' => $this->nota_comuna,
-            'agencies' => AgenciaResource::collection($this->agencies),
+            'agencies' => collect($this->cartaHasAgencies)->map(function ($agencia) {
+                return new AgenciaResource(Agencies::find($agencia['agencies_id']));
+            }),
             'operador' => [
                 'nom' => $this->usuari->nom,
                 'cognom' => $this->usuari->cognoms

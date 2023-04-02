@@ -11,6 +11,7 @@ use App\Models\Provincia;
 use App\Models\Interlocutor;
 use App\Models\TipusLocalitzacio;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class CartaTrucada extends Model
@@ -54,9 +55,13 @@ class CartaTrucada extends Model
         return $this->belongsTo(Usuari::class, 'usuaris_id');
     }
 
-    public function agencies()
+    /**
+     * Get all of the cartaHasAgencies for the CartaTrucada
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cartaHasAgencies(): HasMany
     {
-        return $this->belongsToMany(Agencies::class, 'cartes_trucades_has_agencies', 'cartes_trucades_id', 'agencies_id')
-            ->withPivot('estat_agencies_id');
+        return $this->hasMany(CartaTrucadaHasAgencies::class, 'cartes_trucades_id');
     }
 }

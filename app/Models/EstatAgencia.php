@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Agencies;
-use App\Models\CartaTrucada;
+use App\Models\CartaTrucadaHasAgencies;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class EstatAgencia extends Model
@@ -14,15 +14,14 @@ class EstatAgencia extends Model
     protected $table = 'estat_agencies';
     public $timestamps = false;
 
-    public function agencies()
+    /**
+     * Get all of the CartesHasAgencies for the EstatAgencia
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function CartesHasAgencies(): HasMany
     {
-        return $this->hasMany(Agencies::class);
+        return $this->hasMany(CartaTrucadaHasAgencies::class, 'estat_agencies_id');
     }
-
-    public function cartesTrucades()
-    {
-        return $this->hasManyThrough(CartaTrucada::class, Agencies::class);
-    }
-
 
 }

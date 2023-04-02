@@ -24,7 +24,7 @@ class AgenciaResource extends JsonResource
                 'carrer' => $this->carrer,
                 'codi_postal' => $this->codi_postal,
             ],
-            'estat' => $this->pivot
+            'estat' => $this->cartaHasAgencies[0]->estatAgencia
         ];
     }
 }

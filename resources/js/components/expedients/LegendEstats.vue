@@ -2,11 +2,11 @@
     <div v-for="(estat, index) in estatsUppercase()" :key="index" class="block">
         <div class="block-container" @click="sendData(estat.id)">
             <div class="title">
-                {{ estat.estat }}
+                {{estat.estat}}
             </div>
             <div class="data">
                 <div class="color-container" :class="'estat-' + estat.id"></div>
-                <span class="count"><!-- {{estat.count}} -->100</span>
+                <span class="count">{{estat.count}}</span>
             </div>
         </div>
     </div>

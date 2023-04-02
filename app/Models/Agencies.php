@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Models\Municipi;
-use App\Models\CartaTrucada;
-use App\Models\EstatAgencia;
+use App\Models\CartaTrucadaHasAgencies;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Agencies extends Model
@@ -15,15 +15,14 @@ class Agencies extends Model
     protected $table = 'agencies';
     public $tiemstamps = false;
 
-    public function cartesTrucades()
+     /**
+     * Get all of the cartaHasAgencies for the Agencies
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function cartaHasAgencies(): HasMany
     {
-        return $this->belongsToMany(CartaTrucada::class, 'cartes_trucades_has_agencies', 'agencies_id', 'cartes_trucades_id')
-            ->withPivot('estat_agencies_id');
-    }
-
-    public function estatAgencies()
-    {
-        return $this->belongsTo(EstatAgencia::class);
+        return $this->hasMany(CartaTrucadaHasAgencies::class, 'agencies_id');
     }
 
     public function municipi()
