@@ -7,4 +7,4 @@ import './bootstrap';
 import { createApp } from 'vue';
 import expedients from './components/expedients/ExpedientsMain.vue';
 
-createApp(expedients).mount('expedients-main');
+createApp(expedients).mount('expedients-app');
