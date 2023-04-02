@@ -42,7 +42,6 @@ Route::get('/operadors', function () {
 });
 
 Route::get('/expedients', [ExpedientsController::class, 'index']);
-Route::get('/expedient/{id}', [ExpedientsController::class, 'show']);
 
 
 Route::get('bootstrap', function () {
