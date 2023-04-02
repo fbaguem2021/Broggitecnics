@@ -31,6 +31,10 @@ Route::middleware(['auth'])->group(function() {
         $user=Auth::user();
         return view('pages.home', compact('user'));
     })->name('home');
+    Route::get('/operadors', function() {
+        $numero = 5;
+        return view('operadors', compact('numero'));
+    })->name('operadors');
 });
 
 Route::get('/operadors', function () {
