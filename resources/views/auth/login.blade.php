@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-  <div class="container">
+  <div class="login-container">
       {{-- mensajes de error --}}
       {{-- @include('partials.mensajes') --}}
       <div class='card' id="login">

@@ -10,6 +10,10 @@ body, html{
     overflow-x: hidden;
 }
 
+body {
+    height: 100vh;
+}
+
 #wrapper{
     height: 100vh;
     display: flex;
@@ -18,9 +22,6 @@ body, html{
 
 /* NAVBAR */
 #header {
-    position: static;
-    top: 0;
-    left: 0;
     width: 100%;
     height: var(--nav-height);
     background-color: black;
@@ -86,5 +87,5 @@ body, html{
 
 /* CONTENT */
 #content {
-    flex-grow: 1;
+    height: calc(100% - var(--nav-height));
 }

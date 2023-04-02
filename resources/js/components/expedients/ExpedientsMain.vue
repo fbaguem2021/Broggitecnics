@@ -147,7 +147,7 @@ export default {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    margin: 40px 0;
+    padding: 40px 0;
     border-radius: 10px;
 }
 

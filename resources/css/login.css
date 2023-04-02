@@ -1,10 +1,13 @@
 /* ------ LOGIN ------ */
+.login-container {
+    padding-top: 10%;
+}
 
 #login, #register {
     position: relative;
     max-width: 400px;
     border-radius: 10px;
-    margin: 100px auto 0 auto;
+    margin: 0 auto;
     box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1);
 }
 
