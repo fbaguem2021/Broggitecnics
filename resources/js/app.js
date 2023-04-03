@@ -7,6 +7,8 @@ import './bootstrap';
 import { createApp } from 'vue';
 import expedients from './components/expedients/ExpedientsMain.vue';
 import operadors from './components/operadors/Main.vue'
+import carta from './components/carta/Main.vue'
 
-createApp(expedients).mount('expedients-main');
+createApp(carta).mount('carta-app');
+createApp(expedients).mount('expedients-app');
 createApp(operadors).mount('operadors');

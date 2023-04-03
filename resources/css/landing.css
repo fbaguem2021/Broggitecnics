@@ -326,22 +326,3 @@
     background-color: white;
     z-index: -1;
 }
-
-#stripes-1 {
-    position: absolute;
-    left: 0;
-    top: 20%;
-    z-index: -2;
-}
-
-#stripes-2 {
-    position: absolute;
-    right: 0;
-    bottom: 10%;
-    z-index: -2;
-}
-
-#stripes-1 svg, #stripes-2 svg {
-    width: 120%;
-    height: auto;
-}

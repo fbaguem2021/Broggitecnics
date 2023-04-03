@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CartaTrucadaController;
 use App\Http\Controllers\ExpedientsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,8 @@ Route::middleware(['auth'])->group(function() {
         return view('operadors', compact('numero'));
     })->name('operadors');
 });
+
+Route::get('/carta', [CartaTrucadaController::class, 'index']);
 
 Route::get('/operadors', function () {
     return view('operadors');
