@@ -1,16 +1,18 @@
 import './bootstrap';
-
 import * as bootstrap from 'bootstrap';
 import { createApp } from 'vue';
 import 'mapbox-gl/dist/mapbox-gl.css';
-
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
-
 import agenciasPrimarias from './components/AgenciasPrimarias.vue'
-createApp(agenciasPrimarias).mount('#agenciasPrimarias')
-
+import expedients from './components/expedients/ExpedientsMain.vue';
+import operadors from './components/operadors/Main.vue'
+import carta from './components/carta/Main.vue'
 import mapa from './components/Mapa.vue'
-createApp(mapa).mount('#mapa')
-
 import mapaApp from './components/MapApp.vue'
+
+createApp(agenciasPrimarias).mount('#agenciasPrimarias')
+createApp(mapa).mount('#mapa')
 createApp(mapaApp).mount('#mapaApp')
+createApp(carta).mount('carta-app');
+createApp(expedients).mount('expedients-app');
+createApp(operadors).mount('operadors');
