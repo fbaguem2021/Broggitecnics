@@ -14,6 +14,11 @@ class AgenciaResource extends JsonResource
      */
     public function toArray($request)
     {
+
+        return parent::toArray($request);
+        /*
+        
+        CODIGO GUILLEM
         return [
             'id' => $this->id,
             'nom' => $this->nom,
@@ -26,5 +31,6 @@ class AgenciaResource extends JsonResource
             ],
             'estat' => $this->cartaHasAgencies[0]->estatAgencia
         ];
+        */
     }
 }
