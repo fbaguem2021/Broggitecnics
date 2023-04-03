@@ -18,7 +18,7 @@
                 <td>ins</td>
                 <td>{{exp.cartes_count}}</td>
                 <td>{{elapsedTime(exp.modificat)}}</td>
-                <td>{{elapsedTime(exp.creat)}}</td>
+                <td>{{createdAt(exp.creat)}}</td>
                 <td>
                     <select
                     :class="'estat-'+exp.estat_expedient_id"
@@ -131,10 +131,6 @@ export default {
     elapsedTime (dateTime) {
       const now = moment();
       const DATETIME = moment(dateTime);
-      console.log("now:");
-      console.log(now);
-      console.log("touched:");
-      console.log(DATETIME);
 
       const timePassed = {
         days: now.diff(DATETIME, 'days'),
@@ -142,25 +138,31 @@ export default {
         minutes: now.diff(DATETIME, 'minutes') % 60,
         seconds: now.diff(DATETIME, 'seconds') % 60
       };
-      console.log("timepassed");
-      console.log(timePassed);
+
       let timePassedString = '';
       if (timePassed.days > 0) {
         timePassedString = `${timePassed.days}d`;
       } else {
-        if (timePassed.hours > 0) {
+        if (timePassed.hours > 0 && timePassed.hours <= 6) {
           timePassedString = `${timePassed.hours}h `;
-        }
-        if (timePassed.minutes > 0) {
+        } else {
+          if (timePassed.minutes > 0) {
           timePassedString += `${timePassed.minutes}m`;
+          }
+          if (timePassed.minutes < 1) {
+            timePassedString = '< 1m';
+          }
         }
-        if (timePassed.minutes < 1) {
-          timePassedString = '< 1m';
-        }
+        
       }
       return timePassedString;
+    },
+    createdAt(dateTime) {
+      const formattedDateTime = moment(dateTime).format('DD-MM-YY');
+      return formattedDateTime;
     }
   },
+
   mounted () {
     this.submit(true)
   }

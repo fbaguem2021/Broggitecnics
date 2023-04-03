@@ -36,7 +36,7 @@ export default {
       return upperCaseStatus;
     },
     sendData (estatID) {
-      this.$emit('estat', estatID);
+      this.$emit('orderByEstat', estatID);
     }
   }
 }
@@ -49,6 +49,11 @@ export default {
     margin: 0 10px;
     border-radius: 4px;
     box-shadow: 0 0 10px 4px rgb(0 0 0 / 7%);
+    transform: scale(1);
+    transition: transform .1s ease-in-out;
+}
+.block:hover {
+    transform: scale(1.02);
 }
 
 .block-container {

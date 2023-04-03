@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header">
             <div id="legend">
-                <legendStatus  :estats="estats"></legendStatus>
+                <legendStatus  :estats="estats" @orderByEstat="handleEstat"></legendStatus>
             </div>
             <div class="search-box">
                 <div class="row p-0 g-0">
