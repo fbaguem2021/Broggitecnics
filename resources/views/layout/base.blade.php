@@ -4,14 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    @vite(['resources/css/app.css', 'resources/scss/app.scss'])
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.13.0/mapbox-gl.css' rel='stylesheet' />
+    @yield('head')
+    @vite(['resources/css/app.css', 'resources/css/app.scss', 'resources/js/app.js'])
     <title>Broggi112</title>
+    <link
+  href="https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.0/mapbox-gl.css"
+  rel="stylesheet"
+/>
 </head>
 
 <body>
     <div id="wrapper">
         <div id="header">
-            <div class="header-inner">
+            <div class="header-inner" style="height: 50px">
                 <a href="" id="logo" alt="Brogi112 - home">
                     <svg x="0px" y="0px" viewBox="0 0 50 50" fill="none">
                         <g clip-path="url(#clip0_177_786)">
