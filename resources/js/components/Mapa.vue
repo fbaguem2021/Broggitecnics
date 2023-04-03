@@ -79,13 +79,15 @@ export default {
     methods: {
         //Se obtienen de la BBDD la info de las agencias seleccionadas por tipo
         obtenerAgencias(arrayId) {
+            
             if (arrayId.length > 1) {
                 arrayId.forEach(id => {
                     axios
                         .get('/Broggitecnics/public/api/agencies/' + id)
                         .then(response => {
                             const data = this.localizaciones
-                            response.data.data.forEach(element => {
+                            
+                            response.data.forEach(element => {
                                 data.push(
                                     element
                                 )
@@ -101,7 +103,9 @@ export default {
                     .get('/Broggitecnics/public/api/agencies/' + arrayId)
                     .then(response => {
                         const data = this.localizaciones
-                        response.data.data.forEach(element => {
+                        console.log('RESPONSE PRUEBA JSDJJSDJSFJJDS')
+                            console.log(response)
+                        response.data.forEach(element => {
                             data.push(
                                 element
                             )
