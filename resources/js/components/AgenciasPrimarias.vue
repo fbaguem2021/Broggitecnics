@@ -46,7 +46,7 @@
 
     <!-- modal full screen mapa -->
     <div class="modal" tabindex="-1" id="mapaModal">
-        <div class="modal-dialog modal-fullscreen">
+        <div class="modal-fullscreen">
             <div class="modal-content">
                 <div class="modal-body" id="bigMap" />
                 <div class="modal-footer">
