@@ -94,6 +94,8 @@ export default {
   }
 
   #form-main {
+    display: flex;
+    flex-direction: column;
     height: 56%;
   }
 

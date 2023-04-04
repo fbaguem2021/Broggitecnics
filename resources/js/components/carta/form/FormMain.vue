@@ -56,7 +56,11 @@ export default {
         color: black;
         height: 104%;
     }
+    .tab-content {
+        flex-grow: 1;
+    }
     .tab-pane {
+        height: 100%;
         padding: 40px;
     }
 </style>
