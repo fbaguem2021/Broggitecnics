@@ -1,7 +1,7 @@
 @extends('layout.base')
 
 @section('style')
-    @vite('resources/css/login.css')
+    @vite('resources/css/landing.css')
 @endsection
 
 @section('content')

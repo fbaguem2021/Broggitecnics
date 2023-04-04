@@ -87,6 +87,7 @@ body {
 /* CONTENT */
 #content {
     height: calc(100% - var(--nav-height));
+    width: 100%;
 }
 
 #stripes-1 {

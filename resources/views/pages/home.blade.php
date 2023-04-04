@@ -1,7 +1,7 @@
 @extends('layout.base')
 
 @section('style')
-    @vite(['resources/css/landing.css', 'resources/js/menu.js'])
+    @vite('resources/css/menus.css')
 @endsection
 
 @section('content')
@@ -38,4 +38,8 @@
             <path d="M0 60H200V80H0V60Z" fill="#12C7E2" />
         </svg>
     </div>
+@endsection
+
+@section('scripts')
+    @vite('resources/js/menu.js')
 @endsection
