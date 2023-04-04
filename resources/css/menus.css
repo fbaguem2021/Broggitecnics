@@ -5,7 +5,8 @@
 
 .menu-container {
     position: relative;
-    margin: 0 auto;
+    width: 90%;
+    margin: 0 5%;
 }
 
 .menu-bg {
@@ -22,8 +23,8 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    grid-column-gap: 20px;
-    grid-row-gap: 20px;
+    grid-column-gap: 2%;
+    grid-row-gap: 4%;
     height: 85%;
 }
 
@@ -31,15 +32,15 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    grid-column-gap: 20px;
-    grid-row-gap: 20px;
+    grid-column-gap: 2%;
+    grid-row-gap: 4%;
     height: 85%;
 }
 
 .block-lt, .block-lb, .block-ltb {
     height: 100%;
     background-color: rgb(226, 170, 18, .14);
-    border: 2.5px SOLID #e2aa12;
+    border: 4px SOLID #e2aa12;
     border-radius: 10px;
 }
 
@@ -49,7 +50,7 @@
     height: 100%;
     grid-area: 1 / 3 / 2 / 4;
     background-color: rgba(225, 18, 122, .14);
-    border: 2.5px SOLID #E1127A;
+    border: 4px SOLID #E1127A;
     border-radius: 10px;
 }
 
@@ -59,7 +60,7 @@
     height: 100%;
     grid-area: 2 / 3 / 3 / 4;
     background-color: rgba(18, 199, 226, .14);
-    border: 2.5px SOLID #12C7E2;
+    border: 4px SOLID #12C7E2;
     border-radius: 10px;
     align-self: end;
 }
