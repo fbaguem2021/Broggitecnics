@@ -1,7 +1,5 @@
-
-
-<div class="container menu" id="menu-operator">
-    <div class="container block-ltb">
+<div class="menu-container" id="menu-operator">
+    <div class="block-ltb">
         <div id="info-app" class="expanded">
             <div class="card">
                 <div class="card-body">
@@ -27,7 +25,7 @@
         </div>
     </div>
 
-    <div class="container block-rt" id="sandbox">
+    <div class="block-rt" id="sandbox">
             <h3 class="title mt-2 mt-md-5 fw-bold text-center">Sandbox</h3>
             <div class="body">
                 <p>El sandbox es un espai pensat per familiaritzar-se amb la la funcionalitat de la carta de trucada.</p>
@@ -37,7 +35,7 @@
         
     </div>
 
-    <div class="container block-rb" id="trucada">
+    <div class="block-rb" id="trucada">
         <h3 class="title mt-2 mt-md-5 fw-bold text-center">Trucada</h3>
         <div class="body">
             <p>Incia una carta de trucada amb un número de telèfon aleatori o intrudeix-ne un.</p>

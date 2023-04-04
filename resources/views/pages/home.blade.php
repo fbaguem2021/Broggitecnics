@@ -17,9 +17,9 @@
                 @include('partials.menu.admin')
                 @break
             @default
-            <div class="container menu">
-                <div class="menu-bg"></div>
-            </div>
+                <div class="container menu">
+                    <div class="menu-bg"></div>
+                </div>
         @endswitch 
     @endif
 

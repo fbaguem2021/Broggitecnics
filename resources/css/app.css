@@ -1,4 +1,9 @@
-*{
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../fonts/Ubuntu-Regular.ttf');
+}
+
+* {
     box-sizing: border-box;
     font-family: 'Ubuntu';
 }
@@ -12,12 +17,6 @@ body, html{
 
 body {
     height: 100vh;
-}
-
-#wrapper{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
 /* NAVBAR */

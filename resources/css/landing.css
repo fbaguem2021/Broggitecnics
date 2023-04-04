@@ -43,9 +43,19 @@
 }
 
 /* MENUS */
-.menu {
+.menu-container {
     position: relative;
-    box-sizing: content-box;
+    margin: 0 auto;
+}
+
+.menu-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    z-index: -1;
 }
 
 #menu-operator, #menu-superv {
@@ -314,15 +324,3 @@
     outline: 0;
     box-shadow: 0 0 2px 0.1rem rgba(18, 199, 226, .3);
   }
-
-
-/* BG STRIPES SVGS */
-  .menu-bg {
-    position: absolute;
-    top: 0;
-    left: calc(var(--bs-gutter-x) * 0.5);
-    right: calc(var(--bs-gutter-x) * 0.5);
-    bottom: 0;
-    background-color: white;
-    z-index: -1;
-}
