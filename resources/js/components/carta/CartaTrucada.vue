@@ -22,11 +22,10 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
-      
     }
-  },
+  }
 }
 </script>
 <style scoped>
@@ -40,7 +39,6 @@ export default {
     font-size: 30px;
   }
   /* END DEV */
-
 
   #card-wrapper {
     display: flex;
@@ -62,7 +60,7 @@ export default {
     height: 94%;
     gap: 2%
   }
-  
+
   #bg {
     position: absolute;
     top: 0;
@@ -71,6 +69,7 @@ export default {
     right: 0;
     background-color: white;
     border-radius: 10px;
+    min-width: 1120px;
     z-index: -1;
   }
 
@@ -83,8 +82,17 @@ export default {
     flex-direction: column;
     gap: 4%;
     width: 58%;
+    min-width: 650px;
   }
-  
+
+  #side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 42%;
+    min-width: 450px;
+  }
+
   #form-main, #form-nota {
     border: 4px solid var(--primary);
   }
@@ -95,13 +103,6 @@ export default {
 
   #form-nota {
     height: 40%
-  }
-
-  #side {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 42%;
   }
 
   #form-main, #form-nota, #data, #map, #expedients{
