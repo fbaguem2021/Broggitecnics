@@ -3,7 +3,9 @@
     <div id="card-container">
       <div class="content">
           <div id="form">
-            <div id="form-main">FORM MAIN</div>
+            <div id="form-main">
+              <form-main></form-main>
+            </div>
             <div id="form-nota">NOTA COUMNA</div>
           </div>
           <div id="side">
@@ -21,18 +23,21 @@
   </div>
 </template>
 <script>
+import FormMain from './form/FormMain.vue';
 export default {
-  data() {
-    return {
-      
-    }
+  components: {
+    FormMain
   },
+  data () {
+    return {
+    }
+  }
 }
 </script>
 <style scoped>
 
   /* DEV delete for elements inserts */
-  #form-main, #form-nota, #data, #map, #expedients {
+  #form-nota, #data, #map, #expedients {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,7 +45,6 @@ export default {
     font-size: 30px;
   }
   /* END DEV */
-
 
   #card-wrapper {
     display: flex;
@@ -62,7 +66,7 @@ export default {
     height: 94%;
     gap: 2%
   }
-  
+
   #bg {
     position: absolute;
     top: 0;
@@ -84,7 +88,7 @@ export default {
     gap: 4%;
     width: 58%;
   }
-  
+
   #form-main, #form-nota {
     border: 4px solid var(--primary);
   }
