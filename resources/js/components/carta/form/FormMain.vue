@@ -11,14 +11,19 @@
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">HELLOU IS THERE SOMEONE IN THE AFTERLIFE?</div>
+        <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">
+            <interlocutor-form></interlocutor-form>
+        </div>
         <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">WHERE DFUQ AM I</div>
         <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">HELP THE WATER OF THE CITY GIVES ME ANXIETY</div>
     </div>
 </template>
 <script>
+import InterlocutorForm from './InterlocutorForm.vue';
 export default {
-
+  components: {
+    InterlocutorForm
+  }
 }
 </script>
 <style scoped>
@@ -50,5 +55,8 @@ export default {
         border-bottom: none;
         color: black;
         height: 104%;
+    }
+    .tab-pane {
+        padding: 40px;
     }
 </style>
