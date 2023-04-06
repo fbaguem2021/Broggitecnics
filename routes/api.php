@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\CartaFormData;
 use App\Http\Controllers\Api\CartaTrucadaController;
 use App\Http\Controllers\Api\ExpedientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UsuariController;
 use App\Http\Controllers\Api\EstatExpedientController;
+use App\Http\Controllers\Api\TipusLocController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,3 +34,7 @@ Route::put('expedient/{id}', [ExpedientController::class, 'update']);
 Route::apiResource('/cartesTrucades', CartaTrucadaController::class);
 
 Route::apiResource('/estatExpedient', EstatExpedientController::class);
+
+Route::apiResource('/tipusLoc', TipusLocController::class);
+
+Route::apiResource('/cartaData', CartaFormData::class);

@@ -1,4 +1,4 @@
-<template lang="">
+<template>
     <div class="container">
         <div class="header">
             <div id="legend">
@@ -59,14 +59,14 @@
 <script>
 import axios from 'axios';
 import legendStatus from './LegendEstats.vue';
-import expedientsTable from './ExpedientsTable.vue';
+import ExpedientsTable from './ExpedientsTable.vue';
 import showExpedient from './ShowExpedient.vue';
 import * as bootstrap from 'bootstrap';
 
 export default {
   components: {
     legendStatus,
-    expedientsTable,
+    ExpedientsTable,
     showExpedient
   },
   data () {

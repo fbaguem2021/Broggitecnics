@@ -3,10 +3,12 @@
     <div id="card-container">
       <div class="content">
           <div id="form">
-            <div id="form-main">
-              <form-main></form-main>
+            <div id="form-main" ref="formMain">
+              <form-main @get-carta-location="updateLoc" @get-map-search-string="updateSearchString"></form-main>
             </div>
-            <div id="form-nota">NOTA COUMNA</div>
+            <div id="form-nota" class="expanded" @click="expandCompress()" ref="formNota">
+              <form-nota></form-nota>
+            </div>
           </div>
           <div id="side">
             <div id="data">DATA</div>
@@ -24,12 +26,28 @@
 </template>
 <script>
 import FormMain from './form/FormMain.vue';
+import FormNota from './form/FormNota.vue';
 export default {
   components: {
-    FormMain
+    FormMain,
+    FormNota
   },
   data () {
     return {
+      
+      mapSearchString: ''
+    }
+  },
+  methods: {
+    expandCompress(target) {
+      this.$refs.formNota.classList.toggle('expanded');
+      this.$refs.formMain.classList.toggle('expanded');
+    },
+    updateLoc (locString) {
+      this.localitzacioString = locString
+    },
+    updateSearchString (mapString) {
+      this.mapSearchString = mapString
     }
   }
 }
@@ -37,7 +55,7 @@ export default {
 <style scoped>
 
   /* DEV delete for elements inserts */
-  #form-nota, #data, #map, #expedients {
+   #data, #map, #expedients {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -56,7 +74,7 @@ export default {
 
   #card-container {
     flex-grow: 1;
-    margin: 40px;
+    margin: 20px 20px 40px 20px;
     /* border: 1px solid blue */
   }
 
@@ -91,6 +109,8 @@ export default {
 
   #form-main, #form-nota {
     border: 4px solid var(--primary);
+    transition: height .4s ease-in-out;
+    overflow: hidden;
   }
 
   #form-main {
@@ -99,8 +119,17 @@ export default {
     height: 56%;
   }
 
+  #form-main.expanded {
+    height: 80%;
+  }
+
   #form-nota {
-    height: 40%
+    padding: 20px 40px;
+    height: 18%
+  }
+
+  #form-nota.expanded{
+    height: 40%;
   }
 
   #side {

@@ -13,7 +13,7 @@
                 <label for="nom" class="col-form-label">Nom</label>
             </div>
             <div class="col-auto">
-                <input type="text" id="nom" class="form-control" aria-describedby="nomInterlocutor" tabindex="2">
+                <input type="text" id="nom" class="form-control" aria-describedby="nomInterlocutor" autocomplete="off" tabindex="2">
             </div>
         </div>
         <div class="row align-items-center">
@@ -25,12 +25,14 @@
             </div>
         </div>
 
-        <div class="row align-items-center">
-            <label for="antecedentsTextarea" class="form-label">Antecedents</label>
-            <textarea class="form-control" id="antecedentsTextarea" style="height: 80px" tabindex="4"></textarea>
+        <div class="form-floating mt-2">
+            <textarea class="form-control" placeholder="Anota antecedents" id="antecedentsTextarea" 
+            :style="{ 'height': newInterlocutor? '60px' : '14vh',
+            'max-height': newInterlocutor? '10vh' : '14vh'}"></textarea>
+            <label for="antecedentsTextarea">Antecedents</label>
         </div>
 
-        <div class="form-check form-switch form-check-reverse mt-4">
+        <div v-show="newInterlocutor" class="form-check form-switch form-check-reverse mt-4">
             <label class="form-check-label" for="saveInterlocutor">Guardar interlocutor</label>
             <input class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" tabindex="5" @focusout="nextForm">
         </div>
@@ -40,7 +42,9 @@
 export default {
     data() {
         return {
-            tabIndex: 1
+            tabIndex: 1,
+            newInterlocutor: true
+
         }
     },
     methods: {
@@ -59,15 +63,22 @@ export default {
         max-width: 850px;
     }
     label {
-        font-size: 18px;
+        font-size: 16px;
         color: black;
     }
     #antecedentsTextarea {
-        max-height: 150px;
+        max-height: 14vh;
+        min-height: 60px;
     }
     .form-check-label {
         -webkit-user-select: none;
         -ms-user-select: none;
         user-select: none;
+    }
+
+    #saveInterlocutor {
+        margin-left: 18px;
+        width: 40px;
+        height: 20px;
     }
 </style>

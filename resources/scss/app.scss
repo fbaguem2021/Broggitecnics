@@ -36,5 +36,10 @@ $input-focus-border-width: 2px;
 $input-focus-box-shadow: 0 0 4px 2px rgba($success, 0.2);
 $input-focus-border-color: $success;
 
+$form-check-input-focus-border: $success;
+$form-check-input-focus-box-shadow: 0 0 4px 0px rgba($success, 0.2);
+$form-check-input-checked-bg-color: $success;
+$form-check-input-checked-border-color: $success;
+
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";

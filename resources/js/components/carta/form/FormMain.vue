@@ -12,18 +12,63 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">
-            <interlocutor-form></interlocutor-form>
+            <interlocutor-form/>
         </div>
-        <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">WHERE DFUQ AM I</div>
-        <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">HELP THE WATER OF THE CITY GIVES ME ANXIETY</div>
+        <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">
+            <localitzacio-form :localitzacioData="localitzacioData" @get-location="updateLocation" @map-serach-string="emitMapSearchString"/>
+        </div>
+        <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
+            <incident-form :incidentData="incidentData" />
+        </div>
     </div>
 </template>
 <script>
-import InterlocutorForm from './InterlocutorForm.vue';
+import InterlocutorForm from './FormMainInterlocutor.vue';
+import LocalitzacioForm from './FormMainLocalitzacio.vue';
+import IncidentForm from './FormMainIncident.vue';
+import axios from 'axios';
+
 export default {
   components: {
-    InterlocutorForm
-  }
+    InterlocutorForm,
+    LocalitzacioForm,
+    IncidentForm
+  },
+  emits: [
+    'get-carta-location',
+    'get-map-search-string'
+  ],
+  data() {
+    return {
+        interlocutor: {},
+        localitzacio: {},
+        incident: {},
+        localitzacioData: {},
+        incidentData: {}
+    }
+  },
+  computed: {
+
+  },
+  mounted() {
+    const self = this;
+        axios
+            .get('cartaData')
+            .then(response => {
+                self.localitzacioData = response.data.localitzacio
+                self.incidentData = response.data.incident
+            })
+            .catch((error) => {})
+    
+  },
+  methods: {
+    updateLocation(loc) {
+        this.$emit('get-carta-location', loc)
+    },
+    emitMapSearchString (mapString) {
+        this.$emit('get-map-search-string', mapString)
+    }
+}
 }
 </script>
 <style scoped>
@@ -42,6 +87,14 @@ export default {
         font-weight: bold;
         font-size: 1.2rem;
     }
+    @media (max-width: 1145px) {
+        .nav-item {
+            width: 130px;
+        }
+        .nav-link {
+            padding: 8px !important;
+        }
+    }
     .nav-item button {
         width: 100%;
     }
@@ -54,13 +107,13 @@ export default {
         border: 2px solid var(--primary);
         border-bottom: none;
         color: black;
-        height: 104%;
+        height: 105%;
     }
     .tab-content {
         flex-grow: 1;
     }
     .tab-pane {
         height: 100%;
-        padding: 40px;
+        padding: 20px 40px 0 40px;
     }
 </style>
