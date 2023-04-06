@@ -32,7 +32,7 @@
             <label for="antecedentsTextarea">Antecedents</label>
         </div>
 
-        <div v-show="newInterlocutor" class="form-check form-switch form-check-reverse mt-4">
+        <div v-show="newInterlocutor" class="form-check form-switch form-check-reverse mt-2">
             <label class="form-check-label" for="saveInterlocutor">Guardar interlocutor</label>
             <input class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" tabindex="5" @focusout="nextForm">
         </div>

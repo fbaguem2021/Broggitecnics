@@ -33,13 +33,13 @@
         </div>
       </div>
       <transition name="fade">
-        <div>
-          <div v-show="isCat" class="row">
+        <div v-show="isCat">
+          <div class="row">
             <div class="col-8">
               <div class="form-floating mb-3">
-                <input v-model="tipusLocInput" type="text" class="form-control" id="tipusLoc" placeholder="Tipus localització" list="localitzacionsList" @input="handleInput" autocomplete="off">
-                <datalist v-if="showTipusLoc" id="localitzacionsList">
-                  <option v-for="tipus in filteredList(tipusLocalitzacions)" :key="tipus.id" :value="tipus.nom"></option>
+                <input v-model="tipusLocInput" type="text" class="form-control" id="tipusLoc" placeholder="Tipus localització" list="localitzacionsList" @input="handleInput($event.target.value)" autocomplete="off">
+                <datalist v-if="showTipusLoc(tipusLocInput)" id="localitzacionsList">
+                  <option v-for="tipus in filteredList(tipusLocalitzacions, tipusLocInput)" :key="tipus.id" :value="tipus.nom"></option>
                 </datalist>
                 <label for="provincia">Tipus de localització</label>
               </div>
@@ -62,7 +62,6 @@
     </form>
 </template>
 <script>
-import axios from 'axios';
 import CarrerForm from './localitzacions/CarrerForm.vue';
 import CarreteraForm from './localitzacions/CarreteraForm.vue';
 import PuntSingularForm from './localitzacions/PuntSingularForm.vue';
@@ -85,9 +84,8 @@ export default {
   data() {
     return {
       isCat: true,
-      carrerString: '',
-      tipusVia: "c/",
       tipusLocInput: '',
+      tipusVia: "c/",
       cartaLocation: {
         comarca: '',
         provincia: '',
@@ -116,9 +114,6 @@ export default {
       const mapString = [this.cartaLocation.municipi, this.tipusLocInput, this.cartaLocation.descripcioLoc].filter(Boolean)
       return mapString.join(' ')
     },
-    showTipusLoc() {
-      return this.tipusLocInput.length > 0 && this.filteredList(this.tipusLocalitzacions).length > 0
-    },
     currentLocComponent() {
       switch (this.tipusLocInput.toLowerCase()) {
         case 'carrer':
@@ -133,17 +128,34 @@ export default {
     }
   },
   methods: {
-    filteredList(list) {
-      return list.filter(tipus => tipus.nom.toLowerCase().startsWith(this.tipusLocInput.toLowerCase()))
+    showTipusLoc(value) {
+      return this.tipusLocInput.length > 0 && this.filteredList(this.tipusLocalitzacions, value).length > 0
     },
+    /**
+     * Returns array of matching options between localitzacioData and input
+     */
+    filteredList(list, value) {
+      return list.filter(tipus => tipus.nom.toLowerCase().startsWith(value.toLowerCase()))
+    },
+
+    /**
+     * Sends to parent the cartaLocation object
+     * If the location is not in cat tipus location is set to Provincia
+     */
     emitLocation () {
       if (!this.isCat) {
-        this.cartaLocation.tipusLocId = 60; // if is not cat set tipus loc id to 60 = Provincia
+        this.cartaLocation.tipusLocId = 60; // if isCat = false set tipus localitzacio id to 60 = Provincia
       }
       this.$emit('get-location', this.cartaLocation)
       this.$emit('map-serach-string', this.mapSearchString)
     },
 
+    /**
+     * Updates the location description given by this child components:
+     * - CarrerForm
+     * - CarreteraForm
+     * - PuntSingularForm
+     */
     updateLocDescription (desc) {
       this.cartaLocation.descripcioLoc = desc;
     },
@@ -152,9 +164,10 @@ export default {
      * Allows ONLY to input tipus localització matching one of the options
      * If whole input matches an option sets cartaLocation.tipusLocId to the list option id
      */
-    handleInput() {
-      const matchedLetter = this.filteredList(this.tipusLocalitzacions).find(tipus => tipus.nom.toLowerCase().startsWith(this.tipusLocInput.toLowerCase()))
-      const matchedTipusLocation = this.filteredList(this.tipusLocalitzacions).find(tipus => tipus.nom.toLowerCase() === this.tipusLocInput.toLowerCase())
+    handleInput(inputValue) {
+      console.log(inputValue)
+      const matchedLetter = this.filteredList(this.tipusLocalitzacions, inputValue).find(tipus => tipus.nom.toLowerCase().startsWith(inputValue.toLowerCase()))
+      const matchedTipusLocation = this.filteredList(this.tipusLocalitzacions, inputValue).find(tipus => tipus.nom.toLowerCase() === inputValue.toLowerCase())
       
       if (!matchedLetter) {
         const previousValue = this.tipusLocInput.slice(0, -1)
@@ -165,8 +178,7 @@ export default {
     },
 
     /**
-     * Adjusts Municipi and Provincia bootstrap cols after removing Comarca transition finished
-     * due to uncheck isCat 
+     * Adjusts Municipi and Provincia bootstrap cols when Comarca leaving transition finishes due to isCat unchecked
      */
     adjustColumnSizes() {
         this.$refs.provincia.classList.toggle('col-4');
