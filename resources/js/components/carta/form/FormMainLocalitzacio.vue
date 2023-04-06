@@ -6,29 +6,34 @@
           <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" >
         </div>
       </div>
-      <div class="row">
+      <div class="row">        
+        <div class="col-4" ref="provincia">
+            <div class="form-floating mb-3">
+              <input v-model="provinciaInput.name" @input="handleInput('provinciaInput', $event, provincies)" type="text" class="form-control" id="provincia" placeholder="provincia" list="provinciesList" autocomplete="off" required>
+              <label for="provincia">Provincia</label>
+              <datalist v-if="provincies" id="provinciesList">
+                <option v-for="(provincia, index) in filteredList(provincies, provinciaInput.name) " :key="index" :value="provincia.nom"></option>
+              </datalist>
+            </div>
+        </div>
         <transition name="fade" @before-enter="adjustColumnSizes" @after-leave="adjustColumnSizes">
           <div v-show="isCat" class="col-4">
             <div class="form-floating mb-3">
-              <input v-model="cartaLocation.comarca" type="text" class="form-control" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off">
+              <input v-model="comarcaInput.name" @input="handleInput('comarcaInput', $event, comarques)" type="text" class="form-control" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off">
               <label for="comarca">Comarca</label>
               <datalist v-if="comarques" id="comarquesList">
-                <option v-for="comarca in comarques" :key="comarca.id" :value="comarca.nom"></option>
+                <option v-for="(comarca, index) in filteredList(comarques, comarcaInput.name)" :key="index" :value="comarca.nom"></option>
               </datalist>
             </div>
         </div>
         </transition>
-        
-        <div class="col-4" ref="provincia">
-            <div class="form-floating mb-3">
-              <input v-model="cartaLocation.provincia" type="text" class="form-control" id="provincia" placeholder="provincia" required>
-              <label for="provincia">Provincia</label>
-            </div>
-        </div>
         <div class="col-4" ref="municipi">
             <div class="form-floating mb-3">
-              <input v-model="cartaLocation.municipi" type="text" class="form-control" id="municipi" placeholder="municipi">
+              <input v-model="municipiInput.name" @input="handleInput('municipiInput', $event, municipis)" type="text" class="form-control" id="municipi" placeholder="municipi" list="muncipisList" autocomplete="off">
               <label for="municipi">Municipi<span v-show="!isCat" style="opacity: 0.5; font-size: 15px;"> - opcional</span></label>
+              <datalist v-if="municipis" id="muncipisList">
+                <option v-for="(municipi, index) in filteredList(municipis, municipiInput.name)" :key="index" :value="municipi.nom"></option>
+              </datalist>
             </div>
         </div>
       </div>
@@ -37,7 +42,7 @@
           <div class="row">
             <div class="col-8">
               <div class="form-floating mb-3">
-                <input v-model="tipusLocInput" type="text" class="form-control" id="tipusLoc" placeholder="Tipus localització" list="localitzacionsList" @input="handleInput($event.target.value)" autocomplete="off">
+                <input v-model="tipusLocInput" type="text" class="form-control" id="tipusLoc" placeholder="Tipus localització" list="localitzacionsList" @input="handleInput('tipusLocInput', $event, tipusLocalitzacions)" autocomplete="off">
                 <datalist v-if="showTipusLoc(tipusLocInput)" id="localitzacionsList">
                   <option v-for="tipus in filteredList(tipusLocalitzacions, tipusLocInput)" :key="tipus.id" :value="tipus.nom"></option>
                 </datalist>
@@ -84,31 +89,52 @@ export default {
   data() {
     return {
       isCat: true,
+      provinciaInput: {
+        'name': '',
+      },
+      comarcaInput: {
+        'name': '',
+        'provincia_id': ''
+      },
+      municipiInput: {
+        'name': '',
+        'comarca_id': ''
+      },
       tipusLocInput: '',
       tipusVia: "c/",
       cartaLocation: {
         comarca: '',
         provincia: '',
         municipi: '',
-        tipusLocId: null,
-        descripcioLoc: null,
-        detallLoc: null,
+        tipusLoc: '',
+        descripcioLoc: '',
+        detallLoc: '',
         altresRefs: ''
       }
     }
   },
   computed: {
-    comarques () {
-      return this.localitzacioData.comarques
-    },
     provincies () {
-      return this.localitzacioData.provincies
+
+      return this.localitzacioData.provincies ? this.localitzacioData.provincies : []
+    },
+    comarques () {
+      if (this.cartaLocation.provincia) {
+        return this.localitzacioData.comarques.filter(comarca => comarca.provincies_id === this.cartaLocation.provincia)
+
+      } else {
+        return this.localitzacioData.comarques ? this.localitzacioData.comarques : []
+      }
     },
     municipis () {
-      return this.localitzacioData.municipis
+      if (this.cartaLocation.comarca) {
+        return this.localitzacioData.municipis.filter(municipi => municipi.comarques_id == this.cartaLocation.comarca)
+      } else {
+        return this.localitzacioData.municipis ? this.localitzacioData.municipis : []
+      }
     },
     tipusLocalitzacions() {
-      return this.localitzacioData.tipusLoc
+      return this.localitzacioData.tipusLoc ? this.localitzacioData.tipusLoc : []
     },
     mapSearchString () {
       const mapString = [this.cartaLocation.municipi, this.tipusLocInput, this.cartaLocation.descripcioLoc].filter(Boolean)
@@ -128,8 +154,8 @@ export default {
     }
   },
   methods: {
-    showTipusLoc(value) {
-      return this.tipusLocInput.length > 0 && this.filteredList(this.tipusLocalitzacions, value).length > 0
+    showTipusLoc(input) {
+      return input.length >= 0 && this.filteredList(this.tipusLocalitzacions, input).length > 0
     },
     /**
      * Returns array of matching options between localitzacioData and input
@@ -144,7 +170,7 @@ export default {
      */
     emitLocation () {
       if (!this.isCat) {
-        this.cartaLocation.tipusLocId = 60; // if isCat = false set tipus localitzacio id to 60 = Provincia
+        this.cartaLocation.tipusLoc = 60; // if isCat = false set tipus localitzacio id to 60 = Provincia
       }
       this.$emit('get-location', this.cartaLocation)
       this.$emit('map-serach-string', this.mapSearchString)
@@ -164,16 +190,40 @@ export default {
      * Allows ONLY to input tipus localització matching one of the options
      * If whole input matches an option sets cartaLocation.tipusLocId to the list option id
      */
-    handleInput(inputValue) {
-      console.log(inputValue)
-      const matchedLetter = this.filteredList(this.tipusLocalitzacions, inputValue).find(tipus => tipus.nom.toLowerCase().startsWith(inputValue.toLowerCase()))
-      const matchedTipusLocation = this.filteredList(this.tipusLocalitzacions, inputValue).find(tipus => tipus.nom.toLowerCase() === inputValue.toLowerCase())
-      
-      if (!matchedLetter) {
-        const previousValue = this.tipusLocInput.slice(0, -1)
-        this.tipusLocInput = previousValue
-      } else if (matchedTipusLocation){
-        this.cartaLocation.tipusLocId = matchedTipusLocation.id
+    handleInput(inputName, event, list) {
+      const inputValue = event.target.value
+      const matchedInputLetter = this.filteredList(list, inputValue).find(tipus => tipus.nom.toLowerCase().startsWith(inputValue.toLowerCase()))
+      const matchedInputValue = this.filteredList(list, inputValue).find(tipus => tipus.nom.toLowerCase() === inputValue.toLowerCase())
+
+      if (inputValue.trim() === '') {
+        console.log("empppty!!")
+        this.cartaLocation = {
+          ...this.cartaLocation,
+          [event.target.id]: ''
+        }
+
+      }else if (!matchedInputLetter) {
+        const previousValue = this[inputName].name.slice(0, -1)
+        this[inputName].name = previousValue
+      } else if (matchedInputValue) {
+        if (event.target.id === 'comarca') {
+          const provincia = this.localitzacioData.provincies.find(provincia => provincia.id === matchedInputValue.provincies_id)
+          this.provinciaInput.name = provincia.nom
+          this.cartaLocation.provincia = provincia.id
+        }
+        if (event.target.id === 'municipi') {
+          const comarca = this.localitzacioData.comarques.find(comarca => comarca.id === matchedInputValue.comarques_id)
+          this.comarcaInput.name = comarca.nom
+          this.cartaLocation.comarca = comarca.id
+    
+          const provincia = this.localitzacioData.provincies.find(provincia => provincia.id === comarca.provincies_id)
+          this.provinciaInput.name = provincia.nom
+          this.cartaLocation.provincia = provincia.id
+        }
+        this.cartaLocation = {
+          ...this.cartaLocation,
+          [event.target.id]: matchedInputValue.id
+        }
       }
     },
 
