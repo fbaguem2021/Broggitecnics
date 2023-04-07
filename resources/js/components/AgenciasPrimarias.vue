@@ -3,9 +3,9 @@
     <div id="smallMap">
         <Teleport v-if="isMounted" :disabled="!isTeleport" :to="targetTp">
             <BaseMap v-if="targetTp == '#smallMap'" style="height:29vh; width:100%" :seleccion="seleccion" :send="confirmar"
-                @restarSend="restartConfirm" @getAgencia="getAgenciaSeleccionada" :agenciasFinales="agenciaSeleccionada" />
+                @restarSend="restartConfirm" @getAgencia="getAgenciaSeleccionada" :agenciasFinales="agenciaSeleccionada" :arraySearch="arraySearch" />
             <BaseMap v-else style="height:100%; width:100%" :seleccion="seleccion" :send="confirmar"
-                :agenciasFinales="agenciaSeleccionada" @restarSend="restartConfirm" @getAgencia="getAgenciaSeleccionada" />
+                :agenciasFinales="agenciaSeleccionada" @restarSend="restartConfirm" @getAgencia="getAgenciaSeleccionada" :arraySearch="arraySearch" />
         </Teleport>
     </div>
 
@@ -132,6 +132,7 @@ export default {
     components: {
         BaseMap
     },
+    props: ['arraySearch'],
     data() {
         return {
             seleccion: [],
@@ -152,6 +153,12 @@ export default {
     },
 
     watch: {
+        arraySearch: {
+            immediate: true,
+            handler(newVal, oldVal) {
+                this.confirmar=true
+            }
+        },
         isMapSelect: function (newVal, oldVal) {
 
             this.stringAgencias = ""
