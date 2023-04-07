@@ -51,7 +51,7 @@ export default {
         arraySearch: {
             immediate: true,
             handler(newVal, oldVal) {
-                alert('watcher direccion incidente')
+                console.log("Buscando dirección" + newVal)
                 this.direccionIncidente=newVal
              
             }

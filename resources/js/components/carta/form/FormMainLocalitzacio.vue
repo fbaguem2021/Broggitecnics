@@ -87,7 +87,7 @@ export default {
   },
   emits: [
     "get-location",
-    'map-serach-string'
+    'get-map-serach-string'
   ],
   data() {
     return {
@@ -183,9 +183,8 @@ export default {
      * If the location is not in cat tipus location is set to Provincia
      */
     emitLocation () {
- 
       this.$emit('get-location', this.cartaLocation)
-      this.$emit('map-serach-string', this.mapSearchString)
+      this.$emit('get-map-serach-string', this.mapSearchString)
     },
 
     /**

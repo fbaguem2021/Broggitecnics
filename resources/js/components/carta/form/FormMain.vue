@@ -3,8 +3,8 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="interlocutor-tab" data-bs-toggle="tab" data-bs-target="#interlocutor" type="button" role="tab" aria-controls="Interlocutor" aria-selected="true">Interlocutor</button>
         </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="localitzacio-tab" data-bs-toggle="tab" data-bs-target="#localitzacio" type="button" role="tab" aria-controls="Localitzacio" aria-selected="false">Localització</button>
+        <li class="nav-item" role="presentation" >
+            <button class="nav-link" id="localitzacio-tab" data-bs-toggle="tab" data-bs-target="#localitzacio" type="button" role="tab" aria-controls="Localitzacio" aria-selected="false" ref="localitzacioTabButton">Localització</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="incident-tab" data-bs-toggle="tab" data-bs-target="#incident" type="button" role="tab" aria-controls="Incident" aria-selected="false">Incident</button>
@@ -15,7 +15,7 @@
             <interlocutor-form/>
         </div>
         <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">
-            <localitzacio-form :localitzacioData="localitzacioData" @get-location="updateLocation" @map-serach-string="emitMapSearchString"/>
+            <localitzacio-form :localitzacioData="localitzacioData" @get-location="updateLocation" @get-map-serach-string="updateMapString"/>
         </div>
         <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
             <incident-form :incidentData="incidentData" />
@@ -44,6 +44,7 @@ export default {
         interlocutor: {},
         localitzacio: {},
         incident: {},
+        mapSearchString: '',
         localitzacioData: {},
         incidentData: {}
     }
@@ -60,14 +61,30 @@ export default {
                 self.incidentData = response.data.incident
             })
             .catch((error) => {})
+
+        const button = document.getElementById('localitzacio-tab');
+        const observer = new MutationObserver(mutation => {
+            const tab = mutation[0].target
+            if (!tab.classList.contains('active') && this.mapSearchString != '') {
+                this.$emit('get-map-search-string', this.mapSearchString)
+            }
+        });
+        observer.observe(button, { attributeFilter: ['class'] });
+    
     
   },
   methods: {
     updateLocation(loc) {
         this.$emit('get-carta-location', loc)
     },
-    emitMapSearchString (mapString) {
-        this.$emit('get-map-search-string', mapString)
+    updateMapString (string) {
+        this.mapSearchString = string;
+    },
+    emitMapSearchString () {
+        this.$emit('get-map-search-string', this.mapSearchString)
+    },
+    myfunction(){
+        console.log("NOW!")
     }
 }
 }
