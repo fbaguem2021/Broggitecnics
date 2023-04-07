@@ -22,7 +22,6 @@ class AgenciaController extends Controller
         $agencies = Agencia::all();
         // return AgenciaResource::collection($agencies);
         return AgenciaResource::collection($agencies);
-
     }
 
     /**

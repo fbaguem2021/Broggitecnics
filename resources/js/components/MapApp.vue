@@ -2,10 +2,11 @@
     <div>
       <MapaOptions>
         <template v-slot:child-component>
-          <BaseMap />
+          <BaseMap :arraySearch="arraySearch"/>
         </template>
       </MapaOptions>
     </div>
+    
   </template>
 
   <script>
@@ -17,9 +18,15 @@
     components: {
         BaseMap,
         MapaOptions
-    }
+    },
+    data() {
+        return {
+           arraySearch:"prueba" 
+        };
+    },
   }
   </script>
+  <style scoped></style>
  
   
   

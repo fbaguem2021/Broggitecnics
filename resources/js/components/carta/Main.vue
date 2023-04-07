@@ -8,7 +8,9 @@
           </div>
           <div id="side">
             <div id="data">DATA</div>
-            <div id="map">MAP</div>
+            <!-- MAPA -->
+            <div id="map"><MapApp /></div>
+
             <div id="expedients">EXPEDIENTS</div>
           </div>
           <div id="bg"></div>
@@ -21,7 +23,11 @@
   </div>
 </template>
 <script>
+import MapApp from '../MapApp.vue'
 export default {
+  components: {
+       MapApp
+    },
   data() {
     return {
       
@@ -32,7 +38,7 @@ export default {
 <style scoped>
 
   /* DEV delete for elements inserts */
-  #form-main, #form-nota, #data, #map, #expedients {
+  #form-main, #form-nota, #data, #expedients {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -117,6 +123,7 @@ export default {
   #map {
     border: 4px solid var(--secondary);
     height: 40%;
+    
   }
 
   #expedients {
@@ -148,7 +155,7 @@ export default {
     margin: 2.5% 0;
     width: 180px;
     border-radius: 5px;
-    color: var(--light);
+    color: var(--dark);
     border: none;
   }
 </style>
