@@ -16,7 +16,7 @@
           <div id="side">
             <div id="data">DATA</div>
             <!-- MAPA -->
-            <div v-show="false" id="map"><MapApp :arraySearch="mapSearchString"/></div>
+            <div id="map"><MapApp :arraySearch="mapSearchString"/></div>
             <div id="expedients">EXPEDIENTS</div>
           </div>
           <div id="bg"></div>
