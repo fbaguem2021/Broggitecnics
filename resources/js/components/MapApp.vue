@@ -1,8 +1,8 @@
 <template>
     <div>
-      <MapaOptions>
+      <MapaOptions :arraySearch="arraySearch">
         <template v-slot:child-component>
-          <BaseMap :arraySearch="arraySearch"/>
+          <BaseMap />
         </template>
       </MapaOptions>
     </div>

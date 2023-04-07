@@ -51,8 +51,9 @@ export default {
         arraySearch: {
             immediate: true,
             handler(newVal, oldVal) {
+                alert('watcher direccion incidente')
                 this.direccionIncidente=newVal
-
+             
             }
         },
         //si se elimina la selección de agencias desde el padre, se vacia el array que las contiene aquí
@@ -277,6 +278,7 @@ export default {
                                 console.error(response);
                                 reject("Invalid response");
                             } else {
+                                console.log(response)
                                 me.lat = parseFloat(response.data.features[0].center[0]);
                                 me.lang = parseFloat(response.data.features[0].center[1]);
 
