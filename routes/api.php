@@ -5,9 +5,12 @@ use App\Http\Controllers\Api\CartaTrucadaController;
 use App\Http\Controllers\Api\ExpedientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\Api\AgenciaController;
 use App\Http\Controllers\Api\UsuariController;
 use App\Http\Controllers\Api\EstatExpedientController;
 use App\Http\Controllers\Api\TipusLocController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +26,8 @@ use App\Http\Controllers\Api\TipusLocController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResource('agencies', AgenciaController::class);
 
 Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.buscar');
 Route::apiResource('usuari', UsuariController::class);
