@@ -159,7 +159,7 @@ export default {
     // },
 }
 </script>
-<style>
+<style scoped>
 /* THIS CLASS HAS TO CHANGE ALTERS ALL .CARDS */
 /* .card {
     width: 75%;
