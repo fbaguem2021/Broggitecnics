@@ -1,5 +1,5 @@
 <template>
-  <div class="form-floating mt-2">
+  <div class="form-floating">
     <textarea class="form-control" placeholder="Referencies" id="notaComunaTextarea"></textarea>
     <label for="notaComunaTextarea">Nota comuna</label>
   </div>
