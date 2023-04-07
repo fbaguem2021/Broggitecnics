@@ -22,7 +22,6 @@ class AgenciaController extends Controller
         $agencies = Agencia::all();
         // return AgenciaResource::collection($agencies);
         return AgenciaResource::collection($agencies);
-
     }
 
     /**
@@ -46,7 +45,7 @@ class AgenciaController extends Controller
     public function show($id)
     {
         $agencies = Agencia::where('AgenciesPrimaries_id', $id)->get();
-        return new AgenciaResource($agencies);
+        return AgenciaResource::collection($agencies);
     }
 
     /**
