@@ -172,8 +172,6 @@ export default {
         this.myModal = new bootstrap.Modal('#mapaModal')
         this.modalSelec = new bootstrap.Modal("#seleccionModal")
         this.isMounted = true;
-
-
     },
 
     methods: {
@@ -266,7 +264,8 @@ export default {
 #botonesMapa {
     position: absolute;
     left: 91%;
-    bottom: 53%
+    bottom: 53%;
+    z-index: 3;
 }
 
 #helMsgAmpliar {

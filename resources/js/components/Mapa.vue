@@ -40,7 +40,7 @@ export default {
 
 
             */
-            direccionIncidente: "Barcelona, Sant Fost de Campsentelles, Carrer osona 20 4a 2a",
+            direccionIncidente: "",
             incidentGeocoder: [],
             seleccionFinal: false
         };
@@ -48,6 +48,13 @@ export default {
 
     //WATCHERS
     watch: {
+        arraySearch: {
+            immediate: true,
+            handler(newVal, oldVal) {
+                this.direccionIncidente=newVal
+
+            }
+        },
         //si se elimina la selección de agencias desde el padre, se vacia el array que las contiene aquí
         agenciasFinales: {
             immediate: true,
@@ -214,7 +221,7 @@ export default {
             if (arrayId.length > 1) {
                 arrayId.forEach(id => {
                     axios
-                        .get('/Broggitecnics/public/api/agencies/' + id)
+                        .get('agencies/' + id)
                         .then(response => {
                             const data = this.localizaciones
 
@@ -231,7 +238,7 @@ export default {
                 });
             } else {
                 axios
-                    .get('/Broggitecnics/public/api/agencies/' + arrayId)
+                    .get('agencies/' + arrayId)
                     .then(response => {
                         const data = this.localizaciones
 

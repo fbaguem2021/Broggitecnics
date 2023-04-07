@@ -19,9 +19,9 @@
         BaseMap,
         MapaOptions
     },
+    props: ['arraySearch'],
     data() {
         return {
-           arraySearch:"prueba" 
         };
     },
   }
