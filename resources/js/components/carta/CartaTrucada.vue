@@ -15,7 +15,8 @@
           </div>
           <div id="side">
             <div id="data">DATA</div>
-            <div id="map">MAP</div>
+            <!-- MAPA -->
+            <div id="map"><MapApp /></div>
             <div id="expedients">EXPEDIENTS</div>
           </div>
           <div id="bg"></div>
@@ -30,10 +31,12 @@
 <script>
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
+import MapApp from '../MapApp.vue'
 export default {
   components: {
     FormMain,
-    FormNota
+    FormNota,
+    MapApp
   },
   data () {
     return {
@@ -84,7 +87,7 @@ export default {
     }
 
   /* DEV delete for elements inserts */
-   #data, #map, #expedients {
+   #data, #expedients {
     display: flex;
     justify-content: center;
     align-items: center;
