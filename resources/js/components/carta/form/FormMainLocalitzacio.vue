@@ -134,7 +134,7 @@ export default {
     },
     mapSearchString () {
       if (this.isCat) {
-        const mapString = [`${this.municipiInput},`, this.tipusLocInput, this.cartaLocation.descripcioLoc].filter(Boolean)
+        const mapString = [`${this.provinciaInput},`, `${this.municipiInput},`, this.tipusLocInput, this.cartaLocation.descripcioLoc].filter(Boolean)
         return mapString.join(' ')
       } else {
         const mapString = ['Espanya, ', this.provinciaInput, this.municipiInput].filter(Boolean)
