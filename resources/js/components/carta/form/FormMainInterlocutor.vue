@@ -1,6 +1,6 @@
 <template>
     <form id="interlocutor-form">
-        <div class="row align-items-center">
+        <!-- <div class="row align-items-center">
             <div class="col-2 input-label-container">
                 <label for="telef" class="col-form-label">Telèfon</label>
             </div>
@@ -23,7 +23,21 @@
             <div class="col-8">
                 <input type="text" id="cognom" class="form-control" aria-describedby="cognomInterlocutor" tabindex="3">
             </div>
+        </div> -->
+        
+        <div class="form-floating mb-3" id="phone-input-container">
+            <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off">
+            <label for="phone">Telèfon</label>
         </div>
+        <div class="form-floating mb-3">
+            <input v-model="name" type="text" class="form-control" id="name" placeholder="Nom" autocomplete="off">
+            <label for="name">Nom</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input v-model="surnames" type="text" class="form-control" id="surnames" placeholder="Cognoms" autocomplete="off">
+            <label for="surnames">Cognoms</label>
+        </div>
+        
 
         <div class="form-floating mt-2" id="antecedents-textArea-container">
             <textarea class="form-control" placeholder="Anota antecedents" id="antecedentsTextarea"></textarea>
@@ -41,7 +55,10 @@ export default {
     data() {
         return {
             tabIndex: 1,
-            newInterlocutor: true
+            newInterlocutor: true,
+            phone: '',
+            name: '',
+            surnames: ''
 
         }
     },
@@ -56,7 +73,6 @@ export default {
     #interlocutor-form {
         display: flex;
         flex-direction: column;
-        gap: 5%;
         height: 100%;
         max-width: 850px;
     }
@@ -67,7 +83,8 @@ export default {
     .input-label-container {
         min-width: 68px;
     }
-    #telef-input-container {
+    #phone-input-container {
+        width: 30%;
         min-width: 110px;
     }
     #antecedents-textArea-container {
