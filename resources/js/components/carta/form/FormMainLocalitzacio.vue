@@ -170,6 +170,8 @@ export default {
 
       this.municipiInput = ''
       this.cartaLocation.municipi = ''
+
+      this.cartaLocation.descripcioLoc = ''
     },
     /**
      * Returns array of matching options between localitzacioData and input
