@@ -31,7 +31,7 @@
 <script>
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
-import MapApp from '../MapApp.vue'
+import MapApp from './mapa/MapApp.vue';
 export default {
   components: {
     FormMain,
