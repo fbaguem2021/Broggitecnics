@@ -20,6 +20,7 @@
         <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
             <incident-form :incidentData="incidentData" />
         </div>
+
     </div>
 </template>
 <script>
@@ -72,6 +73,7 @@ export default {
 }
 </script>
 <style scoped>
+
     .nav-tabs {
         background-color: #DFE2E6;
         border-bottom: 2px solid var(--primary);
@@ -86,14 +88,6 @@ export default {
         text-align: center;
         font-weight: bold;
         font-size: 1.2rem;
-    }
-    @media (max-width: 1145px) {
-        .nav-item {
-            width: 130px;
-        }
-        .nav-link {
-            padding: 8px !important;
-        }
     }
     .nav-item button {
         width: 100%;
@@ -116,4 +110,21 @@ export default {
         height: 100%;
         padding: 20px 40px 0 40px;
     }
+
+
+
+    @media (max-width: 1145px) {
+        .nav-item {
+            width: 130px;
+        }
+
+    }
+    @media (max-width: 775px) {
+        .nav-link.active {
+            border-radius: 10px;
+            border-bottom: 2px solid var(--primary);;
+            padding: 8px !important;
+        }
+    }
+
 </style>

@@ -10,9 +10,7 @@ export default {
 }
 </script>
 <style scoped>
-  #notaComunaTextarea {
+  .form-floating, #notaComunaTextarea {
     height: 100%;
-    max-height: 18vh;
-    min-height: 60px;
   }
 </style>

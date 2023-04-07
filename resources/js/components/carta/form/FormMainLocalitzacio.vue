@@ -1,7 +1,7 @@
 <template>
-    <form @input.prevent="emitLocation">
+    <form @input.prevent="emitLocation" id="location-form">
       <div class="row align-items-center">
-        <div class="d-flex col-4 mb-2">
+        <div class="d-flex col-4 mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>
           <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" @click="setOutOfCat" >
         </div>
@@ -56,14 +56,17 @@
               </div>
             </div>
           </div>
-          <component :is="currentLocComponent" @update-description="updateLocDescription"></component>
+          <transition name="fade">
+            <component :is="currentLocComponent" @update-description="updateLocDescription"></component>
+          </transition>
         </div>
       </transition>
       
-      <div class="form-floating mt-2">
-          <textarea class="form-control" placeholder="Referencies" id="referenciesTextarea" style="height: 60px"></textarea>
+      <div class="form-floating" id="referencies-textArea-container">
+          <textarea class="form-control" placeholder="Referencies" id="referenciesTextarea"></textarea>
           <label for="referenciesTextarea">Altres referències</label>
       </div>
+      
     </form>
 </template>
 <script>
@@ -291,23 +294,37 @@ export default {
   },
 }
 </script>
+
 <style scoped>
 
+  #location-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-
-
+  #referencies-textArea-container {
+    flex-grow: 1;
+    margin-bottom: 20px;
+  }
 
   #referenciesTextarea {
-    min-height: 60px;
+    height: 100%;
   }
+
+  #isCat-conatiner {
+    min-width: 125px;
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
+
+
 </style>

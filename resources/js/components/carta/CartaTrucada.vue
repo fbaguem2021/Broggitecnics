@@ -3,10 +3,13 @@
     <div id="card-container">
       <div class="content">
           <div id="form">
-            <div id="form-main" ref="formMain">
+            <div id="form-main" ref="formMain" class="expanded">
               <form-main @get-carta-location="updateLoc" @get-map-search-string="updateSearchString"></form-main>
+              <transition name="fade">
+                <div v-show="notaIsExpaneded" class="blur-gradient"></div>
+              </transition>
             </div>
-            <div id="form-nota" class="expanded" @click="expandCompress()" ref="formNota">
+            <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
               <form-nota></form-nota>
             </div>
           </div>
@@ -34,14 +37,21 @@ export default {
   },
   data () {
     return {
-      
-      mapSearchString: ''
+      mapSearchString: '',
+      notaIsExpaneded: false
     }
   },
   methods: {
-    expandCompress(target) {
+    expandCompress() {
       this.$refs.formNota.classList.toggle('expanded');
       this.$refs.formMain.classList.toggle('expanded');
+      if (this.$refs.formNota.classList.contains('expanded')) {
+        console.log('note is expaneded')
+        this.notaIsExpaneded = true
+      } else {
+        console.log('note is compressed')
+        this.notaIsExpaneded = false
+      }
     },
     updateLoc (locString) {
       this.localitzacioString = locString
@@ -53,6 +63,25 @@ export default {
 }
 </script>
 <style scoped>
+  .blur-gradient {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px; /* set the height of the div */
+      background: linear-gradient(to bottom, rgba(250, 80, 80, 0) 0%, rgba(250, 80, 80, 1) 100%);
+      /* background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgb(242, 242, 242) 100%); */
+      filter: blur(1px); /* set the amount of blur */
+  }
+  .fade-enter-active,
+    .fade-leave-active {
+    transition: opacity 0.4s ease;
+    }
+
+    .fade-enter-from,
+    .fade-leave-to {
+    opacity: 0;
+    }
 
   /* DEV delete for elements inserts */
    #data, #map, #expedients {
@@ -114,6 +143,7 @@ export default {
   }
 
   #form-main {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 56%;
