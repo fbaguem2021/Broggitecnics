@@ -134,7 +134,7 @@ export default {
     },
     mapSearchString () {
       if (this.isCat) {
-        const mapString = [`${this.provinciaInput},`, `${this.municipiInput},`, this.tipusLocInput, this.cartaLocation.descripcioLoc].filter(Boolean)
+        const mapString = [this.provinciaInput, this.municipiInput, this.tipusLocInput, this.cartaLocation.descripcioLoc].filter(Boolean)
         return mapString.join(' ')
       } else {
         const mapString = ['Espanya, ', this.provinciaInput, this.municipiInput].filter(Boolean)
@@ -181,8 +181,7 @@ export default {
     },
 
     /**
-     * Sends to parent the cartaLocation object
-     * If the location is not in cat tipus location is set to Provincia
+     * Sends to parent the cartaLocation object and the map search string
      */
     emitLocation () {
       this.$emit('get-location', this.cartaLocation)
@@ -200,8 +199,8 @@ export default {
     },
 
     /**
-     * Allows ONLY to input tipus localització matching one of the options
-     * If whole input matches an option sets cartaLocation.tipusLocId to the list option id
+     * Allows ONLY to input some value of the list options
+     * If whole input matches an option sets the cartaLocation property =  matchedValue.id
      */
     handleInput(inputName, event, list) {
       if (this.isCat) {
@@ -218,8 +217,7 @@ export default {
             ...this.cartaLocation,
             [event.target.id]: ''
           }
-        }
-        if (matchedInputValue && this.isCat) {
+        }else if (matchedInputValue && this.isCat) {
             switch (event.target.id) {
               case 'provincia':
                 this.provinciaSelected(matchedInputValue)
