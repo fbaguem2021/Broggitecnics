@@ -114,7 +114,7 @@ export default {
     position: relative;
     display: flex;
     height: 94%;
-    gap: 2%
+    gap: 1%
   }
 
   #bg {
@@ -135,8 +135,15 @@ export default {
   #form {
     display: flex;
     flex-direction: column;
-    gap: 4%;
+    gap: 2%;
     width: 58%;
+  }
+
+  #side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 42%;
   }
 
   #form-main, #form-nota {
@@ -165,13 +172,6 @@ export default {
     height: 40%;
   }
 
-  #side {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 42%;
-  }
-
   #form-main, #form-nota, #data, #map, #expedients{
     border-radius: 10px;
     width: 100%;
@@ -179,17 +179,17 @@ export default {
 
   #data {
     border: 4px solid black;
-    height: 12%;
+    height: 10%;
   }
 
   #map {
     border: 4px solid var(--secondary);
-    height: 40%;
+    height: 44%;
   }
 
   #expedients {
     border: 4px solid var(--tertiary);
-    height: 40%;
+    height: 42%;
   }
 
   .buttons {

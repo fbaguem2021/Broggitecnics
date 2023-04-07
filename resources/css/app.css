@@ -108,3 +108,7 @@ body {
     width: 120%;
     height: auto;
 }
+
+#mapContainer .mapboxgl-control-container {
+    display: none !important;
+}
