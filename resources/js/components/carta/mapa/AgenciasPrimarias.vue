@@ -139,13 +139,16 @@
                     <h5 class="modal-title">Has seleccionat un tipus d'agència ja seleccionada prèviament. Vols
                         substituir-la o mantenir la teva selecció?</h5>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body d-flex justify-content-between">
+
                     <button type="button" class="btn btn-outline-danger" @click="eliminarEstaAgencia()">
                         Substitueix
                     </button>
+
                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                         Cancel·la
                     </button>
+                    
                 </div>
             </div>
         </div>
