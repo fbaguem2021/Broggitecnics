@@ -22,7 +22,7 @@
     </div>
     <div v-show="incident.instruccions">
       <div class="form-floating mb-3">
-        <textarea :value="incidentInstruccions" :style="{height: textareaHeight(incidentInstruccions)}" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" ></textarea>
+        <textarea :value="incidentInstruccions" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" ></textarea>
         <label for="incidentInstruccions">Instruccions a seguir</label>
       </div>
     </div>
@@ -148,5 +148,4 @@ export default {
     width: 40%;
     min-width: 230px;
   }
-
 </style>

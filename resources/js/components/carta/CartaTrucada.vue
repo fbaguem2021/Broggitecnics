@@ -16,7 +16,7 @@
           <div id="side">
             <div id="data">DATA</div>
             <!-- MAPA -->
-            <div id="map"><MapApp :arraySearch="mapSearchString"/></div>
+            <!-- <div id="map"><MapApp :arraySearch="mapSearchString"/></div> -->
             <div id="expedients">EXPEDIENTS</div>
           </div>
           <div id="bg"></div>
@@ -31,12 +31,12 @@
 <script>
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
-import MapApp from './mapa/MapApp.vue';
+// import MapApp from './mapa/MapApp.vue';
 export default {
   components: {
     FormMain,
     FormNota,
-    MapApp
+    // MapApp
   },
   data () {
     return {
