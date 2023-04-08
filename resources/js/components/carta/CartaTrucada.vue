@@ -216,7 +216,7 @@ export default {
     margin: 2.5% 0;
     width: 180px;
     border-radius: 5px;
-    color: var(--light);
+    color: white;
     border: none;
   }
 </style>
