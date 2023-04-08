@@ -79,7 +79,7 @@
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
                 <div class="modal-header">
-                    <div v-if="alert != ''" class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <div id="alert" v-if="alert != ''" class="alert alert-warning alert-dismissible fade show" role="alert">
                         {{ alert }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert()"></button>
                     </div>
@@ -359,8 +359,11 @@ export default {
     z-index: 3;
 }
 
-
-
 .help-message.show {
     opacity: 1;
-}</style>
+}
+#alert{
+    width:100%
+}
+
+</style>
