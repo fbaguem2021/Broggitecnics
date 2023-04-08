@@ -143,7 +143,7 @@
                     <button type="button" class="btn btn-outline-danger" @click="eliminarEstaAgencia()">
                         Substitueix
                     </button>
-                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                         Cancel·la
                     </button>
                 </div>
