@@ -1,29 +1,37 @@
 <template>
+  <!-- Mostrar alertas success -->
+  <div v-if="alertSuccess != ''" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ alertSuccess }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert()"></button>
+  </div>
+
   <div id="card-wrapper">
     <div id="card-container">
       <div class="content">
-          <div id="form">
-            <div id="form-main" ref="formMain" class="expanded">
-              <form-main @get-carta-location="updateLoc" @get-map-search-string="updateSearchString"></form-main>
-              <transition name="fade">
-                <div v-show="notaIsExpaneded" class="blur-gradient"></div>
-              </transition>
-            </div>
-            <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
-              <form-nota></form-nota>
-            </div>
+        <div id="form">
+          <div id="form-main" ref="formMain" class="expanded">
+            <form-main @get-carta-location="updateLoc" @get-map-search-string="updateSearchString"></form-main>
+            <transition name="fade">
+              <div v-show="notaIsExpaneded" class="blur-gradient"></div>
+            </transition>
           </div>
-          <div id="side">
-            <div id="data">DATA</div>
-            <!-- MAPA -->
-            <div id="map"><MapApp :arraySearch="mapSearchString"/></div>
-            <div id="expedients">EXPEDIENTS</div>
+          <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
+            <form-nota></form-nota>
           </div>
-          <div id="bg"></div>
+        </div>
+        <div id="side">
+          <div id="data">DATA</div>
+          <!-- MAPA -->
+          <div id="map">
+            <MapApp :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
+          </div> <!---->
+          <div id="expedients">EXPEDIENTS</div>
+        </div>
+        <div id="bg"></div>
       </div>
       <div class="buttons">
-          <button id="cancel">Cancelar</button>
-          <button id="submit">Finalitzar</button>
+        <button id="cancel">Cancelar</button>
+        <button id="submit">Finalitzar</button>
       </div>
     </div>
   </div>
@@ -38,13 +46,21 @@ export default {
     FormNota,
     MapApp
   },
-  data () {
+  data() {
     return {
       mapSearchString: '',
-      notaIsExpaneded: false
+      notaIsExpaneded: false,
+      alertSuccess: ""
     }
   },
   methods: {
+    añadirAlerta(alert) {
+      this.alertSuccess = alert
+    },
+    restartAlert() {
+      this.alertSuccess=""
+
+    },
     expandCompress() {
       this.$refs.formNota.classList.toggle('expanded');
       this.$refs.formMain.classList.toggle('expanded');
@@ -56,167 +72,182 @@ export default {
         this.notaIsExpaneded = false
       }
     },
-    updateLoc (locString) {
+    updateLoc(locString) {
       this.localitzacioString = locString
     },
-    updateSearchString (mapString) {
+    updateSearchString(mapString) {
       this.mapSearchString = mapString
     }
   }
 }
 </script>
 <style scoped>
-  .blur-gradient {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 40px; /* set the height of the div */
-      background: linear-gradient(to bottom, rgba(250, 80, 80, 0) 0%, rgba(250, 80, 80, 1) 100%);
-      /* background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgb(242, 242, 242) 100%); */
-      filter: blur(1px); /* set the amount of blur */
-  }
-  .fade-enter-active,
-    .fade-leave-active {
-    transition: opacity 0.4s ease;
-    }
+.blur-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  /* set the height of the div */
+  background: linear-gradient(to bottom, rgba(250, 80, 80, 0) 0%, rgba(250, 80, 80, 1) 100%);
+  /* background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgb(242, 242, 242) 100%); */
+  filter: blur(1px);
+  /* set the amount of blur */
+}
 
-    .fade-enter-from,
-    .fade-leave-to {
-    opacity: 0;
-    }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
 
-  /* DEV delete for elements inserts */
-   #data, #expedients {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: 30px;
-  }
-  /* END DEV */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
-  #card-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    /* border: 4px solid red */
-  }
+/* DEV delete for elements inserts */
+#data,
+#expedients {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 30px;
+}
 
-  #card-container {
-    flex-grow: 1;
-    margin: 20px 20px 40px 20px;
-    /* border: 1px solid blue */
-  }
+/* END DEV */
 
-  .content {
-    position: relative;
-    display: flex;
-    height: 94%;
-    gap: 1%
-  }
+#card-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  /* border: 4px solid red */
+}
 
-  #bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-color: white;
-    border-radius: 10px;
-    z-index: -1;
-  }
+#card-container {
+  flex-grow: 1;
+  margin: 20px 20px 40px 20px;
+  /* border: 1px solid blue */
+}
 
-  #form, #side {
-    height: 100%;
-  }
+.content {
+  position: relative;
+  display: flex;
+  height: 94%;
+  gap: 1%
+}
 
-  #form {
-    display: flex;
-    flex-direction: column;
-    gap: 2%;
-    width: 58%;
-  }
+#bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: white;
+  border-radius: 10px;
+  z-index: -1;
+}
 
-  #side {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 42%;
-  }
+#form,
+#side {
+  height: 100%;
+}
 
-  #form-main, #form-nota {
-    border: 4px solid var(--primary);
-    transition: height .4s ease-in-out;
-    overflow: hidden;
-  }
+#form {
+  display: flex;
+  flex-direction: column;
+  gap: 2%;
+  width: 58%;
+}
 
-  #form-main {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 56%;
-  }
+#side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 42%;
+}
 
-  #form-main.expanded {
-    height: 80%;
-  }
+#form-main,
+#form-nota {
+  border: 4px solid var(--primary);
+  transition: height .4s ease-in-out;
+  overflow: hidden;
+}
 
-  #form-nota {
-    padding: 20px 40px;
-    height: 18%
-  }
+#form-main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 56%;
+}
 
-  #form-nota.expanded{
-    height: 40%;
-  }
+#form-main.expanded {
+  height: 80%;
+}
 
-  #form-main, #form-nota, #data, #map, #expedients{
-    border-radius: 10px;
-    width: 100%;
-  }
+#form-nota {
+  padding: 20px 40px;
+  height: 18%
+}
 
-  #data {
-    border: 4px solid black;
-    height: 10%;
-  }
+#form-nota.expanded {
+  height: 40%;
+}
 
-  #map {
-    border: 4px solid var(--secondary);
-    height: 44%;
-  }
+#form-main,
+#form-nota,
+#data,
+#map,
+#expedients {
+  border-radius: 10px;
+  width: 100%;
+}
 
-  #expedients {
-    border: 4px solid var(--tertiary);
-    height: 42%;
-  }
+#data {
+  border: 4px solid black;
+  height: 10%;
+}
 
-  .buttons {
-    display: flex;
-    justify-content: center;
-    column-gap: 30px;
-    margin-left: auto;
-    height: 10%;
-    width: 42%;
-  }
+#map {
+  border: 4px solid var(--secondary);
+  height: 44%;
+}
 
-  .buttons #cancel {
-    background-color: var(--danger);
-  }
+#expedients {
+  border: 4px solid var(--tertiary);
+  height: 42%;
+}
 
-  .buttons #submit {
-    background-color: var(--success);
-  }
+.buttons {
+  display: flex;
+  justify-content: center;
+  column-gap: 30px;
+  margin-left: auto;
+  height: 10%;
+  width: 42%;
+}
 
-  .buttons #cancel, .buttons #submit {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2.5% 0;
-    width: 180px;
-    border-radius: 5px;
-    color: var(--light);
-    border: none;
-  }
-</style>
+.buttons #cancel {
+  background-color: var(--danger);
+}
+
+.buttons #submit {
+  background-color: var(--success);
+}
+
+.buttons #cancel,
+.buttons #submit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 2.5% 0;
+  width: 180px;
+  border-radius: 5px;
+  color: var(--dark);
+  border: none;
+}
+
+#map {
+  position: relative
+}</style>

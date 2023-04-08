@@ -1,6 +1,6 @@
 <template>
     <div>
-      <MapaOptions :arraySearch="arraySearch">
+      <MapaOptions :arraySearch="arraySearch" @añadirAlert="añadirAlertSs">
         <template v-slot:child-component>
           <BaseMap />
         </template>
@@ -19,10 +19,31 @@
         BaseMap,
         MapaOptions
     },
-    props: ['arraySearch'],
+    props: ['arraySearch','alertCerrada'],
     data() {
         return {
+          alertS:""
         };
+    },
+    watch:{
+      alertS: {
+            immediate: true,
+            handler(newVal, oldVal) {
+              this.$emit("changeAlert", this.alertS)
+            }
+        },
+        alertCerrada: {
+            immediate: true,
+            handler(newVal, oldVal) {
+              this.alertS=this.alertCerrada
+            }
+        }
+    },
+    methods: {
+      añadirAlertSs(alert){
+        this.alertS=alert
+        // this.$emit('añadirAlertSuccess', this.alertS)
+    }
     },
   }
   </script>

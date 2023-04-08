@@ -1,5 +1,8 @@
 <template>
     <div id="mapContainer" class="basemap child-component"></div>
+
+    
+
 </template>
   
 <script>
@@ -10,7 +13,7 @@ import * as bootstrap from 'bootstrap';
 
 export default {
     name: "BaseMap",
-    props: ['seleccion', 'send', 'agenciasFinales','arraySearch'],
+    props: ['seleccion', 'send', 'agenciasFinales','direccionIncidente'],
     data() {
         return {
             accessToken: 'pk.eyJ1Ijoiam5pcmVsbGFtcG9saXRlY25pY3MiLCJhIjoiY2xlc2ZkN2tiMDRrYjNzbnpmcGh1eG1payJ9.BYMy0fBa_so0Iz-qJMwGkA',
@@ -23,24 +26,9 @@ export default {
             localizaciones6: [],
             localizaciones7: [],
             seleccionAgencias: [],
-            lat: 2.18215, //2.24631 santfost
-            lang: 41.4021, //41.51561 santfost
+            lat: 2.18215,
+            lang: 41.4021, 
             mapa: null,
-            error: "",
-            /*
-            
-            
-             Añadir prop de componente padre APP para pasar la dirección el incidente y marcarlo con un marker en el mapa, 
-    de momento creo una variable para poder trabajar en el prototipo llamada direccionIncidente, 
-    luego se pasará un prop con este nombre Y SE LE PONDRÁ UN WATCHER PARA QUE EL VALOR DE    direccionIncidente = PROP
-
-    O 
-    
-    TRABAJAR DIRECTAMENTE CON EL PROP
-
-
-            */
-            direccionIncidente: "",
             incidentGeocoder: [],
             seleccionFinal: false
         };
@@ -48,14 +36,6 @@ export default {
 
     //WATCHERS
     watch: {
-        arraySearch: {
-            immediate: true,
-            handler(newVal, oldVal) {
-                console.log("Buscando dirección" + newVal)
-                this.direccionIncidente=newVal
-             
-            }
-        },
         //si se elimina la selección de agencias desde el padre, se vacia el array que las contiene aquí
         agenciasFinales: {
             immediate: true,
@@ -174,37 +154,23 @@ export default {
                                 console.log(element)
                                 let nom = element.properties.title.nom
                                 let idTipoAgencia = element.properties.title.AgenciesPrimaries_id
-                                let geocoder = element
+                               
                                 // si ya existe una de este tipo agencia guardado no hace push y sale modal diciendo si quiere cambiar la seleccion if(me.seleccionAgencias) 
                                 if (me.seleccionAgencias.length > 0) {
 
                                     me.seleccionAgencias.forEach(x => {
                                         if (x[2] == tipAgen) {
-                                            me.error = "Ya has seleccionad una agencia de este tipo"
-                                            alert("Ya has seleccionad una agencia de este tipo")
-                                            /*
-                                            
-                                            
-    
-    
-                                            MODAL PARA CONFIRMAR SI QUIERE CAMBIAR DE AGENCIA O MANTENER LA QUE TENIA SELECCIONADA
-                                            
-    
-    
-    
-    
-                                            
-                                            */
-                                            transform = false
+                                            me.$emit('cambiarSeleccion',element)
+                                            transform = false   
                                         }
                                     });
-                                    if (transform) {
-                                        me.guardarSeleccion(me, idAg, nom, idTipoAgencia, geocoder)
+                                    if (transform ) {
+                                        me.guardarSeleccion(me, idAg, nom, idTipoAgencia)
                                         me.$emit('getAgencia', me.seleccionAgencias)
                                     }
                                 }
                                 else {
-                                    me.guardarSeleccion(me, idAg, nom, idTipoAgencia, geocoder)
+                                    me.guardarSeleccion(me, idAg, nom, idTipoAgencia)
                                     me.$emit('getAgencia', me.seleccionAgencias)
                                 }
                                 encontrado = true
@@ -259,8 +225,8 @@ export default {
         },
 
         //Envia las agencias seleccionadas en el mapa al padre AgenciasPrimarias.vue
-        guardarSeleccion(me, idAgencia, nombre, tipo, geocoder) {
-            me.seleccionAgencias.push([idAgencia, nombre, tipo, geocoder])
+        guardarSeleccion(me, idAgencia, nombre, tipo) {
+            me.seleccionAgencias.push([parseInt(idAgencia), nombre, tipo])
         },
 
         //Obtiene las coordenadas del incidente pasado por un string y las guarda en las variables lat lang y centra el mapa en las coordenadas
@@ -268,7 +234,8 @@ export default {
             let me = this;
 
             function getMapData(me) {
-                return new Promise((resolve, reject) => {
+                if(direccionIncidente!=""){
+                    return new Promise((resolve, reject) => {
                     axios
                         .get(
                             "https://api.mapbox.com/geocoding/v5/mapbox.places/" + me.direccionIncidente + ".json?access_token=" + me.accessToken)
@@ -313,8 +280,7 @@ export default {
                 me.lat = lat
                 me.lang = lang
             });
-
-
+                }
         },
 
         cargarImagenesPersonalizadas(me, map) {
@@ -476,8 +442,5 @@ export default {
 </script>
 
 <style scoped>
-.basemap {
-    /* width: 300px;
-    height: 300px; */
-}
+
 </style>

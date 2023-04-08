@@ -2,10 +2,12 @@
     <!-- Muestra mapa en pequeño y al confirmar seleccion teleport a modal full screen -->
     <div id="smallMap">
         <Teleport v-if="isMounted" :disabled="!isTeleport" :to="targetTp">
-            <BaseMap v-if="targetTp == '#smallMap'" style="height:29vh; width:100%" :seleccion="seleccion" :send="confirmar"
-                @restarSend="restartConfirm" @getAgencia="getAgenciaSeleccionada" :agenciasFinales="agenciaSeleccionada" :arraySearch="arraySearch" />
+            <BaseMap v-if="targetTp == '#smallMap'" style="height:32vh; width:100%" :seleccion="seleccion" :send="confirmar"
+                @restarSend="restartConfirm" @cambiarSeleccion="cambiarSeleccion" @getAgencia="getAgenciaSeleccionada"
+                :agenciasFinales="agenciaSeleccionada" :direccionIncidente="arraySearch" />
             <BaseMap v-else style="height:100%; width:100%" :seleccion="seleccion" :send="confirmar"
-                :agenciasFinales="agenciaSeleccionada" @restarSend="restartConfirm" @getAgencia="getAgenciaSeleccionada" :arraySearch="arraySearch" />
+                :agenciasFinales="agenciaSeleccionada" @restarSend="restartConfirm" @cambiarSeleccion="cambiarSeleccion"
+                @getAgencia="getAgenciaSeleccionada" :direccionIncidente="arraySearch" />
         </Teleport>
     </div>
 
@@ -76,6 +78,12 @@
     <div class="modal" tabindex="-1" id="mapaModal">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
+                <div class="modal-header">
+                    <div v-if="alert != ''" class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ alert }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert()"></button>
+                    </div>
+                </div>
                 <div class="modal-body" id="bigMap"></div>
                 <div class="modal-footer">
                     <div class="row w-100">
@@ -88,7 +96,8 @@
                             </div>
                         </div>
                         <div class="col-sm-2 d-grid gap-2 d-md-flex justify-content-md-end">
-                            <button type="button" class="btn btn-outline-danger btnWithHelp" @click="eliminarSeleccio()" v-on:mouseover="showHelpMessageAfterDelay('eliminar')" v-on:mouseout="hideHelpMessage">
+                            <button type="button" class="btn btn-outline-danger btnWithHelp" @click="eliminarSeleccio()"
+                                v-on:mouseover="showHelpMessageAfterDelay('eliminar')" v-on:mouseout="hideHelpMessage">
                                 <i class="bi bi-trash "></i>
                                 <span id="helpMsgEliminar" class="help-message"
                                     v-if="showHelpMessage && eleccio == 'eliminar'">
@@ -121,6 +130,26 @@
             </div>
         </div>
     </div>
+
+    <!-- modal substituir agencia -->
+    <div class="modal" tabindex="-1" id="cambioSeleModal" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Has seleccionat un tipus d'agència ja seleccionada prèviament. Vols
+                        substituir-la o mantenir la teva selecció?</h5>
+                </div>
+                <div class="modal-body">
+                    <button type="button" class="btn btn-outline-danger" @click="eliminarEstaAgencia()">
+                        Substitueix
+                    </button>
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">
+                        Cancel·la
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -133,12 +162,14 @@ export default {
         BaseMap
     },
     props: ['arraySearch'],
+    emits: ['añadirAlert'],
     data() {
         return {
             seleccion: [],
             confirmar: false,
             myModal: {},
             modalSelec: {},
+            modalCambioSeleccion: {},
             targetTp: "#smallMap",
             isTeleport: false,
             agenciaSeleccionada: [],
@@ -148,7 +179,9 @@ export default {
             isDelete: false,
             showHelpMessage: false,
             timeoutId: null,
-            eleccio: ""
+            eleccio: "",
+            nuevaSeleccion: 0,
+            alert: ""
         };
     },
 
@@ -156,7 +189,7 @@ export default {
         arraySearch: {
             immediate: true,
             handler(newVal, oldVal) {
-                this.confirmar=true
+                this.confirmar = true
             }
         },
         isMapSelect: function (newVal, oldVal) {
@@ -178,10 +211,14 @@ export default {
     mounted() {
         this.myModal = new bootstrap.Modal('#mapaModal')
         this.modalSelec = new bootstrap.Modal("#seleccionModal")
+        this.modalCambioSeleccion = new bootstrap.Modal("#cambioSeleModal")
         this.isMounted = true;
     },
 
     methods: {
+        restartAlert(){  
+                this.alert=""
+        },
         showHelpMessageAfterDelay(eleccio) {
             switch (eleccio) {
                 case 'ampliar':
@@ -214,20 +251,33 @@ export default {
         eliminarSeleccio() {
             this.agenciaSeleccionada = []
             document.getElementById('agenciasSeleccionadas').innerHTML = ""
-            /*
-            
-            
-            AÑADIR MENSAJE DE ERROR CON UNA ALERT DE BOOTSTRAP ROJA?
-            
-            
-            */
-            alert("S'han eliminat totes les agències previament seleccionades")
+            //Envia mensaje para la alert de la carta
+            this.$emit("añadirAlert", "S'han eliminat totes les agències prèviament seleccionades")
         },
         checkSeleccion() {
             this.modalSelec.show()
         },
         restartConfirm() {
             this.confirmar = false
+        },
+        cambiarSeleccion(newSel) {
+            let me = this
+            this.nuevaSeleccion = newSel
+            this.modalCambioSeleccion.show()
+            
+
+        },
+        eliminarEstaAgencia() {
+            this.agenciaSeleccionada.forEach(element => {
+                if (element[2] == this.nuevaSeleccion.properties.title.AgenciesPrimaries_id) {
+                    this.agenciaSeleccionada.splice(this.agenciaSeleccionada.indexOf(element));
+                    this.agenciaSeleccionada.push([this.nuevaSeleccion.properties.title.id, this.nuevaSeleccion.properties.title.nom, this.nuevaSeleccion.properties.title.AgenciesPrimaries_id]);
+                    this.$emit("añadirAlert", "S'ha substituït l'agència correctament")
+                    this.alert = "S'ha substituït l'agència correctament"
+                }
+                this.modalCambioSeleccion.hide()
+            });
+
         },
         getAgenciaSeleccionada(arrayAgencia) {
 
@@ -270,10 +320,11 @@ export default {
 <style scoped>
 #botonesMapa {
     position: absolute;
-    left: 91%;
-    bottom: 53%;
+    left: 85%;
+    bottom: 19%;
     z-index: 3;
 }
+
 
 #helMsgAmpliar {
     transform: translateY(-180%);
@@ -312,5 +363,4 @@ export default {
 
 .help-message.show {
     opacity: 1;
-}
-</style>
+}</style>
