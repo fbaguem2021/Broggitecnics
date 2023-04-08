@@ -90,7 +90,6 @@ export default {
 }
 </script>
 <style scoped>
-
     .nav-tabs {
         background-color: #DFE2E6;
         border-bottom: 2px solid var(--primary);
@@ -109,7 +108,6 @@ export default {
     .nav-item button {
         width: 100%;
     }
-
     .nav-link {
         border: none;
         color: var(--success);
@@ -128,8 +126,6 @@ export default {
         padding: 20px 40px 0 40px;
     }
 
-
-
     @media (max-width: 1145px) {
         .nav-item {
             width: 130px;
@@ -143,5 +139,4 @@ export default {
             padding: 8px !important;
         }
     }
-
 </style>

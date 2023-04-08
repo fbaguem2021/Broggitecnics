@@ -1,23 +1,29 @@
 <template>
   <form>
     <div class="form-floating mb-3" id="tipusIncident-container">
-      <input v-model="tipusIncident.name" @input="handleInput('tipusIncidentInput', $event, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off">
+      <input v-model="tipusIncident.name" @input="handleInput('tipusIncident', $event, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off">
       <label for="tipusIncident">Tipus d'incident</label>
       <datalist  id="tipusIncidentsList">
         <option v-for="(tipus, index) in tipusIncidents" :key="index" :value="tipus.nom"></option>
       </datalist>
     </div>
     <div class="form-floating mb-3" id="incident-container">
-      <input v-model="incident.name" @input="handleInput('incidentInput', $event, incidents)" type="text" class="form-control" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
+      <input v-model="incident.name" @input="handleInput('incident', $event, incidents)" type="text" class="form-control" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
       <label for="incident">Incident</label>
       <datalist  id="incidentsList">
         <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
       </datalist>
     </div>
     <div v-show="incident.definicio">
+      <div class="form-floating">
+        <textarea :value="incidentDefinicio" :style="textareaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident" ></textarea>
+        <label for="incidentDefinicio">Descripció</label>
+      </div>
+    </div>
+    <div v-show="incident.instruccions">
       <div class="form-floating mb-3">
-        <textarea v-model="toLowerCase" class="form-control-plaintext" placeholder="Anota antecedents" id="floatingPlaintextInput"></textarea>
-        <label for="floatingPlaintextInput">Descripció</label>
+        <textarea :value="incidentInstruccions" :style="{height: textareaHeight(incidentInstruccions)}" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" ></textarea>
+        <label for="incidentInstruccions">Instruccions a seguir</label>
       </div>
     </div>
   </form>
@@ -49,10 +55,10 @@ export default {
     }
   },
   computed: {
-    tipusIncidents() {
+    tipusIncidents () {
       return this.incidentData ? this.incidentData.tipusIncident : []
     },
-    incidents() {
+    incidents () {
       if (this.cartaIncident.tipusIncident) {
         return this.incidentData.incidents.filter(incident => incident.tipus_incidents_id === this.cartaIncident.tipusIncident)
       } else {
@@ -60,13 +66,12 @@ export default {
       }
      
     },
-    toLowerCase (string) {
-      string = this.incident.definicio
-      return [string].map(item =>
-        item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
-      ).join('');
+    incidentDefinicio (){
+      return this.incident.definicio ? this.toLowerCase(this.incident.definicio) : ''
+    },
+    incidentInstruccions () {
+      return this.incident.instruccions ? this.toLowerCase(this.incident.instruccions) : ''
     }
-    
   },
   methods: {
     handleInput(inputName, event, list) {
@@ -118,6 +123,23 @@ export default {
       this.tipusIncident.name = tipusIncident.nom
       this.cartaIncident.tipusIncident = tipusIncident.id
     },
+    toLowerCase (string) {
+      return [string].map(item =>
+        item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+      ).join('');
+    },
+    textareaHeight(text) {
+      const lineHeight = 40; // adjust as needed
+      const minHeight = lineHeight * 2; // adjust as needed
+      const contentLength = text.length;
+      const rows = Math.max(Math.ceil(contentLength / 100), 1); // adjust as needed
+      const height = rows * lineHeight;
+      return {
+        'min-height': `${height}px`,
+        'height': `${height}px`,
+        'max-height':  `${Math.max(height, minHeight)+40}px`
+      };
+    },
   }
 }
 </script>
@@ -126,4 +148,5 @@ export default {
     width: 40%;
     min-width: 230px;
   }
+
 </style>
