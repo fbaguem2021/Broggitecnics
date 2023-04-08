@@ -71,12 +71,10 @@ export default {
             if (input.value != '') {
                 isValid = true
                 if (input.id === 'phone') {
-                
                 }
             }
             input.classList.toggle('is-valid', isValid)
             input.classList.toggle('is-invalid', !isValid)
-
         },
         isFormValid() {
             const isValid =  !this.$el.querySelector('.is-invalid')

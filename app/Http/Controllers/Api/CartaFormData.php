@@ -30,7 +30,7 @@ class CartaFormData extends Controller
             ],
             'incident' => [
                 'tipusIncident' => TipusIncident::all(),
-                'incidents' => Incident::all()
+                'incidents' => Incident::orderBy('nom')->get()
             ]
         ];
 

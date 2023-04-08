@@ -41,12 +41,14 @@
                 :localitzacioData="localitzacioData" 
                 @get-location="updateLocation" 
                 @get-map-serach-string="updateMapString"
-                @is-form-valid="updateLocationValid"
+                
             />
+            <!-- @is-form-valid="updateLocationValid" -->
         </div>
         <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
             <incident-form 
                 :incidentData="incidentData" 
+                @is-form-valid="updateIncidentValid"
                 />
         </div>
 
@@ -142,6 +144,11 @@ export default {
     },
     updateInterlocutorValid (isValid) {
         this.interlocutorValid = isValid
+    },
+
+    // INCIDENT
+    updateIncidentValid (isValid) {
+        this.incidentValid = isValid;
     }
 
 }
