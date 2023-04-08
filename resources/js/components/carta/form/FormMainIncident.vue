@@ -1,18 +1,24 @@
 <template>
   <form>
-    <div class="form-floating mb-3">
-      <input v-model="tipusIncidentInput.name" @input="handleInput('tipusIncidentInput', $event, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off">
+    <div class="form-floating mb-3" id="tipusIncident-container">
+      <input v-model="tipusIncident.name" @input="handleInput('tipusIncidentInput', $event, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off">
       <label for="tipusIncident">Tipus d'incident</label>
       <datalist  id="tipusIncidentsList">
         <option v-for="(tipus, index) in tipusIncidents" :key="index" :value="tipus.nom"></option>
       </datalist>
     </div>
-    <div class="form-floating mb-3">
-      <input v-model="incidentInput.name" @input="handleInput('incidentInput', $event, incidents)" type="text" class="form-control" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
+    <div class="form-floating mb-3" id="incident-container">
+      <input v-model="incident.name" @input="handleInput('incidentInput', $event, incidents)" type="text" class="form-control" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
       <label for="incident">Incident</label>
       <datalist  id="incidentsList">
         <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
       </datalist>
+    </div>
+    <div v-show="incident.definicio">
+      <div class="form-floating mb-3">
+        <textarea v-model="toLowerCase" class="form-control-plaintext" placeholder="Anota antecedents" id="floatingPlaintextInput"></textarea>
+        <label for="floatingPlaintextInput">Descripció</label>
+      </div>
     </div>
   </form>
 </template>
@@ -25,12 +31,16 @@ export default {
   },
   data() {
     return {
-      tipusIncidentInput: {
-        'name': ''
+      tipusIncident: {
+        name: ''
       },
-      incidentInput: {
-          'name': '',
-          'tipus_incidents_id': ''
+      incident: {
+        name: '',
+        codi: '',
+        definicio: '',
+        instruccions: '',
+        tipus_incidents_id: '',
+
       },
       cartaIncident: {
         'tipusIncident': '',
@@ -49,7 +59,14 @@ export default {
         return this.incidentData ? this.incidentData.incidents : []
       }
      
+    },
+    toLowerCase (string) {
+      string = this.incident.definicio
+      return [string].map(item =>
+        item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+      ).join('');
     }
+    
   },
   methods: {
     handleInput(inputName, event, list) {
@@ -84,23 +101,29 @@ export default {
       }
     },
     tipusIncidentSelected (tipusIncident) {
-      if (this.cartaIncident.incident && tipusIncident.id != this.incidentInput.tipus_incidents_id) {
+      if (this.cartaIncident.incident && tipusIncident.id != this.incident.tipus_incidents_id) {
         console.log("The incident selected doesnt belong to this tipus!")
-        this.incidentInput.name = ''
-        this.incidentInput.tipus_incidents_id = ''
+        for(const prop in this.incident) {
+          this.incident[prop] = ''
+        }
         this.cartaIncident.incident = ''
       }
     },
     incidentSelected (incident) {
-      this.incidentInput.tipus_incidents_id = incident.tipus_incidents_id
+      this.incident.codi = incident.codi
+      this.incident.definicio = incident.definicio
+      this.incident.instruccions = incident.instruccions
+      this.incident.tipus_incidents_id = incident.tipus_incidents_id
       const tipusIncident = this.tipusIncidents.find(tipus => tipus.id === incident.tipus_incidents_id)
-      this.tipusIncidentInput.name = tipusIncident.nom
+      this.tipusIncident.name = tipusIncident.nom
       this.cartaIncident.tipusIncident = tipusIncident.id
-    }
-
+    },
   }
 }
 </script>
 <style scoped>
-  
+  #tipusIncident-container {
+    width: 40%;
+    min-width: 230px;
+  }
 </style>

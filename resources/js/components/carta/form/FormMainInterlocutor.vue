@@ -1,30 +1,5 @@
 <template>
-    <form id="interlocutor-form">
-        <!-- <div class="row align-items-center">
-            <div class="col-2 input-label-container">
-                <label for="telef" class="col-form-label">Telèfon</label>
-            </div>
-            <div class="col-5" id="telef-input-container">
-                <input type="phone" id="telef" class="form-control" aria-describedby="telefInterlocutor" tabindex="1">
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-2 input-label-container">
-                <label for="nom" class="col-form-label">Nom</label>
-            </div>
-            <div class="col-8">
-                <input type="text" id="nom" class="form-control" aria-describedby="nomInterlocutor" autocomplete="off" tabindex="2">
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-2 input-label-container">
-                <label for="cognom" class="col-form-label">Cognoms</label>
-            </div>
-            <div class="col-8">
-                <input type="text" id="cognom" class="form-control" aria-describedby="cognomInterlocutor" tabindex="3">
-            </div>
-        </div> -->
-        
+    <form id="interlocutor-form">        
         <div class="form-floating mb-3" id="phone-input-container">
             <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off">
             <label for="phone">Telèfon</label>
