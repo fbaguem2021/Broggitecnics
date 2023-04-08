@@ -1,19 +1,23 @@
 <template>
-    <form id="interlocutor-form">        
-        <div class="form-floating mb-3" id="phone-input-container">
-            <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off">
-            <label for="phone">Telèfon</label>
-        </div>
+    <form id="interlocutor-form" @input.prevent="emitInterlocutor">    
+        <div class="row">
+            <div class="col-4">
+                <div class="form-floating mb-3" id="phone-input-container">
+                    <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off">
+                    <label for="phone">Telèfon</label>
+                </div>
+            </div>
+        </div>    
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3">
-                    <input v-model="name" type="text" class="form-control" id="name" placeholder="Nom" autocomplete="off">
+                    <input v-model="name" @focus="removeValidationClasses($event.target.classList)" @focusout="validateInput($event.target)" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off">
                     <label for="name">Nom</label>
                 </div>
             </div>
             <div class="col-8">
                 <div class="form-floating mb-3">
-                    <input v-model="surnames" type="text" class="form-control" id="surnames" placeholder="Cognoms" autocomplete="off">
+                    <input v-model="surnames" type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off">
                     <label for="surnames">Cognoms</label>
                 </div>
             </div>
@@ -21,32 +25,72 @@
        
 
         <div class="form-floating" id="antecedents-textArea-container">
-            <textarea class="form-control" placeholder="Anota antecedents" id="antecedentsTextarea"></textarea>
+            <textarea v-model="record" class="form-control" placeholder="Anota antecedents" id="antecedentsTextarea"></textarea>
             <label for="antecedentsTextarea">Antecedents</label>
         </div>
 
-        <div v-show="newInterlocutor" class="form-check form-switch form-check-reverse my-4" id="save-interlocutor-container">
+        <div class="form-check form-switch form-check-reverse my-4" id="save-interlocutor-container">
             <label class="form-check-label" for="saveInterlocutor">Guardar interlocutor</label>
-            <input class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" tabindex="5" @focusout="nextForm">
+            <input v-model="saveInterlocutor" @change="emitSaveInterlocutor" class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" tabindex="5" @focusout="nextForm">
         </div>
     </form>
 </template>
 <script>
 export default {
+    emits: [
+        'is-new-interlocutor',
+        'save-interlocutor',
+        'carta-interlocutor',
+    ],
     data() {
         return {
-            tabIndex: 1,
-            newInterlocutor: true,
+            isNewInterlocutor: true,
+            saveInterlocutor: false,
             phone: '',
             name: '',
-            surnames: ''
-
+            surnames: '',
+            record: '',
+            cartaInterlocutor: {
+                telefon: '',
+                antecedents: '',
+                nom: '',
+                cognom: ''
+            }
         }
     },
     methods: {
         nextForm () {
             console.log("To the next form i say!")
+        },
+        removeValidationClasses(classList) {
+            classList.remove('is-valid', 'is-invalid');
+        },
+        validateInput (input) {
+            if (input.value != '') {
+                input.classList.add('is-valid')
+                input.classList.remove('is-invalid')
+            } else {
+                input.classList.add('is-invalid')
+                input.classList.remove('is-valid')
+            }
+        },
+        emitInterlocutor () {     
+            this.$emit('carta-interlocutor', this.cartaInterlocutor)
+        },
+        emitSaveInterlocutor() {
+            console.log('FORM MAIN INTERLOCUTOR: input detected\nValue of saveInterlocutor')
+            console.log(this.saveInterlocutor)
+            this.$emit('save-interlocutor', this.saveInterlocutor)
+        },
+        emitIsNewInterlocutor () {
+            this.$emit('is-new-interlocutor', this.isNewInterlocutor)
         }
+    },
+    mounted() {
+
+        // DEBUGGING DEV DEV DEV
+        this.emitIsNewInterlocutor
+
     },
 }
 </script>
@@ -65,7 +109,6 @@ export default {
         width: 60%;
     }
     #phone-input-container {
-        width: 30%;
         min-width: 110px;
     }
     #antecedents-textArea-container {

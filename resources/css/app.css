@@ -119,7 +119,8 @@ body {
 /* New label dimensions and positions for floating labels to avoid overlap of input text with input label
  * This should be fixed by bootstrap, known issue https://github.com/twbs/bootstrap/issues/32800
 */
-.form-floating > textarea.form-control:not(:-moz-placeholder-shown) ~ label {
+.form-floating > textarea.form-control:not(:-moz-placeholder-shown) ~ label
+.form-floating > textarea.form-control-plaintext:not(:-moz-placeholder-shown) ~ label {
     opacity: 1;
     color: rgba(0, 0, 0, 0.5);
     background-color: #fff;
@@ -131,17 +132,20 @@ body {
     border-radius: 5px 0 0 0;
 }
 .form-floating > textarea.form-control:focus ~ label,
-.form-floating > textarea.form-control:not(:placeholder-shown) ~ label {
+.form-floating > textarea.form-control-plaintext:focus ~ label,
+.form-floating > textarea.form-control:not(:placeholder-shown) ~ label 
+.form-floating > textarea.form-control-plaintext:not(:placeholder-shown) ~ label {    
     opacity: 1;
     color: rgba(0, 0, 0, 0.5);
     background-color: #fff;
     height: auto;
     padding: 0px 0px 0px 10px;
-    width: 100%;
+    width: 99%;
     transform: scale(0.982) translateY(0.045rem) translateX(0.1rem);
     border-radius: 5px 0 0 0;
 }
-.form-floating > textarea.form-control:-webkit-autofill ~ label {
+.form-floating > textarea.form-control:-webkit-autofill ~ label 
+.form-floating > textarea.form-control-plaintext:-webkit-autofill ~ label{
     opacity: 1;
     color: rgba(0, 0, 0, 0.5);
     background-color: #fff;

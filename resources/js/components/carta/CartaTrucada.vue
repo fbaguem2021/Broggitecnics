@@ -4,7 +4,13 @@
       <div class="content">
           <div id="form">
             <div id="form-main" ref="formMain" class="expanded">
-              <form-main @get-carta-location="updateLoc" @get-map-search-string="updateSearchString"></form-main>
+              <form-main 
+                :new-interlocutor="n"
+                @get-carta-location="updateLoc"
+                @get-carta-interlocutor="updateInterlocutor"
+                @get-save-interlocutor="updateSaveInterlocutor"
+                @get-map-search-string="updateSearchString">
+              </form-main>
               <transition name="fade">
                 <div v-show="notaIsExpaneded" class="blur-gradient"></div>
               </transition>
@@ -40,6 +46,11 @@ export default {
   },
   data () {
     return {
+      interlocutor: {},
+      localitzacio: {},
+      incident: {},
+      newInterlocutor: true,
+      saveInterlocutor: false,
       mapSearchString: '',
       notaIsExpaneded: false
     }
@@ -58,6 +69,12 @@ export default {
     },
     updateLoc (locString) {
       this.localitzacioString = locString
+    },
+    updateInterlocutor(interlocutor) {
+      this.interlocutor = interlocutor
+    },
+    updateSaveInterlocutor (boolean) {
+      this.saveInterlocutor = boolean
     },
     updateSearchString (mapString) {
       this.mapSearchString = mapString

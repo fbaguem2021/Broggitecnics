@@ -1,18 +1,36 @@
 <template>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="interlocutor-tab" data-bs-toggle="tab" data-bs-target="#interlocutor" type="button" role="tab" aria-controls="Interlocutor" aria-selected="true">Interlocutor</button>
+            <button class="nav-link active" id="interlocutor-tab" data-bs-toggle="tab" data-bs-target="#interlocutor" type="button" role="tab" aria-controls="Interlocutor" aria-selected="true">Interlocutor
+                <div class="nav-link-icons">
+                    <i v-if="saveInterlocutor && newInterlocutor" class="bi bi-person-plus ps-1"></i>
+                    <i v-else-if="saveInterlocutor && !newInterlocutor" class="bi bi-person-gear"></i>
+                    <i v-if="interlocutorValid" class="bi bi-clipboard2-check"></i>
+                    <i v-else class="bi bi-clipboard2-x"></i>
+                </div>
+            </button>
         </li>
         <li class="nav-item" role="presentation" >
-            <button class="nav-link" id="localitzacio-tab" data-bs-toggle="tab" data-bs-target="#localitzacio" type="button" role="tab" aria-controls="Localitzacio" aria-selected="false" ref="localitzacioTabButton">Localització</button>
+            <button class="nav-link" id="localitzacio-tab" data-bs-toggle="tab" data-bs-target="#localitzacio" type="button" role="tab" aria-controls="Localitzacio" aria-selected="false" ref="localitzacioTabButton">Localització
+                <div class="nav-link-icons">
+                    <i v-if="localitzacioValid" class="bi bi-clipboard2-check"></i>
+                    <i v-else class="bi bi-clipboard2-x"></i>
+                </div>
+            </button>
+            
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="incident-tab" data-bs-toggle="tab" data-bs-target="#incident" type="button" role="tab" aria-controls="Incident" aria-selected="false">Incident</button>
+            <button class="nav-link" id="incident-tab" data-bs-toggle="tab" data-bs-target="#incident" type="button" role="tab" aria-controls="Incident" aria-selected="false">Incident
+                <div class="nav-link-icons">
+                    <i v-if="incidentValid" class="bi bi-clipboard2-check"></i>
+                    <i v-else class="bi bi-clipboard2-x"></i>
+                </div>
+            </button>
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">
-            <interlocutor-form/>
+            <interlocutor-form @save-interlocutor="updateSaveInterlocutor" @carta-interlocutor="updateInterlocutor"/>
         </div>
         <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">
             <localitzacio-form :localitzacioData="localitzacioData" @get-location="updateLocation" @get-map-serach-string="updateMapString"/>
@@ -30,6 +48,11 @@ import IncidentForm from './FormMainIncident.vue';
 import axios from 'axios';
 
 export default {
+  props: {
+    newInterlocutor: {
+        type: Boolean
+    }
+  },
   components: {
     InterlocutorForm,
     LocalitzacioForm,
@@ -37,10 +60,18 @@ export default {
   },
   emits: [
     'get-carta-location',
-    'get-map-search-string'
+    'get-map-search-string',
+    'get-carta-interlocutor',
+    'is-new-interlocutor',
+    'get-save-interlocutor'
   ],
   data() {
     return {
+        interlocutorValid: false,
+        localitzacioValid: false,
+        incidentValid: false,
+        saveInterlocutor: false,
+        newInterlocutor: true,
         interlocutor: {},
         localitzacio: {},
         incident: {},
@@ -62,11 +93,12 @@ export default {
             })
             .catch((error) => {})
 
-        const button = document.getElementById('localitzacio-tab');
+        const button = this.$refs.localitzacioTabButton;
         const observer = new MutationObserver(mutation => {
             const tab = mutation[0].target
             if (!tab.classList.contains('active') && this.mapSearchString != '') {
                 this.$emit('get-map-search-string', this.mapSearchString)
+                console.log("FORM MAIN: emiting map search string")
             }
         });
         observer.observe(button, { attributeFilter: ['class'] });
@@ -77,15 +109,25 @@ export default {
     updateLocation(loc) {
         this.$emit('get-carta-location', loc)
     },
+    updateInterlocutor (interlocutor) {
+        this.$emit('get-carta-interlocutor', interlocutor)
+    },
+    updateSaveInterlocutor (boolean) {
+        console.log("FORM MAIN: save interlocutor emit signal recived \nValue recived:")
+        console.log(boolean)
+        console.log("Component saveInterlocutor BEFORE:")
+        console.log(this.saveInterlocutor)
+        this.saveInterlocutor = boolean
+        console.log("Component saveInterlocutor AFTER:")
+        console.log(this.saveInterlocutor)
+        // this.$emit('get-save-interlocutor', this.saveInterlocutor)
+    },
     updateMapString (string) {
         this.mapSearchString = string;
     },
     emitMapSearchString () {
         this.$emit('get-map-search-string', this.mapSearchString)
     },
-    myfunction(){
-        console.log("NOW!")
-    }
 }
 }
 </script>
@@ -101,16 +143,27 @@ export default {
     .nav-item {
         padding-top: 20px;
         width: 200px;
+        min-width: 180px;
         text-align: center;
         font-weight: bold;
         font-size: 1.2rem;
     }
     .nav-item button {
         width: 100%;
+        
     }
     .nav-link {
+        position: relative;
+        text-align: start;
+        padding-left: 10%;
         border: none;
         color: var(--success);
+    }
+    .nav-link-icons {
+        position: absolute;
+        top: 50%;
+        right: 5%;
+        transform: translateY(-50%);
     }
    .nav-link.active {
         border: 2px solid var(--primary);
@@ -125,10 +178,16 @@ export default {
         height: 100%;
         padding: 20px 40px 0 40px;
     }
+    .bi-clipboard2-x {
+        color: #e21212;
+    }
+    .bi-clipboard2-check {
+        color: #198754;
+    }
 
     @media (max-width: 1145px) {
         .nav-item {
-            width: 130px;
+            width: 180px;
         }
 
     }

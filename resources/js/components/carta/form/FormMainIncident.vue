@@ -22,7 +22,7 @@
     </div>
     <div v-show="incident.instruccions">
       <div class="form-floating mb-3">
-        <textarea :value="incidentInstruccions" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" ></textarea>
+        <textarea :value="incident.instruccions.toLowerCase()" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" ></textarea>
         <label for="incidentInstruccions">Instruccions a seguir</label>
       </div>
     </div>
@@ -132,7 +132,7 @@ export default {
       const lineHeight = 40; // adjust as needed
       const minHeight = lineHeight * 2; // adjust as needed
       const contentLength = text.length;
-      const rows = Math.max(Math.ceil(contentLength / 100), 1); // adjust as needed
+      const rows = Math.max(Math.ceil(contentLength / 100), 2); // adjust as needed
       const height = rows * lineHeight;
       return {
         'min-height': `${height}px`,
