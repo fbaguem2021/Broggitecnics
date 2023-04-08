@@ -8,7 +8,7 @@
       </datalist>
     </div>
     <div class="form-floating mb-3" id="incident-container">
-      <input v-model="incident.name" @input="handleInput('incident', $event, incidents)" type="text" class="form-control" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
+      <input v-model="incident.name" @input="handleInput('incident', $event, incidents)" type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
       <label for="incident">Incident</label>
       <datalist  id="incidentsList">
         <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
@@ -103,6 +103,8 @@ export default {
           ...this.cartaIncident,
           [event.target.id]: matchedInputValue.id
         }
+        event.target.classList.remove('is-invalid')
+        event.target.classList.add('is-valid')
       }
     },
     tipusIncidentSelected (tipusIncident) {
@@ -132,7 +134,7 @@ export default {
       const lineHeight = 40; // adjust as needed
       const minHeight = lineHeight * 2; // adjust as needed
       const contentLength = text.length;
-      const rows = Math.max(Math.ceil(contentLength / 100), 2); // adjust as needed
+      const rows = Math.max(Math.ceil(contentLength / 60), 2); // adjust as needed
       const height = rows * lineHeight;
       return {
         'min-height': `${height}px`,

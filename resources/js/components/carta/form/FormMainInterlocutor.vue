@@ -1,9 +1,9 @@
 <template>
-    <form id="interlocutor-form" @input.prevent="emitInterlocutor">    
+    <form id="interlocutor-form" @input="emitInterlocutor" @focusout="isFormValid">    
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3" id="phone-input-container">
-                    <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off">
+                    <input v-model="phone" @focus="removeValidationClasses($event.target.classList)" @focusout="validateInput($event.target)" type="phone" class="form-control" :class="isNewInterlocutor ? 'is-invalid' : 'is-valid' " id="phone" placeholder="Telèfon" autocomplete="off">
                     <label for="phone">Telèfon</label>
                 </div>
             </div>
@@ -17,7 +17,7 @@
             </div>
             <div class="col-8">
                 <div class="form-floating mb-3">
-                    <input v-model="surnames" type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off">
+                    <input v-model="surnames" @focus="removeValidationClasses($event.target.classList)" @focusout="validateInput($event.target)"  type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off">
                     <label for="surnames">Cognoms</label>
                 </div>
             </div>
@@ -41,6 +41,7 @@ export default {
         'is-new-interlocutor',
         'save-interlocutor',
         'carta-interlocutor',
+        'is-form-valid'
     ],
     data() {
         return {
@@ -66,15 +67,23 @@ export default {
             classList.remove('is-valid', 'is-invalid');
         },
         validateInput (input) {
+            var isValid = false;
             if (input.value != '') {
-                input.classList.add('is-valid')
-                input.classList.remove('is-invalid')
-            } else {
-                input.classList.add('is-invalid')
-                input.classList.remove('is-valid')
+                isValid = true
+                if (input.id === 'phone') {
+                
+                }
             }
+            input.classList.toggle('is-valid', isValid)
+            input.classList.toggle('is-invalid', !isValid)
+
         },
-        emitInterlocutor () {     
+        isFormValid() {
+            const isValid =  !this.$el.querySelector('.is-invalid')
+            this.$emit('is-form-valid', isValid)
+            console.log("Form is valid?: " + isValid)
+        },
+        emitInterlocutor () { 
             this.$emit('carta-interlocutor', this.cartaInterlocutor)
         },
         emitSaveInterlocutor() {

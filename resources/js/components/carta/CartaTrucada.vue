@@ -5,7 +5,6 @@
           <div id="form">
             <div id="form-main" ref="formMain" class="expanded">
               <form-main 
-                :new-interlocutor="n"
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
                 @get-save-interlocutor="updateSaveInterlocutor"
@@ -59,6 +58,8 @@ export default {
     expandCompress() {
       this.$refs.formNota.classList.toggle('expanded');
       this.$refs.formMain.classList.toggle('expanded');
+      
+      console.log("\n\nCARTA TRUCADA:")
       if (this.$refs.formNota.classList.contains('expanded')) {
         console.log('note is expaneded')
         this.notaIsExpaneded = true

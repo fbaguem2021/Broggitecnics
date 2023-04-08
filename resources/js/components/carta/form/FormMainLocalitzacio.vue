@@ -42,7 +42,7 @@
           <div class="row">
             <div class="col-8">
               <div class="form-floating mb-3">
-                <input v-model="tipusLocInput" type="text" class="form-control" id="tipusLoc" placeholder="Tipus localització" list="localitzacionsList" @input="handleInput('tipusLocInput', $event, tipusLocalitzacions)" autocomplete="off">
+                <input v-model="tipusLocInput" type="text" class="form-control is-invalid" id="tipusLoc" placeholder="Tipus localització" list="localitzacionsList" @input="handleInput('tipusLocInput', $event, tipusLocalitzacions)" autocomplete="off">
                 <datalist v-if="tipusLocalitzacions" id="localitzacionsList">
                   <option v-for="tipus in filteredList(tipusLocalitzacions, tipusLocInput)" :key="tipus.id" :value="tipus.nom"></option>
                 </datalist>
@@ -87,7 +87,8 @@ export default {
   },
   emits: [
     "get-location",
-    'get-map-serach-string'
+    'get-map-serach-string',
+    'is-form-valid'
   ],
   data() {
     return {
@@ -212,7 +213,8 @@ export default {
           const previousValue = this[inputName].slice(0, -1)
           this[inputName] = previousValue
         } else if (inputValue.trim() === '') {
-          console.log("empppty!!")
+          console.log("\n\nFORM MAIN LOCATION: empty input:")
+          console.log(inputName)
           this.cartaLocation = {
             ...this.cartaLocation,
             [event.target.id]: ''
@@ -233,6 +235,7 @@ export default {
             ...this.cartaLocation,
             [event.target.id]: matchedInputValue.id
           }
+          event.target.classList.add('is-valid')
         } 
       } else {
         this.cartaLocation.descripcioLoc = `${this.provinciaInput} ${this.municipiInput}`
@@ -245,8 +248,9 @@ export default {
           /* When valid Comarca is set checks if Municipi has been set and if belongs to this Comarca
           If not clear the input and the carta location municipi */
           if (this.cartaLocation.municipi) {
-            console.log(this.municipis.find(mun => mun.id === this.cartaLocation.municipi)?.comarques_id)
-            console.log(comarca.id)
+            console.log("\n\nFORM MAIN LOCALITZATION:")
+            console.log("municipi belongs to comarca ID:" + this.municipis.find(mun => mun.id === this.cartaLocation.municipi)?.comarques_id)
+            console.log("new comarca ID: " + comarca.id)
             if ( (comarca.id !== this.municipis.find(municipi => municipi.id === this.cartaLocation.municipi)?.comarques_id)){
               console.log("The municipi selected doesnt belong to this Comarca!")
               this.cartaLocation.municipi = ''

@@ -59,7 +59,7 @@
 <script>
 import axios from 'axios';
 import legendStatus from './LegendEstats.vue';
-import ExpedientsTable from './ExpedientsTable.vue';
+import ExpedientsTable from './expedientsTable.vue';
 import showExpedient from './ShowExpedient.vue';
 import * as bootstrap from 'bootstrap';
 

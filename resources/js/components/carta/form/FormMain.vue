@@ -3,8 +3,8 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="interlocutor-tab" data-bs-toggle="tab" data-bs-target="#interlocutor" type="button" role="tab" aria-controls="Interlocutor" aria-selected="true">Interlocutor
                 <div class="nav-link-icons">
-                    <i v-if="saveInterlocutor && newInterlocutor" class="bi bi-person-plus ps-1"></i>
-                    <i v-else-if="saveInterlocutor && !newInterlocutor" class="bi bi-person-gear"></i>
+                    <i v-if="saveInterlocutor && newInterlocutor" class="bi bi-person-plus ps-1 pe-1"></i>
+                    <i v-else-if="saveInterlocutor && !newInterlocutor" class="bi bi-person-gear pe-1"></i>
                     <i v-if="interlocutorValid" class="bi bi-clipboard2-check"></i>
                     <i v-else class="bi bi-clipboard2-x"></i>
                 </div>
@@ -30,13 +30,24 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">
-            <interlocutor-form @save-interlocutor="updateSaveInterlocutor" @carta-interlocutor="updateInterlocutor"/>
+            <interlocutor-form 
+                @save-interlocutor="updateSaveInterlocutor" 
+                @carta-interlocutor="updateInterlocutor"
+                @is-form-valid="updateInterlocutorValid"
+            />
         </div>
         <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">
-            <localitzacio-form :localitzacioData="localitzacioData" @get-location="updateLocation" @get-map-serach-string="updateMapString"/>
+            <localitzacio-form 
+                :localitzacioData="localitzacioData" 
+                @get-location="updateLocation" 
+                @get-map-serach-string="updateMapString"
+                @is-form-valid="updateLocationValid"
+            />
         </div>
         <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
-            <incident-form :incidentData="incidentData" />
+            <incident-form 
+                :incidentData="incidentData" 
+                />
         </div>
 
     </div>
@@ -49,9 +60,6 @@ import axios from 'axios';
 
 export default {
   props: {
-    newInterlocutor: {
-        type: Boolean
-    }
   },
   components: {
     InterlocutorForm,
@@ -98,7 +106,7 @@ export default {
             const tab = mutation[0].target
             if (!tab.classList.contains('active') && this.mapSearchString != '') {
                 this.$emit('get-map-search-string', this.mapSearchString)
-                console.log("FORM MAIN: emiting map search string")
+                console.log("\n\nFORM MAIN: emiting map search string")
             }
         });
         observer.observe(button, { attributeFilter: ['class'] });
@@ -106,21 +114,10 @@ export default {
     
   },
   methods: {
+
+    // LOCATION
     updateLocation(loc) {
         this.$emit('get-carta-location', loc)
-    },
-    updateInterlocutor (interlocutor) {
-        this.$emit('get-carta-interlocutor', interlocutor)
-    },
-    updateSaveInterlocutor (boolean) {
-        console.log("FORM MAIN: save interlocutor emit signal recived \nValue recived:")
-        console.log(boolean)
-        console.log("Component saveInterlocutor BEFORE:")
-        console.log(this.saveInterlocutor)
-        this.saveInterlocutor = boolean
-        console.log("Component saveInterlocutor AFTER:")
-        console.log(this.saveInterlocutor)
-        // this.$emit('get-save-interlocutor', this.saveInterlocutor)
     },
     updateMapString (string) {
         this.mapSearchString = string;
@@ -128,6 +125,25 @@ export default {
     emitMapSearchString () {
         this.$emit('get-map-search-string', this.mapSearchString)
     },
+
+    // INTERLOCUTOR
+    updateInterlocutor (interlocutor) {
+        this.$emit('get-carta-interlocutor', interlocutor)
+    },
+    updateSaveInterlocutor (saveIt) {
+        console.log("\n\nFORM MAIN: save interlocutor emit signal recived \nValue recived:")
+        console.log(saveIt)
+        console.log("Component saveInterlocutor BEFORE:")
+        console.log(this.saveInterlocutor)
+        this.saveInterlocutor = saveIt
+        console.log("Component saveInterlocutor AFTER:")
+        console.log(this.saveInterlocutor)
+        // this.$emit('get-save-interlocutor', this.saveInterlocutor)
+    },
+    updateInterlocutorValid (isValid) {
+        this.interlocutorValid = isValid
+    }
+
 }
 }
 </script>
