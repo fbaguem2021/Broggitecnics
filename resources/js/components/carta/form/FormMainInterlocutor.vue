@@ -109,7 +109,6 @@ export default {
         display: flex;
         flex-direction: column;
         height: 100%;
-        max-width: 850px;
     }
     label {
         font-size: 16px;
