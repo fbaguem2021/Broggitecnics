@@ -1,7 +1,8 @@
 <template>
     <form id="interlocutor-form" 
         @input.prevent="isFormValid($event.target)"
-        @focusin=" removeValidationClasses($event.target)">
+        @focusin=" removeValidationClasses($event.target)"
+        @focusout="this.validateInput($event.target)">
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3" id="phone-input-container">
@@ -30,16 +31,16 @@
         </div>
         <div class="form-check form-switch form-check-reverse my-4" id="save-interlocutor-container">
             <label class="form-check-label" for="saveInterlocutor">Guardar interlocutor</label>
-            <input v-model="saveInterlocutor" @change="emitSaveInterlocutor" class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" tabindex="5" @focusout="nextForm">
+            <input v-model="saveInterlocutor" @change="emitSaveInterlocutor" class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" @focusout="nextForm">
         </div>
     </form>
 </template>
 <script>
 export default {
     emits: [
+        'get-interlocutor',
         'is-new-interlocutor',
-        'save-interlocutor',
-        'carta-interlocutor',
+        'is-save-interlocutor',
         'is-form-valid'
     ],
     data() {
@@ -84,12 +85,12 @@ export default {
             this.$emit('is-form-valid', isValid)
         },
         emitInterlocutor () { 
-            this.$emit('carta-interlocutor', this.cartaInterlocutor)
+            this.$emit('get-interlocutor', this.cartaInterlocutor)
         },
         emitSaveInterlocutor() {
             console.log('FORM MAIN INTERLOCUTOR: input detected\nValue of saveInterlocutor')
             console.log(this.saveInterlocutor)
-            this.$emit('save-interlocutor', this.saveInterlocutor)
+            this.$emit('is-save-interlocutor', this.saveInterlocutor)
         },
         emitIsNewInterlocutor () {
             this.$emit('is-new-interlocutor', this.isNewInterlocutor)

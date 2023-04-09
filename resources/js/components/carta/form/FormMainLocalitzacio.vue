@@ -1,7 +1,8 @@
 <template>
     <form id="location-form" 
         @input.prevent="validateForm($event.target)"
-        @focusin=" removeValidationClasses($event.target)">
+        @focusin=" removeValidationClasses($event.target)"
+        @focusout="this.validateInput($event.target)">
       <div class="row align-items-center">
         <div class="d-flex col-4 mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>

@@ -31,8 +31,8 @@
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">
             <interlocutor-form 
-                @save-interlocutor="updateSaveInterlocutor" 
-                @carta-interlocutor="emitInterlocutor"
+                @get-interlocutor="emitInterlocutor"
+                @is-save-interlocutor="updateSaveInterlocutor" 
                 @is-form-valid="isInterlocutorValid"
             />
         </div>
@@ -40,15 +40,15 @@
             <localitzacio-form 
                 :localitzacioData="localitzacioData" 
                 @get-location="emitLocation" 
-                @get-map-serach-string="emitMapSearchString"
+                @get-map-serach-string="updateMapSearchString"
                 @is-form-valid="isLocationValid"
-                
             />
             <!-- @is-form-valid="updateLocationValid" -->
         </div>
         <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
             <incident-form 
-                :incidentData="incidentData" 
+                :incidentData="incidentData"
+                @get-incident="emitIncident"
                 @is-form-valid="isIncidentValid"
                 />
         </div>
@@ -69,11 +69,12 @@ export default {
     IncidentForm
   },
   emits: [
-    'get-carta-location',
-    'get-map-search-string',
     'get-carta-interlocutor',
+    'get-carta-location',
+    'get-carta-incident',
+    'get-map-search-string',
     'is-new-interlocutor',
-    'get-save-interlocutor'
+    'is-save-interlocutor'
   ],
   data() {
     return {
@@ -85,6 +86,7 @@ export default {
         interlocutor: {},
         localitzacio: {},
         incident: {},
+        mapSearchString: '',
         localitzacioData: {},
         incidentData: {}
     }
@@ -94,33 +96,42 @@ export default {
   },
   mounted() {
     const self = this;
-        axios
-            .get('cartaData')
-            .then(response => {
-                self.localitzacioData = response.data.localitzacio
-                self.incidentData = response.data.incident
-            })
-            .catch((error) => {})
+    axios
+        .get('cartaData')
+        .then(response => {
+            self.localitzacioData = response.data.localitzacio
+            self.incidentData = response.data.incident
+        })
+        .catch((error) => {})
 
     /**
-     * Observer that sends the location string to search in to the map to main carta trucada component
-     * This is sended when location tab is no longer active aka doesn't have active class no more. Hit the road jack
+     * Observer sends the location string to the map component to search it
+     * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
      */ 
-        const button = this.$refs.localitzacioTabButton;
-        const observer = new MutationObserver(mutation => {
-            const tab = mutation[0].target
-            if (!tab.classList.contains('active') && this.mapSearchString != '') {
-                this.$emit('get-map-search-string', this.mapSearchString)
-                console.log("\n\nFORM MAIN: emiting map search string")
-            }
-        });
-        observer.observe(button, { attributeFilter: ['class'] });
-    
-    
+    const button = this.$refs.localitzacioTabButton;
+    const observer = new MutationObserver(mutation => {
+        const tab = mutation[0].target
+        if (!tab.classList.contains('active') && this.mapSearchString != '') {
+            this.$emit('get-map-search-string', this.mapSearchString)
+            console.log("\n\nFORM MAIN: emiting map search string")
+        }
+    });
+    observer.observe(button, { attributeFilter: ['class'] });
   },
   methods: {
-    //VALIDATIONS
-    isInterlocutorValid (isValid) {
+    /**
+     * UPDATES
+     */
+    updateMapSearchString (mapString) {
+        this.mapSearchString = mapString
+    },
+
+    /**
+     * VALIDATIONS
+     * 
+     * Sets forms validation, this affects to the nav-item tabs icons
+     */
+     isInterlocutorValid (isValid) {
         this.interlocutorValid = isValid
     },
     isLocationValid (isValid) {
@@ -131,22 +142,24 @@ export default {
     },
     updateSaveInterlocutor (saveIt) {
         this.saveInterlocutor = saveIt
-        this.$emit('get-save-interlocutor', this.saveInterlocutor)
+        this.$emit('is-save-interlocutor', this.saveInterlocutor)
     },
 
-
-
-    // BRIDGE EMITS TO -> CARTA TRUCADA big daddy
+    /** 
+     * BRIDGE EMITS TO -> CARTA TRUCADA big daddy
+     * 
+     * Emits localitzacio, interlocutor and incident object
+     * when is valid emits the valid object, when it's false empty object
+     */
     emitLocation(loc) {
         this.$emit('get-carta-location', loc)
-    },
-    emitMapSearchString () {
-        this.$emit('get-map-search-string', this.mapSearchString)
     },
     emitInterlocutor (interlocutor) {
         this.$emit('get-carta-interlocutor', interlocutor)
     },
-
+    emitIncident (incident) {
+        this.$emit('get-carta-incident', incident)
+    },
 }
 }
 </script>
@@ -208,7 +221,6 @@ export default {
     @media (max-width: 1145px) {
         .nav-item {
             width: 180px;
-            height: 50%;
             padding: 10px 0;
         }
         .nav-link.active {
@@ -218,8 +230,13 @@ export default {
         }
 
     }
-    @media (max-width: 715px) {
-         .nav-item {
+    @media (max-width: 1030px) {
+        .nav-item {
+            height: 50%;
+        }
+    }
+    @media (max-width: 715px) {         
+        .nav-item {
             width: fit-content;
             height: 34%;
         }

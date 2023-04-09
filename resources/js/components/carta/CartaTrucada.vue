@@ -7,7 +7,7 @@
               <form-main 
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
-                @get-save-interlocutor="updateSaveInterlocutor"
+                @is-save-interlocutor="updateSaveInterlocutor"
                 @get-map-search-string="updateSearchString">
               </form-main>
               <transition name="fade">
