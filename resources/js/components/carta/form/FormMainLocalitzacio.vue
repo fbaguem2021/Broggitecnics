@@ -1,9 +1,7 @@
 <template>
     <form id="location-form" 
-      @input.prevent="validateForm($event.target)"
-      @focusin=" removeValidationClasses($event.target)"
-      @focusout="validateInput($event.target)"
-    >
+        @input.prevent="validateForm($event.target)"
+        @focusin=" removeValidationClasses($event.target)">
       <div class="row align-items-center">
         <div class="d-flex col-4 mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>
@@ -13,7 +11,7 @@
       <div class="row">        
         <div class="col-3" ref="provincia">
             <div class="form-floating mb-3">
-              <input v-model="provincia.input" @input="handleInput($event, provincies)" type="text" class="form-control" id="provincia" placeholder="provincia" list="provinciesList" autocomplete="off" ref="provinciaInput">
+              <input v-model="provincia.input" @input="handleInput($event, provincies)" type="text" class="form-control is-invalid" id="provincia" placeholder="provincia" list="provinciesList" autocomplete="off" ref="provinciaInput">
               <label for="provincia">Provincia</label>
               <datalist v-if="provincies && isCat" id="provinciesList">
                 <option v-for="(prov, index) in filteredList(provincies, provincia.input) " :key="index" :value="prov.nom"></option>
@@ -23,7 +21,7 @@
         <transition name="fade" @before-enter="adjustColumnSizes" @after-leave="adjustColumnSizes">
           <div v-show="isCat" class="col-4">
             <div class="form-floating mb-3">
-              <input v-model="comarca.input" @input="handleInput($event, comarques)" type="text" class="form-control" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off" ref="comarcaInput">
+              <input v-model="comarca.input" @input="handleInput($event, comarques)" type="text" class="form-control is-invalid" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off" ref="comarcaInput">
               <label for="comarca">Comarca</label>
               <datalist v-if="comarques" id="comarquesList">
                 <option v-for="(com, index) in filteredList(comarques, comarca.input)" :key="index" :value="com.nom"></option>
@@ -33,7 +31,7 @@
         </transition>
         <div class="col-5" ref="municipi">
             <div class="form-floating mb-3">
-              <input v-model="municipi.input" @input="handleInput($event, municipis)" type="text" class="form-control" id="municipi" placeholder="municipi" list="muncipisList" autocomplete="off" ref="municipiInput">
+              <input v-model="municipi.input" @input="handleInput($event, municipis)" type="text" class="form-control is-invalid" id="municipi" placeholder="municipi" list="muncipisList" autocomplete="off" ref="municipiInput">
               <label for="municipi">Municipi<span v-show="!isCat" style="opacity: 0.5; font-size: 15px;"> - opcional</span></label>
               <datalist v-if="municipis && isCat" id="muncipisList">
                 <option v-for="(mun, index) in filteredList(municipis, municipi.input)" :key="index" :value="mun.nom"></option>
@@ -196,13 +194,14 @@ export default {
       if (el.id != 'isCat') {
         var isValid = false;
         isValid = this[el.id].isValid ? true : false
-        if (el.id != 'tipusLoc') {
+        /* if (el.id != 'tipusLoc') {
           el.classList.toggle('is-valid', isValid)
         } else {
           el.classList.toggle('is-invalid', !isValid)
           el.classList.toggle('is-valid', isValid)
-        }
-
+        } */
+        el.classList.toggle('is-invalid', !isValid)
+        el.classList.toggle('is-valid', isValid)
       }
     },
     removeValidationClasses(el) {

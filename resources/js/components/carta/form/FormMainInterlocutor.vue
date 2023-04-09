@@ -1,9 +1,11 @@
 <template>
-    <form id="interlocutor-form" @input="emitInterlocutor" @focusout="isFormValid">    
+    <form id="interlocutor-form" 
+        @input.prevent="isFormValid($event.target)"
+        @focusin=" removeValidationClasses($event.target)">
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3" id="phone-input-container">
-                    <input v-model="phone" @focus="removeValidationClasses($event.target.classList)" @focusout="validateInput($event.target)" type="phone" class="form-control" :class="isNewInterlocutor ? 'is-invalid' : 'is-valid' " id="phone" placeholder="Telèfon" autocomplete="off">
+                    <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off" disabled>
                     <label for="phone">Telèfon</label>
                 </div>
             </div>
@@ -11,24 +13,21 @@
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3">
-                    <input v-model="name" @focus="removeValidationClasses($event.target.classList)" @focusout="validateInput($event.target)" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off">
+                    <input v-model="name.input" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off">
                     <label for="name">Nom</label>
                 </div>
             </div>
             <div class="col-8">
                 <div class="form-floating mb-3">
-                    <input v-model="surnames" @focus="removeValidationClasses($event.target.classList)" @focusout="validateInput($event.target)"  type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off">
+                    <input v-model="surnames.input" type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off">
                     <label for="surnames">Cognoms</label>
                 </div>
             </div>
         </div>
-       
-
         <div class="form-floating" id="antecedents-textArea-container">
             <textarea v-model="record" class="form-control" placeholder="Anota antecedents" id="antecedentsTextarea"></textarea>
             <label for="antecedentsTextarea">Antecedents</label>
         </div>
-
         <div class="form-check form-switch form-check-reverse my-4" id="save-interlocutor-container">
             <label class="form-check-label" for="saveInterlocutor">Guardar interlocutor</label>
             <input v-model="saveInterlocutor" @change="emitSaveInterlocutor" class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" tabindex="5" @focusout="nextForm">
@@ -47,9 +46,15 @@ export default {
         return {
             isNewInterlocutor: true,
             saveInterlocutor: false,
-            phone: '',
-            name: '',
-            surnames: '',
+            phone: '697215851',
+            name: {
+                input: '',
+                isValid: false
+            },
+            surnames: {
+                input: '',
+                isValid: false
+            },
             record: '',
             cartaInterlocutor: {
                 telefon: '',
@@ -60,26 +65,23 @@ export default {
         }
     },
     methods: {
-        nextForm () {
-            console.log("To the next form i say!")
+        removeValidationClasses(el) {
+            el.classList.remove('is-valid', 'is-invalid');
         },
-        removeValidationClasses(classList) {
-            classList.remove('is-valid', 'is-invalid');
-        },
-        validateInput (input) {
-            var isValid = false;
-            if (input.value != '') {
-                isValid = true
-                if (input.id === 'phone') {
-                }
+        validateInput (el) {
+            if (el.id === 'name' || el.id === 'surnames') {
+                var isValid = false;
+                isValid = el.value != '' ? true : false;
+                this[el.id].isValid = isValid
+                el.classList.toggle('is-valid', isValid)
+                el.classList.toggle('is-invalid', !isValid)
             }
-            input.classList.toggle('is-valid', isValid)
-            input.classList.toggle('is-invalid', !isValid)
         },
-        isFormValid() {
-            const isValid =  !this.$el.querySelector('.is-invalid')
-            this.$emit('is-form-valid', isValid)
+        isFormValid(el) {
+            this.validateInput(el)
+            const isValid = (this.name.isValid && this.surnames.isValid)
             console.log("Form is valid?: " + isValid)
+            this.$emit('is-form-valid', isValid)
         },
         emitInterlocutor () { 
             this.$emit('carta-interlocutor', this.cartaInterlocutor)

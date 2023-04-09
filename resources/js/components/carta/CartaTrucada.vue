@@ -89,10 +89,10 @@ export default {
       bottom: 0;
       left: 0;
       right: 0;
-      height: 40px; /* set the height of the div */
-      background: linear-gradient(to bottom, rgba(250, 80, 80, 0) 0%, rgba(250, 80, 80, 1) 100%);
-      /* background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgb(242, 242, 242) 100%); */
-      filter: blur(1px); /* set the amount of blur */
+      height: 30px; /* set the height of the div */
+      border-radius: 0 0 5px 5px;
+      /* background: linear-gradient(to bottom, rgba(250, 80, 80, 0) 0%, rgba(250, 80, 80, 1) 100%); */
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(230, 230, 230, 1) 100%);
   }
   .fade-enter-active,
     .fade-leave-active {

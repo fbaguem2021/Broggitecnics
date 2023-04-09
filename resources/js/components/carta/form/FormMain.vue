@@ -3,10 +3,10 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="interlocutor-tab" data-bs-toggle="tab" data-bs-target="#interlocutor" type="button" role="tab" aria-controls="Interlocutor" aria-selected="true">Interlocutor
                 <div class="nav-link-icons">
-                    <i v-if="saveInterlocutor && newInterlocutor" class="bi bi-person-plus ps-1 pe-1"></i>
-                    <i v-else-if="saveInterlocutor && !newInterlocutor" class="bi bi-person-gear pe-1"></i>
                     <i v-if="interlocutorValid" class="bi bi-clipboard2-check"></i>
                     <i v-else class="bi bi-clipboard2-x"></i>
+                    <i v-if="saveInterlocutor && newInterlocutor" class="bi bi-person-plus ps-1 ps-1"></i>
+                    <i v-else-if="saveInterlocutor && !newInterlocutor" class="bi bi-person-gear ps-1"></i>
                 </div>
             </button>
         </li>
@@ -32,16 +32,16 @@
         <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">
             <interlocutor-form 
                 @save-interlocutor="updateSaveInterlocutor" 
-                @carta-interlocutor="updateInterlocutor"
-                @is-form-valid="updateInterlocutorValid"
+                @carta-interlocutor="emitInterlocutor"
+                @is-form-valid="isInterlocutorValid"
             />
         </div>
         <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">
             <localitzacio-form 
                 :localitzacioData="localitzacioData" 
-                @get-location="updateLocation" 
-                @get-map-serach-string="updateMapString"
-                @is-form-valid="updateLocationValid"
+                @get-location="emitLocation" 
+                @get-map-serach-string="emitMapSearchString"
+                @is-form-valid="isLocationValid"
                 
             />
             <!-- @is-form-valid="updateLocationValid" -->
@@ -49,10 +49,9 @@
         <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
             <incident-form 
                 :incidentData="incidentData" 
-                @is-form-valid="updateIncidentValid"
+                @is-form-valid="isIncidentValid"
                 />
         </div>
-
     </div>
 </template>
 <script>
@@ -81,12 +80,11 @@ export default {
         interlocutorValid: false,
         localitzacioValid: false,
         incidentValid: false,
-        saveInterlocutor: false,
         newInterlocutor: true,
+        saveInterlocutor: false,
         interlocutor: {},
         localitzacio: {},
         incident: {},
-        mapSearchString: '',
         localitzacioData: {},
         incidentData: {}
     }
@@ -104,6 +102,10 @@ export default {
             })
             .catch((error) => {})
 
+    /**
+     * Observer that sends the location string to search in to the map to main carta trucada component
+     * This is sended when location tab is no longer active aka doesn't have active class no more. Hit the road jack
+     */ 
         const button = this.$refs.localitzacioTabButton;
         const observer = new MutationObserver(mutation => {
             const tab = mutation[0].target
@@ -117,49 +119,40 @@ export default {
     
   },
   methods: {
-
-    // LOCATION
-    updateLocation(loc) {
-        this.$emit('get-carta-location', loc)
+    //VALIDATIONS
+    isInterlocutorValid (isValid) {
+        this.interlocutorValid = isValid
     },
-    updateMapString (string) {
-        this.mapSearchString = string;
-    },
-    updateLocationValid (isValid) {
+    isLocationValid (isValid) {
         this.localitzacioValid = isValid
+    },
+    isIncidentValid (isValid) {
+        this.incidentValid = isValid;
+    },
+    updateSaveInterlocutor (saveIt) {
+        this.saveInterlocutor = saveIt
+        this.$emit('get-save-interlocutor', this.saveInterlocutor)
+    },
+
+
+
+    // BRIDGE EMITS TO -> CARTA TRUCADA big daddy
+    emitLocation(loc) {
+        this.$emit('get-carta-location', loc)
     },
     emitMapSearchString () {
         this.$emit('get-map-search-string', this.mapSearchString)
     },
-
-    // INTERLOCUTOR
-    updateInterlocutor (interlocutor) {
+    emitInterlocutor (interlocutor) {
         this.$emit('get-carta-interlocutor', interlocutor)
     },
-    updateSaveInterlocutor (saveIt) {
-        console.log("\n\nFORM MAIN: save interlocutor emit signal recived \nValue recived:")
-        console.log(saveIt)
-        console.log("Component saveInterlocutor BEFORE:")
-        console.log(this.saveInterlocutor)
-        this.saveInterlocutor = saveIt
-        console.log("Component saveInterlocutor AFTER:")
-        console.log(this.saveInterlocutor)
-        // this.$emit('get-save-interlocutor', this.saveInterlocutor)
-    },
-    updateInterlocutorValid (isValid) {
-        this.interlocutorValid = isValid
-    },
-
-    // INCIDENT
-    updateIncidentValid (isValid) {
-        this.incidentValid = isValid;
-    }
 
 }
 }
 </script>
 <style scoped>
     .nav-tabs {
+        align-items: end;
         background-color: #DFE2E6;
         border-bottom: 2px solid var(--primary);
         border-radius: 5px 5px 0 0;
@@ -169,6 +162,7 @@ export default {
     }
     .nav-item {
         padding-top: 20px;
+        height: 100%;
         width: 200px;
         min-width: 180px;
         text-align: center;
@@ -180,6 +174,7 @@ export default {
         
     }
     .nav-link {
+        display: inline-flex;
         position: relative;
         text-align: start;
         padding-left: 10%;
@@ -187,10 +182,8 @@ export default {
         color: var(--success);
     }
     .nav-link-icons {
-        position: absolute;
-        top: 50%;
-        right: 5%;
-        transform: translateY(-50%);
+        display: inline-flex;
+        padding-left: 10px;
     }
    .nav-link.active {
         border: 2px solid var(--primary);
@@ -215,14 +208,20 @@ export default {
     @media (max-width: 1145px) {
         .nav-item {
             width: 180px;
+            height: 50%;
+            padding: 10px 0;
         }
-
-    }
-    @media (max-width: 775px) {
         .nav-link.active {
             border-radius: 10px;
             border-bottom: 2px solid var(--primary);;
             padding: 8px !important;
+        }
+
+    }
+    @media (max-width: 715px) {
+         .nav-item {
+            width: fit-content;
+            height: 34%;
         }
     }
 </style>

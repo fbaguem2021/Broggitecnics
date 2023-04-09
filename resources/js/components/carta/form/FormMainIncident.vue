@@ -1,14 +1,16 @@
 <template>
-  <form @input="validateForm">
+  <form 
+    @input.prevent="validateForm($event.target)"
+    @focusin=" removeValidationClasses($event.target)">
     <div class="form-floating mb-3" id="tipusIncident-container">
-      <input v-model="tipusIncident.name" @input="handleInput('tipusIncident', $event, tipusIncidents)" @change="validateInput($event.target)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
+      <input v-model="tipusIncident.input" @input="handleInput('tipusIncident', $event, tipusIncidents)" @change="validateInput($event.target)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
       <label for="tipusIncident">Tipus d'incident</label>
       <datalist  id="tipusIncidentsList">
         <option v-for="(tipus, index) in tipusIncidents" :key="index" :value="tipus.nom"></option>
       </datalist>
     </div>
     <div class="form-floating mb-3" id="incident-container">
-      <input v-model="incident.name" @input="handleInput('incident', $event, incidents)" @change="validateInput($event.target)"  type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
+      <input v-model="incident.input" @input="handleInput('incident', $event, incidents)" @change="validateInput($event.target)"  type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
       <label for="incident">Incident</label>
       <datalist  id="incidentsList">
         <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
@@ -41,11 +43,11 @@ export default {
   data() {
     return {
       tipusIncident: {
-        name: '',
+        input: '',
         isValid: false
       },
       incident: {
-        name: '',
+        input: '',
         codi: '',
         definicio: '',
         instruccions: '',
@@ -88,7 +90,8 @@ export default {
       }
       el.classList.toggle('is-valid', isValid)
     },
-    validateForm() {
+    validateForm(el) {
+      this.validateInput(el)
       const isValid = this.tipusIncident.isValid && this.incident.isValid ? true : false
       this.$emit('is-form-valid', isValid)
       console.log("Form is valid?: " + isValid)
@@ -144,7 +147,7 @@ export default {
       this.incident.tipus_incidents_id = incident.tipus_incidents_id
       const tipusIncident = this.tipusIncidents.find(tipus => tipus.id === incident.tipus_incidents_id)
       if (tipusIncident) {
-        this.tipusIncident.name = tipusIncident.nom
+        this.tipusIncident.input = tipusIncident.nom
         this.cartaIncident.tipusIncident = tipusIncident.id
         this.tipusIncident.isValid = true
         this.validateInput(this.$refs.tipusIncidentInput)
