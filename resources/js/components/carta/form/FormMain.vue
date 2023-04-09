@@ -41,6 +41,7 @@
                 :localitzacioData="localitzacioData" 
                 @get-location="updateLocation" 
                 @get-map-serach-string="updateMapString"
+                @is-form-valid="updateLocationValid"
                 
             />
             <!-- @is-form-valid="updateLocationValid" -->
@@ -123,6 +124,9 @@ export default {
     },
     updateMapString (string) {
         this.mapSearchString = string;
+    },
+    updateLocationValid (isValid) {
+        this.localitzacioValid = isValid
     },
     emitMapSearchString () {
         this.$emit('get-map-search-string', this.mapSearchString)

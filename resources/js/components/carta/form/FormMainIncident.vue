@@ -1,5 +1,5 @@
 <template>
-  <form @input="isFormValid($event)">
+  <form @input="validateForm">
     <div class="form-floating mb-3" id="tipusIncident-container">
       <input v-model="tipusIncident.name" @input="handleInput('tipusIncident', $event, tipusIncidents)" @change="validateInput($event.target)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
       <label for="tipusIncident">Tipus d'incident</label>
@@ -8,7 +8,7 @@
       </datalist>
     </div>
     <div class="form-floating mb-3" id="incident-container">
-      <input v-model="incident.name" @input="handleInput('incident', $event, incidents)" @change="validateInput($event.target)"  type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
+      <input v-model="incident.name" @input="handleInput('incident', $event, incidents)" @change="validateInput($event.target)"  type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
       <label for="incident">Incident</label>
       <datalist  id="incidentsList">
         <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
@@ -60,13 +60,13 @@ export default {
   },
   computed: {
     tipusIncidents () {
-      return this.incidentData ? this.incidentData.tipusIncident : []
+      return this.incidentData.tipusIncident ? this.incidentData.tipusIncident : []
     },
     incidents () {
       if (this.cartaIncident.tipusIncident) {
         return this.incidentData.incidents.filter(incident => incident.tipus_incidents_id === this.cartaIncident.tipusIncident)
       } else {
-        return this.incidentData ? this.incidentData.incidents : []
+        return this.incidentData.incidents ? this.incidentData.incidents : []
       }
      
     },
@@ -88,7 +88,7 @@ export default {
       }
       el.classList.toggle('is-valid', isValid)
     },
-    isFormValid() {
+    validateForm() {
       const isValid = this.tipusIncident.isValid && this.incident.isValid ? true : false
       this.$emit('is-form-valid', isValid)
       console.log("Form is valid?: " + isValid)
@@ -123,10 +123,7 @@ export default {
             ...this.cartaIncident,
             [event.target.id]: ''
           }
-        } else if (!matchedInputLetter){
-            const previousValue = this[inputName].name.slice(0, -1)
-            this[inputName].name = previousValue
-        } 
+        }
       }
 
     },
@@ -137,6 +134,7 @@ export default {
           this.incident[prop] = ''
         }
         this.cartaIncident.incident = ''
+        this.validateInput(this.$refs.incidentInput)
       }
     },
     incidentSelected (incident) {
