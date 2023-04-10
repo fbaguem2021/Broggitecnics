@@ -192,7 +192,7 @@ export default {
       this.$emit('is-form-valid', isValid)
     },
     validateInput (el) {
-      if (el.id != 'isCat') {
+      if (el.id != 'isCat' && el.id != 'referenciesTextarea') {
         var isValid = false;
         isValid = this[el.id].isValid ? true : false
         /* if (el.id != 'tipusLoc') {

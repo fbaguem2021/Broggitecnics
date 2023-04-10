@@ -19,13 +19,13 @@
     </div>
     <div v-show="incident.definicio">
       <div class="form-floating">
-        <textarea :value="incidentDefinicio" :style="textareaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident" disabled></textarea>
+        <textarea :value="incidentDefinicio" :style="textareaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident" disabled tabindex="-1"></textarea>
         <label for="incidentDefinicio">Descripció</label>
       </div>
     </div>
     <div v-show="incident.instruccions">
       <div class="form-floating mb-3">
-        <textarea :value="incident.instruccions.toLowerCase()" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" disabled></textarea>
+        <textarea :value="incident.instruccions.toLowerCase()" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" disabled tabindex="-1"></textarea>
         <label for="incidentInstruccions">Instruccions a seguir</label>
       </div>
     </div>

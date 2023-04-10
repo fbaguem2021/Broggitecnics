@@ -1,7 +1,7 @@
 <template>
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="interlocutor-tab" data-bs-toggle="tab" data-bs-target="#interlocutor" type="button" role="tab" aria-controls="Interlocutor" aria-selected="true">Interlocutor
+            <button class="nav-link active" id="interlocutor-tab" data-bs-toggle="tab" data-bs-target="#interlocutor" type="button" role="tab" aria-controls="Interlocutor" aria-selected="true" ref="interlocutorTab">Interlocutor
                 <div class="nav-link-icons">
                     <i v-if="interlocutorValid" class="bi bi-clipboard2-check"></i>
                     <i v-else class="bi bi-clipboard2-x"></i>
@@ -11,7 +11,7 @@
             </button>
         </li>
         <li class="nav-item" role="presentation" >
-            <button class="nav-link" id="localitzacio-tab" data-bs-toggle="tab" data-bs-target="#localitzacio" type="button" role="tab" aria-controls="Localitzacio" aria-selected="false" ref="localitzacioTabButton">Localització
+            <button class="nav-link" id="localitzacio-tab" data-bs-toggle="tab" data-bs-target="#localitzacio" type="button" role="tab" aria-controls="Localitzacio" aria-selected="false" ref="localitzacioTab">Localització
                 <div class="nav-link-icons">
                     <i v-if="localitzacioValid" class="bi bi-clipboard2-check"></i>
                     <i v-else class="bi bi-clipboard2-x"></i>
@@ -20,7 +20,7 @@
             
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="incident-tab" data-bs-toggle="tab" data-bs-target="#incident" type="button" role="tab" aria-controls="Incident" aria-selected="false">Incident
+            <button class="nav-link" id="incident-tab" data-bs-toggle="tab" data-bs-target="#incident" type="button" role="tab" aria-controls="Incident" aria-selected="false" ref="incidentTab">Incident
                 <div class="nav-link-icons">
                     <i v-if="incidentValid" class="bi bi-clipboard2-check"></i>
                     <i v-else class="bi bi-clipboard2-x"></i>
@@ -29,14 +29,14 @@
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab">
+        <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
             <interlocutor-form 
                 @get-interlocutor="emitInterlocutor"
                 @is-save-interlocutor="updateSaveInterlocutor" 
                 @is-form-valid="isInterlocutorValid"
             />
         </div>
-        <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab">
+        <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
             <localitzacio-form 
                 :localitzacioData="localitzacioData" 
                 @get-location="emitLocation" 
@@ -45,7 +45,7 @@
             />
             <!-- @is-form-valid="updateLocationValid" -->
         </div>
-        <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab">
+        <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
             <incident-form 
                 :incidentData="incidentData"
                 @get-incident="emitIncident"
@@ -55,10 +55,11 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 import InterlocutorForm from './FormMainInterlocutor.vue';
 import LocalitzacioForm from './FormMainLocalitzacio.vue';
 import IncidentForm from './FormMainIncident.vue';
-import axios from 'axios';
+import * as bootstrap from 'bootstrap';
 
 export default {
   props: {
@@ -88,7 +89,10 @@ export default {
         incident: {},
         mapSearchString: '',
         localitzacioData: {},
-        incidentData: {}
+        incidentData: {},
+        interlocutorTab: Object,
+        localitzacioTab: Object,
+        incidentTab: Object
     }
   },
   computed: {
@@ -108,7 +112,7 @@ export default {
      * Observer sends the location string to the map component to search it
      * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
      */ 
-    const button = this.$refs.localitzacioTabButton;
+    const button = this.$refs.localitzacioTab;
     const observer = new MutationObserver(mutation => {
         const tab = mutation[0].target
         if (!tab.classList.contains('active') && this.mapSearchString != '') {
@@ -117,10 +121,59 @@ export default {
         }
     });
     observer.observe(button, { attributeFilter: ['class'] });
+
+    this.$refs.interlocutorPanel.addEventListener('keydown', this.handleTabKey);
+    this.$refs.localitzacioPanel.addEventListener('keydown', this.handleTabKey);
+    this.$refs.incidentPanel.addEventListener('keydown', this.handleTabKey);
+
+    this.interlocutorTab = new bootstrap.Tab(this.$refs.interlocutorTab);
+    this.localitzacioTab = new bootstrap.Tab(this.$refs.localitzacioTab);
+    this.incidentTab = new bootstrap.Tab(this.$refs.incidentTab);
+
   },
+  
   methods: {
     /**
+     * Checks for tab key pressed
+     * inputElements: gets all inputs and textareas of the tabPanel that are not disabled (not focusable)
+     * lastInputElement: gets last input or textarea of the tabPanel
+     * If the event target is last child of tab panel then redirects to next Tab
+     */
+    handleTabKey(event) {
+    const isTabKey = event.keyCode === 9; //keycode of tab
+    const inputElements = event.currentTarget.querySelectorAll('input:not([disabled]), textarea:not([disabled])');
+    const lastInputElement = inputElements[inputElements.length - 1];
+    const isLastInput = event.target === lastInputElement;
+
+    if (isTabKey && isLastInput) {
+      const tabIndex = this.getTabIndex(event.currentTarget);
+      console.log("TABINDEX: " + tabIndex)
+      if (tabIndex < 2) {
+        const nextTab = this.getTabObject(tabIndex + 1);
+        nextTab.show();
+      }
+    }
+  },
+  
+  getTabIndex(tabPanel) {
+    const tabPanes = [this.$refs.interlocutorPanel, this.$refs.localitzacioPanel, this.$refs.incidentPanel];
+    return tabPanes.indexOf(tabPanel);
+  },
+  getTabObject(index) {
+    // Return the corresponding tab object based on the index
+    switch (index) {
+      case 0:
+        return this.interlocutorTab;
+      case 1:
+        return this.localitzacioTab;
+      case 2:
+        return this.incidentTab;
+    }
+  },
+
+    /**
      * UPDATES
+     * ----------------------------
      */
     updateMapSearchString (mapString) {
         this.mapSearchString = mapString
@@ -128,7 +181,7 @@ export default {
 
     /**
      * VALIDATIONS
-     * 
+     * ---------------------------------------------------
      * Sets forms validation, this affects to the nav-item tabs icons
      */
      isInterlocutorValid (isValid) {
@@ -147,7 +200,7 @@ export default {
 
     /** 
      * BRIDGE EMITS TO -> CARTA TRUCADA big daddy
-     * 
+     * -----------------------------------------------------
      * Emits localitzacio, interlocutor and incident object
      * when is valid emits the valid object, when it's false empty object
      */
