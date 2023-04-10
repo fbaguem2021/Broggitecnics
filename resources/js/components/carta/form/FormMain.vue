@@ -112,15 +112,13 @@ export default {
      * Observer sends the location string to the map component to search it
      * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
      */ 
-    const button = this.$refs.localitzacioTab;
     const observer = new MutationObserver(mutation => {
-        const tab = mutation[0].target
-        if (!tab.classList.contains('active') && this.mapSearchString != '') {
+        if (!mutation[0].target.classList.contains('active') && this.mapSearchString != '') {
             this.$emit('get-map-search-string', this.mapSearchString)
             console.log("\n\nFORM MAIN: emiting map search string")
         }
     });
-    observer.observe(button, { attributeFilter: ['class'] });
+    observer.observe(this.$refs.localitzacioTab, { attributeFilter: ['class'] });
 
     this.$refs.interlocutorPanel.addEventListener('keydown', this.handleTabKey);
     this.$refs.localitzacioPanel.addEventListener('keydown', this.handleTabKey);
@@ -129,7 +127,6 @@ export default {
     this.interlocutorTab = new bootstrap.Tab(this.$refs.interlocutorTab);
     this.localitzacioTab = new bootstrap.Tab(this.$refs.localitzacioTab);
     this.incidentTab = new bootstrap.Tab(this.$refs.incidentTab);
-
   },
   
   methods: {
@@ -141,15 +138,15 @@ export default {
      */
     handleTabKey(event) {
     const isTabKey = event.keyCode === 9; //keycode of tab
-    const inputElements = event.currentTarget.querySelectorAll('input:not([disabled]), textarea:not([disabled])');
+    const inputElements = event.currentTarget.querySelectorAll('input:not([disabled]), textarea:not([disabled])'); //node list array
     const lastInputElement = inputElements[inputElements.length - 1];
     const isLastInput = event.target === lastInputElement;
 
     if (isTabKey && isLastInput) {
       const tabIndex = this.getTabIndex(event.currentTarget);
-      console.log("TABINDEX: " + tabIndex)
       if (tabIndex < 2) {
         const nextTab = this.getTabObject(tabIndex + 1);
+        console.log(tabIndex)
         nextTab.show();
       }
     }

@@ -19,13 +19,13 @@
     </div>
     <div v-show="incident.definicio">
       <div class="form-floating">
-        <textarea :value="incidentDefinicio" :style="textareaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident" disabled tabindex="-1"></textarea>
+        <textarea :value="incidentDefinicio" :style="textareaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident"></textarea>
         <label for="incidentDefinicio">Descripció</label>
       </div>
     </div>
     <div v-show="incident.instruccions">
       <div class="form-floating mb-3">
-        <textarea :value="incident.instruccions.toLowerCase()" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" disabled tabindex="-1"></textarea>
+        <textarea :value="incident.instruccions.toLowerCase()" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir"></textarea>
         <label for="incidentInstruccions">Instruccions a seguir</label>
       </div>
     </div>
@@ -186,5 +186,13 @@ export default {
   #tipusIncident-container {
     width: 40%;
     min-width: 230px;
+  }
+  .form-control-plaintext:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #1266e2;
+    border-width: 2px;
+    outline: 0;
+    box-shadow: 0 0 4px 2px rgba(18, 102, 226, 0.2);
   }
 </style>

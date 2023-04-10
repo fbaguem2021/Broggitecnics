@@ -14,7 +14,7 @@
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3">
-                    <input v-model="name.input" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off">
+                    <input v-model="name.input" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off" autofocus>
                     <label for="name">Nom</label>
                 </div>
             </div>
