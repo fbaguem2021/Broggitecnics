@@ -7,6 +7,7 @@
         <div class="d-flex col-4 mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>
           <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" @click="setOutOfCat" >
+          <i class="bi bi-arrow-left" id="isCatFocus"></i>
         </div>
       </div>
       <div class="row">        
@@ -40,7 +41,7 @@
             </div>
         </div>
         <div class="col-1 pb-3 reset-row">
-            <i class="bi bi-clipboard-x" @click="resetRow"></i>
+            <i class="bi bi-clipboard-x" @click="resetRow" @keydown="keyResetRow($event)" tabindex="0"></i>
         </div>
       </div>
       <transition name="fade">
@@ -196,7 +197,7 @@ export default {
       const isValid =  (this.provincia.isValid &&
                          this.comarca.isValid &&
                          this.municipi.isValid &&
-                         this.tipusLoc.isValid) 
+                         this.tipusLoc.isValid)
       this.$emit('is-form-valid', isValid)
     },
     validateInput (el) {
@@ -218,6 +219,7 @@ export default {
     removeValidationClasses(el) {
       el.classList.remove('is-valid', 'is-invalid');
     },
+    // Handles click on row reset button
     resetRow () {
       if ( this.provincia.input || this.comarca.input || this.municipi.input ) {
         this.resetProvincia()
@@ -226,7 +228,12 @@ export default {
         this.validateForm()
         console.log('reseting')
       }
-      
+    },
+    //Handles keyPress when focused on row button
+    keyResetRow(event) {
+      if (event.keyCode === 13 || event.keyCode === 32) {
+        this.resetRow()
+      }
     },
     resetProvincia () {
       this.provincia.id = ''
@@ -409,7 +416,7 @@ export default {
     font-size: 20px;
     transition: transform .12s ease-in-out;
   }
-  .reset-row i:hover::before {
+  .reset-row i:hover::before , .reset-row i:focus::before{
     cursor: pointer;
     content: '\F723';
     color: #e21212;
@@ -423,10 +430,19 @@ export default {
 
   #referenciesTextarea {
     height: 100%;
+    resize: none;
   }
 
   #isCat-conatiner {
     min-width: 125px;
+  }
+
+  #isCatFocus::before {
+    content: '';
+    transform: translateX(5px);
+  }
+  #isCat:focus ~ #isCatFocus::before {
+    content: '\F12F';
   }
 
   /* Vue transitions animations */
