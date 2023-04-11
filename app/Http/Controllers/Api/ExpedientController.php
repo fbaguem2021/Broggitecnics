@@ -18,19 +18,19 @@ class ExpedientController extends Controller
     public function index($filter , $value = null, $direction = null)
     {
 
-        $query = Expedient::select('expedients.*', DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
+        $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
             ->leftJoin('cartes_trucades', 'cartes_trucades.expedients_id', '=', 'expedients.id')
             ->groupBy('expedients.id');
 
         if ($filter == 'all') {
             
         } else if ($filter == 'orderBy'){
-            $expedients = $query->orderBy($value, $direction);
+            $query->orderBy($value, $direction);
         } else  if ($filter == 'none'){
-            $expedients = [];
+
         }
         else{
-            $expedients = $query->where($filter, $value);
+            $query->where($filter, $value);
         }
 
         $expedients = $query->paginate(8);
