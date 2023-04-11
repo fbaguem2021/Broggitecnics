@@ -1,6 +1,6 @@
 <template>
   <form 
-    @input.prevent="validateForm($event.target)"
+    @input.prevent="validateInput($event.target)"
     @focusin=" removeValidationClasses($event.target)"
     @focusout="this.validateInput($event.target)">
     <div class="form-floating mb-3" id="tipusIncident-container">
@@ -19,13 +19,13 @@
     </div>
     <div v-show="incident.definicio">
       <div class="form-floating">
-        <textarea :value="incidentDefinicio" :style="textareaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident"></textarea>
+        <textarea :value="incidentDefinicio" :style="textAreaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident"></textarea>
         <label for="incidentDefinicio">Descripció</label>
       </div>
     </div>
     <div v-show="incident.instruccions">
       <div class="form-floating mb-3">
-        <textarea :value="incident.instruccions.toLowerCase()" :style="textareaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir"></textarea>
+        <textarea :value="incident.instruccions.toLowerCase()" :style="textAreaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir"></textarea>
         <label for="incidentInstruccions">Instruccions a seguir</label>
       </div>
     </div>
@@ -57,7 +57,6 @@ export default {
         isValid: false
       },
       cartaIncident: {
-        tipusIncident: '',
         incident: ''
       }
     }
@@ -94,16 +93,14 @@ export default {
         el.classList.toggle('is-invalid', !isValid)
       }
       el.classList.toggle('is-valid', isValid)
+      this.validateForm()
     },
-    validateForm (el) {
-      this.validateInput(el)
+    validateForm () {
       const isValid = this.tipusIncident.isValid
       if (isValid) {
         this.$emit('get-incident', this.cartaIncident)
       }
       this.$emit('is-form-valid', isValid)
-      console.log("\nFORM MAIN INCIDENT:")
-      console.log("Form is valid?: " + isValid)
     },
     handleInput(inputName, event, list) {
       const inputValue = event.target.value
@@ -167,7 +164,7 @@ export default {
         item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
       ).join('');
     },
-    textareaHeight(text) {
+    textAreaHeight(text) {
       const lineHeight = 50; // adjust as needed
       const minHeight = lineHeight * 2; // adjust as needed
       const contentLength = text.length;

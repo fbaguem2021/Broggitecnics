@@ -1,6 +1,6 @@
 <template>
     <form id="interlocutor-form" 
-        @input.prevent="isFormValid($event.target)"
+        @input.prevent="validateInput($event.target)"
         @focusin=" removeValidationClasses($event.target)"
         @focusout="this.validateInput($event.target)">
         <div class="row">
@@ -77,9 +77,9 @@ export default {
                 el.classList.toggle('is-valid', isValid)
                 el.classList.toggle('is-invalid', !isValid)
             }
+            this.validateForm()
         },
-        isFormValid(el) {
-            this.validateInput(el)
+        validateForm() {
             const isValid = (this.name.isValid && this.surnames.isValid)
             console.log("Form is valid?: " + isValid)
             this.$emit('is-form-valid', isValid)
@@ -97,10 +97,8 @@ export default {
         }
     },
     mounted() {
-
         // DEBUGGING DEV DEV DEV
         this.emitIsNewInterlocutor
-
     },
 }
 </script>

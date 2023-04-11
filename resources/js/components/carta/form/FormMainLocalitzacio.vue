@@ -1,6 +1,6 @@
 <template>
     <form id="location-form" 
-        @input.prevent="validateForm($event.target)"
+        @input.prevent="validateInput($event.target)"
         @focusin=" removeValidationClasses($event.target)"
         @focusout="this.validateInput($event.target)">
       <div class="row align-items-center">
@@ -12,7 +12,7 @@
       <div class="row">        
         <div class="col-3" ref="provincia">
             <div class="form-floating mb-3">
-              <input v-model="provincia.input" @input="handleInput($event, provincies)" type="text" class="form-control is-invalid" id="provincia" placeholder="provincia" list="provinciesList" autocomplete="off" ref="provinciaInput">
+              <input v-model="provincia.input" @input="handleInput($event, provincies)" type="text" class="form-control" id="provincia" placeholder="provincia" list="provinciesList" autocomplete="off" ref="provinciaInput">
               <label for="provincia">Provincia</label>
               <datalist v-if="provincies && isCat" id="provinciesList">
                 <option v-for="(prov, index) in filteredList(provincies, provincia.input) " :key="index" :value="prov.nom"></option>
@@ -22,7 +22,7 @@
         <transition name="fade" @before-enter="adjustColumnSizes" @after-leave="adjustColumnSizes">
           <div v-show="isCat" class="col-4">
             <div class="form-floating mb-3">
-              <input v-model="comarca.input" @input="handleInput($event, comarques)" type="text" class="form-control is-invalid" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off" ref="comarcaInput">
+              <input v-model="comarca.input" @input="handleInput($event, comarques)" type="text" class="form-control" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off" ref="comarcaInput">
               <label for="comarca">Comarca</label>
               <datalist v-if="comarques" id="comarquesList">
                 <option v-for="(com, index) in filteredList(comarques, comarca.input)" :key="index" :value="com.nom"></option>
@@ -30,14 +30,17 @@
             </div>
         </div>
         </transition>
-        <div class="col-5" ref="municipi">
+        <div class="col-4" ref="municipi">
             <div class="form-floating mb-3">
-              <input v-model="municipi.input" @input="handleInput($event, municipis)" type="text" class="form-control is-invalid" id="municipi" placeholder="municipi" list="muncipisList" autocomplete="off" ref="municipiInput">
+              <input v-model="municipi.input" @input="handleInput($event, municipis)" type="text" class="form-control" id="municipi" placeholder="municipi" list="muncipisList" autocomplete="off" ref="municipiInput">
               <label for="municipi">Municipi<span v-show="!isCat" style="opacity: 0.5; font-size: 15px;"> - opcional</span></label>
               <datalist v-if="municipis && isCat" id="muncipisList">
                 <option v-for="(mun, index) in filteredList(municipis, municipi.input)" :key="index" :value="mun.nom"></option>
               </datalist>
             </div>
+        </div>
+        <div class="col-1 pb-3 reset-row">
+            <i class="bi bi-clipboard-x" @click="resetRow"></i>
         </div>
       </div>
       <transition name="fade">
@@ -52,9 +55,12 @@
                 <label for="provincia">Tipus de localització</label>
               </div>
             </div>
-            <div v-show=" tipusLoc.input.toLowerCase() === 'carrer' " class="col-4">
+            <div v-show=" tipusLoc.input.toLowerCase() === 'carrers' " class="col-4">
               <div class="form-floating mb-3">
-                <input v-model="tipusVia" type="text" class="form-control" id="tipusVia" placeholder="Tipus via" autocomplete="off">
+                <input v-model="tipusVia" type="text" class="form-control" id="tipusVia" placeholder="Tipus via" list="viesList" autocomplete="off">
+                <datalist v-if="tipusVies" id="viesList">
+                  <option v-for="(via, index) in tipusVies" :key="index" :value="via.nom"></option>
+                </datalist>
                 <label for="tipusVia">Via</label>
               </div>
             </div>
@@ -118,7 +124,7 @@ export default {
         input: '',
         isValid: false
       },
-      tipusVia: "c/",
+      tipusVia: "",
       cartaLocation: {
         comarca: '',
         provincia: '',
@@ -159,6 +165,9 @@ export default {
     tipusLocalitzacions() {
       return this.localitzacioData.tipusLoc ? this.localitzacioData.tipusLoc : []
     },
+    tipusVies() {
+      return this.localitzacioData.tipusVies ? this.localitzacioData.tipusVies : []
+    },
     mapSearchString () {
       if (this.isCat) {
         const mapString = [this.provincia.input, this.municipi.input, this.tipusLoc.input, this.cartaLocation.descripcioLoc].filter(Boolean)
@@ -171,7 +180,7 @@ export default {
     },
     currentLocComponent() {
       switch (this.tipusLoc.input.toLowerCase()) {
-        case 'carrer':
+        case 'carrers':
           return 'CarrerForm'
         case 'carretera':
           return 'CarreteraForm'
@@ -183,8 +192,7 @@ export default {
     },
   },
   methods: {
-    validateForm (el) {
-      this.validateInput(el)
+    validateForm () {
       const isValid =  (this.provincia.isValid &&
                          this.comarca.isValid &&
                          this.municipi.isValid &&
@@ -192,21 +200,33 @@ export default {
       this.$emit('is-form-valid', isValid)
     },
     validateInput (el) {
-      if (el.id != 'isCat' && el.id != 'referenciesTextarea') {
-        var isValid = false;
-        isValid = this[el.id].isValid ? true : false
-        /* if (el.id != 'tipusLoc') {
-          el.classList.toggle('is-valid', isValid)
-        } else {
-          el.classList.toggle('is-invalid', !isValid)
-          el.classList.toggle('is-valid', isValid)
-        } */
-        el.classList.toggle('is-invalid', !isValid)
-        el.classList.toggle('is-valid', isValid)
+      if (el.id != 'isCat') {
+        if (el.id === 'provincia' ||
+           el.id === 'comarca' ||
+           el.id === 'municipi' ||
+           el.id === 'tipusLoc') {
+            var isValid = false;
+            isValid = this[el.id].isValid ? true : false
+            if (el.id === 'tipusLoc') {
+              el.classList.toggle('is-invalid', !isValid)
+            }
+            el.classList.toggle('is-valid', isValid)
+            this.validateForm()
+           }
       }
     },
     removeValidationClasses(el) {
       el.classList.remove('is-valid', 'is-invalid');
+    },
+    resetRow () {
+      if ( this.provincia.input || this.comarca.input || this.municipi.input ) {
+        this.resetProvincia()
+        this.resetComarca()
+        this.resetMunicipi()
+        this.validateForm()
+        console.log('reseting')
+      }
+      
     },
     resetProvincia () {
       this.provincia.id = ''
@@ -363,7 +383,7 @@ export default {
         this.$refs.provincia.classList.toggle('col-4');
         this.$refs.provincia.classList.toggle('col-6');
         this.$refs.municipi.classList.toggle('col-4');
-        this.$refs.municipi.classList.toggle('col-6');
+        this.$refs.municipi.classList.toggle('col-5');
     }
   },
   mounted() {
@@ -380,6 +400,22 @@ export default {
     height: 100%;
   }
 
+  .reset-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .reset-row i::before {
+    font-size: 20px;
+    transition: transform .12s ease-in-out;
+  }
+  .reset-row i:hover::before {
+    cursor: pointer;
+    content: '\F723';
+    color: #e21212;
+    transform: scale(1.15);
+  }
+
   #referencies-textArea-container {
     flex-grow: 1;
     margin-bottom: 20px;
@@ -392,6 +428,8 @@ export default {
   #isCat-conatiner {
     min-width: 125px;
   }
+
+  /* Vue transitions animations */
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity 0.2s ease-in-out;
