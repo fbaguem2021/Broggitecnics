@@ -17,8 +17,10 @@
         "@vitejs/plugin-vue": "^4.1.0",
         "bootstrap": "^5.2.3",
         "bootstrap-icons": "^1.10.3",
+        "chart.js": "^4.2.1",
         "moment": "^2.29.4",
         "vue": "^3.2.47",
+        "vue-chartjs": "^5.2.0",
         "vue-loader": "^17.0.1"
     }
 }
