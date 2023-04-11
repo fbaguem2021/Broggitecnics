@@ -123,6 +123,8 @@ export default {
     }
     #antecedentsTextarea {
         height: 100%;
+        max-height: 35vh;
+        resize: none;
     }
     .form-check-label {
         -webkit-user-select: none;

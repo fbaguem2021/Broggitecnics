@@ -89,11 +89,13 @@ export default {
       bottom: 0;
       left: 0;
       right: 0;
-      height: 30px; /* set the height of the div */
+      height: 30px;
       border-radius: 0 0 5px 5px;
       /* background: linear-gradient(to bottom, rgba(250, 80, 80, 0) 0%, rgba(250, 80, 80, 1) 100%); */
       background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(230, 230, 230, 1) 100%);
   }
+
+  /* Vue transition animations */
   .fade-enter-active,
     .fade-leave-active {
     transition: opacity 0.4s ease;
@@ -104,15 +106,6 @@ export default {
     opacity: 0;
     }
 
-  /* DEV delete for elements inserts */
-   #data, #expedients {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: 30px;
-  }
-  /* END DEV */
 
   #card-wrapper {
     display: flex;
@@ -187,7 +180,7 @@ export default {
   }
 
   #form-nota.expanded{
-    height: 40%;
+    height: 42%;
   }
 
   #form-main, #form-nota, #data, #map, #expedients{

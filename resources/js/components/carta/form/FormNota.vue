@@ -10,7 +10,13 @@ export default {
 }
 </script>
 <style scoped>
-  .form-floating, #notaComunaTextarea {
-    height: 100%;
+  #notaComunaTextarea {
+    height: 10vh;
+    transition: height .4s ease-in-out;
+    resize: none;
+  }
+  #form-nota.expanded #notaComunaTextarea {
+    height: 30vh;
+    max-height: 30vh;
   }
 </style>
