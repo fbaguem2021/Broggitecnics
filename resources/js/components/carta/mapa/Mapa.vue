@@ -38,7 +38,6 @@ export default {
             immediate: true,
             handler(newVal, oldVal) {
                 this.seleccionAgencias = newVal
-
             }
         },
 
