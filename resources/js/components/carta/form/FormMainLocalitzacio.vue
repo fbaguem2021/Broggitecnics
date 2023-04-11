@@ -72,7 +72,7 @@
       
     </form>
 </template>
-<script>
+<script >
 import CarrerForm from './localitzacions/CarrerForm.vue';
 import CarreteraForm from './localitzacions/CarreteraForm.vue';
 import PuntSingularForm from './localitzacions/PuntSingularForm.vue';
@@ -287,10 +287,8 @@ export default {
               this.municipiSelected(matchedInputValue)
             break;
           }
-          console.log(event.target.id + " isValid: " + this[event.target.id].isValid)
         } else {
           this[event.target.id].isValid = false
-          console.log(event.target.id + " isValid: " +this[event.target.id].isValid)
           //This code only allows only to input letter by letter valid inputs
           //
           /* if (!matchedInputLetter){
@@ -309,21 +307,13 @@ export default {
       this.provincia.input = validProv.nom
       this.provincia.isValid = true
       this.validateInput(this.$refs.provinciaInput)
+
       //Check if comarca is set and belongs to provincia
-      console.log("\nFORM MAIN LOC - provinciaSelected")
       if (this.provincia.id !== this.comarca.provincia_id) {
-            console.log("Reset Comarca: comarca.provincia_id that was selected doesnt match the new provincia.id ")
             this.resetComarca()
             if (this.municipi.isValid) {
-              console.log("Reset Municipi: municpi was set to matched comarca")
               this.resetMunicipi()
             }
-      } else {
-        if (this.comarca.provincia_id) {
-          console.log("No reset: comarca.provincia_id matches new provincia.id")
-        }else {
-          console.log("No reset: comarca is not set")
-        }
       }
     },
 
@@ -336,9 +326,7 @@ export default {
 
       // If new comarca doesn't belong to the selected provincia OR provincia is not setted
       // Selectprovincia
-      console.log("\nFORM MAIN LOC - comarcaSelected")
-      if (this.comarca.provincia_id !== this.provincia.id) {
-        console.log("Provincia.id different than comarca.provincies_id selected")
+      if ( this.provincia.input === '' || this.comarca.provincia_id !== this.provincia.id) {
         const provincia = this.provincies.find(provincia => provincia.id === this.comarca.provincia_id)
         if (provincia) {
           this.provinciaSelected(provincia)
@@ -349,14 +337,7 @@ export default {
         * If not clear the input and the carta location municipi 
         */
       if (this.comarca.id !== this.municipi.comarca_id) {
-        console.log("The municipi selected doesnt belong to this Comarca!\n")
         this.resetMunicipi()
-      }else {
-        if (this.municipi.isValid) {
-          console.log("Municipi selected is CHILLING with this new Comarca!")
-        } else {
-          console.log("No municipi is selected")
-        }
       }
     },
 
@@ -367,9 +348,7 @@ export default {
       this.municipi.isValid = true
       this.validateInput(this.$refs.municipiInput)
 
-      console.log("\nFORM MAIN LOC - municipiSelected")
-      if (this.municipi.comarca_id != this.comarca.id) {
-        console.log("Comarca is not set or municipi doesn't belong to comarca")
+      if (this.comarca.input === '' || this.municipi.comarca_id != this.comarca.id) {
         const comarca = this.comarques.find(comarca => comarca.id === this.municipi.comarca_id)
         if (comarca) {
           this.comarcaSelected(comarca)
