@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-    <div>
-        
-    </div>
+    <div id="chartLoc">   </div>
 @endsection
+

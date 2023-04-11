@@ -47,3 +47,8 @@ Route::get('/expedients', [ExpedientsController::class, 'index']);
 Route::get('bootstrap', function () {
     return view('bootstrap');
 });
+
+// Ruta graficos localizacion
+Route::get('/chartLoc', function () {
+    return view('charts.index');
+});

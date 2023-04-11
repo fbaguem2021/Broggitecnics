@@ -1,9 +1,9 @@
 <template>
-    <BarChart />
-  </template>
+    <BarChart />    
+</template>
   
   <script>
-  import BarChart from './BarChart'
+  import BarChart from './BarChart.vue'
   
   export default {
     name: 'localidadesChart',
