@@ -1,8 +1,5 @@
 <template>
     <div id="mapContainer" class="basemap child-component"></div>
-
-    
-
 </template>
   
 <script>
@@ -13,7 +10,7 @@ import * as bootstrap from 'bootstrap';
 
 export default {
     name: "BaseMap",
-    props: ['seleccion', 'send', 'agenciasFinales','direccionIncidente'],
+    props: ['seleccion', 'send', 'agenciasFinales', 'direccionIncidente'],
     data() {
         return {
             accessToken: 'pk.eyJ1Ijoiam5pcmVsbGFtcG9saXRlY25pY3MiLCJhIjoiY2xlc2ZkN2tiMDRrYjNzbnpmcGh1eG1payJ9.BYMy0fBa_so0Iz-qJMwGkA',
@@ -27,7 +24,7 @@ export default {
             localizaciones7: [],
             seleccionAgencias: [],
             lat: 2.18215,
-            lang: 41.4021, 
+            lang: 41.4021,
             mapa: null,
             incidentGeocoder: [],
             seleccionFinal: false
@@ -44,6 +41,7 @@ export default {
 
             }
         },
+
         //Escucha si se ha enviado la confirmacion de agencias seleccionadas en el formulario padre para proceder con el renderizado del mapa
         send: {
             immediate: true,
@@ -154,17 +152,17 @@ export default {
                                 console.log(element)
                                 let nom = element.properties.title.nom
                                 let idTipoAgencia = element.properties.title.AgenciesPrimaries_id
-                               
+
                                 // si ya existe una de este tipo agencia guardado no hace push y sale modal diciendo si quiere cambiar la seleccion if(me.seleccionAgencias) 
                                 if (me.seleccionAgencias.length > 0) {
 
                                     me.seleccionAgencias.forEach(x => {
                                         if (x[2] == tipAgen) {
-                                            me.$emit('cambiarSeleccion',element)
-                                            transform = false   
+                                            me.$emit('cambiarSeleccion', element)
+                                            transform = false
                                         }
                                     });
-                                    if (transform ) {
+                                    if (transform) {
                                         me.guardarSeleccion(me, idAg, nom, idTipoAgencia)
                                         me.$emit('getAgencia', me.seleccionAgencias)
                                     }
@@ -234,53 +232,52 @@ export default {
             let me = this;
 
             function getMapData(me) {
-                if(direccionIncidente!=""){
+                
                     return new Promise((resolve, reject) => {
-                    axios
-                        .get(
-                            "https://api.mapbox.com/geocoding/v5/mapbox.places/" + me.direccionIncidente + ".json?access_token=" + me.accessToken)
-                        .then((response) => {
-                            if (!response) {
-                                console.error("Invalid response:");
-                                console.error(response);
-                                reject("Invalid response");
-                            } else {
-                                console.log(response)
-                                me.lat = parseFloat(response.data.features[0].center[0]);
-                                me.lang = parseFloat(response.data.features[0].center[1]);
+                        axios
+                            .get(
+                                "https://api.mapbox.com/geocoding/v5/mapbox.places/" + me.direccionIncidente + ".json?access_token=" + me.accessToken)
+                            .then((response) => {
+                                if (!response) {
+                                    console.error("Invalid response:");
+                                    console.error(response);
+                                    reject("Invalid response");
+                                } else {
+                                    console.log(response)
+                                    me.lat = parseFloat(response.data.features[0].center[0]);
+                                    me.lang = parseFloat(response.data.features[0].center[1]);
 
-                                //Formato estilo GeoJson para guardar la info del incidente en una variable del componente y poder mostr el marcador en el mapa
-                                let newData = {
-                                    type: "Feature",
-                                    geometry: {
-                                        type: "Point",
-                                        coordinates: response.data.features[0].center,
-                                    },
-                                    properties: {
-                                        title: 'localizacion',
-                                        description: 'INCIDENT: ' + response.data.features[0].place_name
-                                    }
-                                };
+                                    //Formato estilo GeoJson para guardar la info del incidente en una variable del componente y poder mostr el marcador en el mapa
+                                    let newData = {
+                                        type: "Feature",
+                                        geometry: {
+                                            type: "Point",
+                                            coordinates: response.data.features[0].center,
+                                        },
+                                        properties: {
+                                            title: 'localizacion',
+                                            description: 'INCIDENT: ' + response.data.features[0].place_name
+                                        }
+                                    };
 
-                                let lugar = me.incidentGeocoder;
-                                lugar.push(newData);
+                                    let lugar = me.incidentGeocoder;
+                                    lugar.push(newData);
 
-                                resolve({ lat: me.lat, lang: me.lang });
-                            }
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                            reject(error);
-                        });
-                });
+                                    resolve({ lat: me.lat, lang: me.lang });
+                                }
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                                reject(error);
+                            });
+                    });
+                
             }
-
             //Actualizar latitud y longitud en variable global del componente
             getMapData(me).then(({ lat, lang }) => {
-                me.lat = lat
-                me.lang = lang
-            });
-                }
+                    me.lat = lat
+                    me.lang = lang
+                });
         },
 
         cargarImagenesPersonalizadas(me, map) {
@@ -425,7 +422,7 @@ export default {
             const map = new mapboxgl.Map({
                 container: "mapContainer",
                 style: "mapbox://styles/mapbox/streets-v11",
-                center: [2.2001107, 41.406612],
+                center: [this.lat, this.lang],
                 zoom: 12,
             });
             return map
@@ -441,6 +438,4 @@ export default {
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

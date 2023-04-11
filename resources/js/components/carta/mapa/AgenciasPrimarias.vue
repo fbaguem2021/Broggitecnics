@@ -192,7 +192,10 @@ export default {
         arraySearch: {
             immediate: true,
             handler(newVal, oldVal) {
-                this.confirmar = true
+                if(newVal!=""){
+                    this.confirmar = true
+                }
+                
             }
         },
         isMapSelect: function (newVal, oldVal) {
