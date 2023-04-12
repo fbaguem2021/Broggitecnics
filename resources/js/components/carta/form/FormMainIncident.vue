@@ -1,7 +1,10 @@
 <template>
-  <form 
+  <form id="incident-form"
     @focusin=" removeValidationClasses($event.target)"
     @focusout="this.validateInput($event.target)">
+    <div id="invalid-legend">
+      <i class="bi bi-exclamation-circle me-2"></i><span>Els camps amb aquest icona son obligatoris</span>
+    </div>
     <div class="form-floating mb-3" id="tipusIncident-container">
       <input v-model="tipusIncident.input" @input="handleInput($event.target, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
       <label for="tipusIncident">Tipus d'incident</label>
@@ -167,6 +170,25 @@ export default {
 }
 </script>
 <style scoped>
+  #incident-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  #invalid-legend {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  #invalid-legend span {
+    font-size: 14px;
+    opacity: .8;
+  }
+  #invalid-legend i::before {
+    font-size: 16px;
+    color: #e21212;
+  }
   #tipusIncident-container {
     width: 40%;
     min-width: 230px;

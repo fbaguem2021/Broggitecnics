@@ -1,8 +1,11 @@
 <template>
-    <form id="location-form"
-    @input="updateCartaData"
-    @focusin=" removeValidationClasses($event.target)"
-    @focusout="validateInput($event.target)">
+    <form id="localitzacio-form"
+      @input="updateCartaData"
+      @focusin=" removeValidationClasses($event.target)"
+      @focusout="validateInput($event.target)">
+      <div id="invalid-legend">
+        <i class="bi bi-exclamation-circle me-2"></i><span>Els camps amb aquest icona son obligatoris</span>
+      </div>
       <div class="row align-items-center">
         <div class="d-flex col-4 mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>
@@ -389,13 +392,25 @@ export default {
 
 <style scoped>
 
-  #location-form {
+  #localitzacio-form {
     position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
   }
-
+  #invalid-legend {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  #invalid-legend span {
+    font-size: 14px;
+    opacity: .8;
+  }
+  #invalid-legend i::before {
+    font-size: 16px;
+    color: #e21212;
+  }
   .reset-row {
     display: flex;
     align-items: center;

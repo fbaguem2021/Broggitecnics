@@ -7,7 +7,7 @@
               <form-main 
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
-                @is-save-interlocutor="updateSaveInterlocutor"
+                @get-carta-incident="updateIncident"
                 @get-map-search-string="updateSearchString">
               </form-main>
               <transition name="fade">
@@ -15,7 +15,7 @@
               </transition>
             </div>
             <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
-              <form-nota></form-nota>
+              <form-nota @get-notaComuna="updateNotaCoumna"></form-nota>
             </div>
           </div>
           <div id="side">
@@ -28,7 +28,7 @@
       </div>
       <div class="buttons">
           <button id="cancel">Cancelar</button>
-          <button id="submit">Finalitzar</button>
+          <button id="submit" @click="insertCarta">Finalitzar</button>
       </div>
     </div>
   </div>
@@ -48,6 +48,7 @@ export default {
       interlocutor: {},
       localitzacio: {},
       incident: {},
+      notaCoumna: '',
       newInterlocutor: true,
       saveInterlocutor: false,
       mapSearchString: '',
@@ -59,12 +60,9 @@ export default {
       this.$refs.formNota.classList.toggle('expanded');
       this.$refs.formMain.classList.toggle('expanded');
       
-      console.log("\n\nCARTA TRUCADA:")
       if (this.$refs.formNota.classList.contains('expanded')) {
-        console.log('note is expaneded')
         this.notaIsExpaneded = true
       } else {
-        console.log('note is compressed')
         this.notaIsExpaneded = false
       }
     },
@@ -74,12 +72,15 @@ export default {
     updateInterlocutor(interlocutor) {
       this.interlocutor = interlocutor
     },
-    updateSaveInterlocutor (boolean) {
-      this.saveInterlocutor = boolean
+    updateIncident(incident) {
+      this.incident = incident
+    },
+    updateNotaCoumna(nota) {
+      this.notaCoumna = nota
     },
     updateSearchString (mapString) {
       this.mapSearchString = mapString
-    }
+    },
   }
 }
 </script>
@@ -96,17 +97,12 @@ export default {
   }
 
   /* Vue transition animations */
-  .fade-enter-active,
-    .fade-leave-active {
+  .fade-enter-active, .fade-leave-active {
     transition: opacity 0.4s ease;
     }
-
-    .fade-enter-from,
-    .fade-leave-to {
+    .fade-enter-from, .fade-leave-to {
     opacity: 0;
     }
-
-
   #card-wrapper {
     display: flex;
     flex-direction: column;
@@ -114,20 +110,17 @@ export default {
     width: 100%;
     /* border: 4px solid red */
   }
-
   #card-container {
     flex-grow: 1;
     margin: 20px 20px 40px 20px;
     /* border: 1px solid blue */
   }
-
   .content {
     position: relative;
     display: flex;
     height: 94%;
     gap: 1%
   }
-
   #bg {
     position: absolute;
     top: 0;
@@ -138,31 +131,26 @@ export default {
     border-radius: 10px;
     z-index: -1;
   }
-
   #form, #side {
     height: 100%;
   }
-
   #form {
     display: flex;
     flex-direction: column;
     gap: 2%;
     width: 58%;
   }
-
   #side {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     width: 42%;
   }
-
   #form-main, #form-nota {
     border: 4px solid var(--primary);
     transition: height .4s ease-in-out;
     overflow: hidden;
   }
-
   #form-main {
     position: relative;
     display: flex;
@@ -173,36 +161,29 @@ export default {
   #form-main.expanded {
     height: 80%;
   }
-
   #form-nota {
     padding: 20px 40px;
     height: 18%
   }
-
   #form-nota.expanded{
     height: 42%;
   }
-
   #form-main, #form-nota, #data, #map, #expedients{
     border-radius: 10px;
     width: 100%;
   }
-
   #data {
     border: 4px solid black;
     height: 10%;
   }
-
   #map {
     border: 4px solid var(--secondary);
     height: 44%;
   }
-
   #expedients {
     border: 4px solid var(--tertiary);
     height: 42%;
   }
-
   .buttons {
     display: flex;
     justify-content: center;
@@ -211,15 +192,12 @@ export default {
     height: 10%;
     width: 42%;
   }
-
   .buttons #cancel {
     background-color: var(--danger);
   }
-
   .buttons #submit {
     background-color: var(--success);
   }
-
   .buttons #cancel, .buttons #submit {
     display: flex;
     justify-content: center;

@@ -3,6 +3,9 @@
         @input.prevent="handleInput($event.target)"
         @focusin=" removeValidationClasses($event.target)"
         @focusout="this.validateInput($event.target)">
+        <div id="invalid-legend">
+            <i class="bi bi-exclamation-circle me-2"></i><span>Els camps amb aquest icona son obligatoris</span>
+        </div>
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3" id="phone-input-container">
@@ -100,9 +103,23 @@ export default {
 </script>
 <style scoped>
     #interlocutor-form {
+        position: relative;
         display: flex;
         flex-direction: column;
         height: 100%;
+    }
+    #invalid-legend {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    #invalid-legend span {
+        font-size: 14px;
+        opacity: .8;
+    }
+    #invalid-legend i::before {
+        font-size: 16px;
+        color: #e21212;
     }
     label {
         font-size: 16px;

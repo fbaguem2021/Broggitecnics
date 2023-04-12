@@ -67,8 +67,6 @@ export default {
     'get-carta-location',
     'get-carta-incident',
     'get-map-search-string',
-    'is-new-interlocutor',
-    'is-save-interlocutor'
   ],
   data() {
     return {
