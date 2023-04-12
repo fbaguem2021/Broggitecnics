@@ -10,6 +10,7 @@ use App\Models\Municipi;
 use App\Models\Provincia;
 use App\Models\TipusIncident;
 use App\Models\TipusLocalitzacio;
+use App\Models\TipusVies;
 use Illuminate\Http\Request;
 
 class CartaFormData extends Controller
@@ -27,10 +28,11 @@ class CartaFormData extends Controller
                 'provincies' => Provincia::all(),
                 'municipis' => Municipi::all(),
                 'tipusLoc' => TipusLocalitzacio::all(),
+                'tipusVies' => TipusVies::all()
             ],
             'incident' => [
                 'tipusIncident' => TipusIncident::all(),
-                'incidents' => Incident::all()
+                'incidents' => Incident::orderBy('nom')->get()
             ]
         ];
 

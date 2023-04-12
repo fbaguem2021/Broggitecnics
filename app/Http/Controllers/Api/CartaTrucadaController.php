@@ -28,7 +28,8 @@ class CartaTrucadaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $carta = new CartaTrucada();
+
     }
 
     /**

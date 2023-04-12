@@ -1,23 +1,43 @@
 <template>
-  <form>
-    <div class="form-floating mb-3">
-      <input v-model="tipusIncidentInput.name" @input="handleInput('tipusIncidentInput', $event, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off">
+  <form id="incident-form"
+    @focusin=" removeValidationClasses($event.target)"
+    @focusout="this.validateInput($event.target)">
+    <div id="invalid-legend">
+      <i class="bi bi-exclamation-circle me-2"></i><span>Els camps amb aquest icona son obligatoris</span>
+    </div>
+    <div class="form-floating mb-3" id="tipusIncident-container">
+      <input v-model="tipusIncident.input" @input="handleInput($event.target, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
       <label for="tipusIncident">Tipus d'incident</label>
       <datalist  id="tipusIncidentsList">
         <option v-for="(tipus, index) in tipusIncidents" :key="index" :value="tipus.nom"></option>
       </datalist>
     </div>
-    <div class="form-floating mb-3">
-      <input v-model="incidentInput.name" @input="handleInput('incidentInput', $event, incidents)" type="text" class="form-control" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off">
+    <div class="form-floating mb-3" id="incident-container">
+      <input v-model="incident.input" @input="handleInput($event.target, incidents)" type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
       <label for="incident">Incident</label>
       <datalist  id="incidentsList">
         <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
       </datalist>
     </div>
+    <div v-show="incident.definicio">
+      <div class="form-floating">
+        <textarea :value="incidentDefinicio" :style="textAreaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident"></textarea>
+        <label for="incidentDefinicio">Descripció</label>
+      </div>
+    </div>
+    <div v-show="incident.instruccions">
+      <div class="form-floating mb-3">
+        <textarea :value="incident.instruccions.toLowerCase()" :style="textAreaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir"></textarea>
+        <label for="incidentInstruccions">Instruccions a seguir</label>
+      </div>
+    </div>
   </form>
 </template>
 <script>
 export default {
+  emits: [
+    'get-incident',
+  ],
   props: {
     incidentData: {
       type: Object
@@ -25,82 +45,160 @@ export default {
   },
   data() {
     return {
-      tipusIncidentInput: {
-        'name': ''
+      tipusIncident: {
+        input: '',
+        isValid: false
       },
-      incidentInput: {
-          'name': '',
-          'tipus_incidents_id': ''
+      incident: {
+        id: '',
+        input: '',
+        codi: '',
+        definicio: '',
+        instruccions: '',
+        tipus_incidents_id: '',
+        isValid: false
       },
       cartaIncident: {
-        'tipusIncident': '',
-        'incident': ''
+        incident: '',
+        isValid: false
       }
     }
   },
   computed: {
-    tipusIncidents() {
-      return this.incidentData ? this.incidentData.tipusIncident : []
+    tipusIncidents () {
+      return this.incidentData.tipusIncident ? this.incidentData.tipusIncident : []
     },
-    incidents() {
-      if (this.cartaIncident.tipusIncident) {
+    incidents () {
+      if (this.tipusIncident.isValid) {
         return this.incidentData.incidents.filter(incident => incident.tipus_incidents_id === this.cartaIncident.tipusIncident)
       } else {
-        return this.incidentData ? this.incidentData.incidents : []
+        return this.incidentData.incidents ? this.incidentData.incidents : []
       }
      
+    },
+    incidentDefinicio (){
+      return this.incident.definicio ? this.toLowerCase(this.incident.definicio) : ''
+    },
+    incidentInstruccions () {
+      return this.incident.instruccions ? this.toLowerCase(this.incident.instruccions) : ''
     }
   },
   methods: {
-    handleInput(inputName, event, list) {
-      const inputValue = event.target.value
-      const matchedInputLetter = list.find(tipus => tipus.nom.toLowerCase().startsWith(inputValue.toLowerCase()))
+    removeValidationClasses(el) {
+      el.classList.remove('is-valid', 'is-invalid');
+    },
+    handleInput(target, list) {
+      const inputValue = target.value
       const matchedInputValue = list.find(tipus => tipus.nom.toLowerCase() === inputValue.toLowerCase())
-
-      if (!matchedInputLetter){
-          const previousValue = this[inputName].name.slice(0, -1)
-          this[inputName].name = previousValue
-      } else if (inputValue.trim() === '') {
-          console.log("empppty!! like nada, zero, super empty")
-          this.cartaIncident = {
-            ...this.cartaIncident,
-            [event.target.id]: ''
-          }
-      } else if (matchedInputValue) {
-          switch (event.target.id) {
-            case 'tipusIncident':
-              this.tipusIncidentSelected(matchedInputValue)
-              console.log("Tipus incident match!!")
-              break;
-            case 'incident':
-              this.incidentSelected(matchedInputValue)
-              console.log("Incident match!!")
-              break;
-          }
-        this.cartaIncident = {
-          ...this.cartaIncident,
-          [event.target.id]: matchedInputValue.id
-        }
+      const handlers = {
+        'tipusIncident': this.tipusIncidentSelected,
+        'incident': this.incidentSelected
       }
+      if (matchedInputValue) {
+        const handler = handlers[target.id]
+        if (handler) {
+          handler(matchedInputValue);
+        }
+      } else {
+        this[target.id].isValid = false; 
+      }
+      this.validateInput(target)
+      this.updateCartaData()
     },
     tipusIncidentSelected (tipusIncident) {
-      if (this.cartaIncident.incident && tipusIncident.id != this.incidentInput.tipus_incidents_id) {
-        console.log("The incident selected doesnt belong to this tipus!")
-        this.incidentInput.name = ''
-        this.incidentInput.tipus_incidents_id = ''
+      this.tipusIncident.isValid = true
+      this.tipusIncident.input = tipusIncident.nom
+      if (this.cartaIncident.incident && tipusIncident.id != this.incident.tipus_incidents_id) {
+        for(const prop in this.incident) {
+          if (prop != 'isValid') {
+            this.incident[prop] = ''
+          }
+        }
         this.cartaIncident.incident = ''
+        this.validateInput(this.$refs.incidentInput)
       }
     },
     incidentSelected (incident) {
-      this.incidentInput.tipus_incidents_id = incident.tipus_incidents_id
+      this.incident.isValid = true
+      this.incident.id = incident.id
+      this.incident.codi = incident.codi
+      this.incident.definicio = incident.definicio
+      this.incident.instruccions = incident.instruccions
+      this.incident.tipus_incidents_id = incident.tipus_incidents_id
       const tipusIncident = this.tipusIncidents.find(tipus => tipus.id === incident.tipus_incidents_id)
-      this.tipusIncidentInput.name = tipusIncident.nom
-      this.cartaIncident.tipusIncident = tipusIncident.id
-    }
-
-  }
+      if (tipusIncident) {
+        this.tipusIncident.input = tipusIncident.nom
+        this.cartaIncident.tipusIncident = tipusIncident.id
+        this.tipusIncident.isValid = true
+        this.validateInput(this.$refs.tipusIncidentInput)
+      }
+    },
+    validateInput (el) {
+      if (el.id === 'incident') {
+        el.classList.toggle('is-invalid', !this[el.id].isValid)
+      }
+      el.classList.toggle('is-valid', this[el.id].isValid)
+    },
+    updateCartaData () {
+      this.cartaIncident = {
+        incident: this.incident.id,
+        isValid: this.incident.isValid
+      }
+      this.$emit('get-incident', this.cartaIncident)
+    },
+    toLowerCase (string) {
+      return [string].map(item =>
+        item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
+      ).join('');
+    },
+    textAreaHeight(text) {
+      const lineHeight = 50; // adjust as needed
+      const minHeight = lineHeight * 2; // adjust as needed
+      const contentLength = text.length;
+      const rows = Math.max(Math.ceil(contentLength / 80), 2); // adjust as needed
+      const height = rows * lineHeight;
+      return {
+        'min-height': `${minHeight}px`,
+        'height': `${height}px`,
+        'max-height':  `${Math.max(height, minHeight)+40}px`
+      };
+    },
+  },
+  mounted() {
+    this.updateCartaData()
+  },
 }
 </script>
 <style scoped>
-  
+  #incident-form {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  #invalid-legend {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  #invalid-legend span {
+    font-size: 14px;
+    opacity: .8;
+  }
+  #invalid-legend i::before {
+    font-size: 16px;
+    color: #e21212;
+  }
+  #tipusIncident-container {
+    width: 40%;
+    min-width: 230px;
+  }
+  .form-control-plaintext:focus {
+    color: #212529;
+    background-color: #fff;
+    border-color: #1266e2;
+    border-width: 2px;
+    outline: 0;
+    box-shadow: 0 0 4px 2px rgba(18, 102, 226, 0.2);
+  }
 </style>

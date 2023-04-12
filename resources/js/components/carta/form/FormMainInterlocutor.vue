@@ -1,86 +1,125 @@
 <template>
-    <form id="interlocutor-form">
-        <!-- <div class="row align-items-center">
-            <div class="col-2 input-label-container">
-                <label for="telef" class="col-form-label">Telèfon</label>
-            </div>
-            <div class="col-5" id="telef-input-container">
-                <input type="phone" id="telef" class="form-control" aria-describedby="telefInterlocutor" tabindex="1">
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-2 input-label-container">
-                <label for="nom" class="col-form-label">Nom</label>
-            </div>
-            <div class="col-8">
-                <input type="text" id="nom" class="form-control" aria-describedby="nomInterlocutor" autocomplete="off" tabindex="2">
-            </div>
-        </div>
-        <div class="row align-items-center">
-            <div class="col-2 input-label-container">
-                <label for="cognom" class="col-form-label">Cognoms</label>
-            </div>
-            <div class="col-8">
-                <input type="text" id="cognom" class="form-control" aria-describedby="cognomInterlocutor" tabindex="3">
-            </div>
-        </div> -->
-        
-        <div class="form-floating mb-3" id="phone-input-container">
-            <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off">
-            <label for="phone">Telèfon</label>
+    <form id="interlocutor-form" 
+        @input.prevent="handleInput($event.target)"
+        @focusin=" removeValidationClasses($event.target)"
+        @focusout="this.validateInput($event.target)">
+        <div id="invalid-legend">
+            <i class="bi bi-exclamation-circle me-2"></i><span>Els camps amb aquest icona son obligatoris</span>
         </div>
         <div class="row">
             <div class="col-4">
+                <div class="form-floating mb-3" id="phone-input-container">
+                    <input v-model="phone" type="phone" class="form-control" id="phone" placeholder="Telèfon" autocomplete="off" disabled>
+                    <label for="phone">Telèfon</label>
+                </div>
+            </div>
+        </div>    
+        <div class="row">
+            <div class="col-4">
                 <div class="form-floating mb-3">
-                    <input v-model="name" type="text" class="form-control" id="name" placeholder="Nom" autocomplete="off">
+                    <input v-model="name.input" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off" autofocus ref="nameInput">
                     <label for="name">Nom</label>
                 </div>
             </div>
             <div class="col-8">
                 <div class="form-floating mb-3">
-                    <input v-model="surnames" type="text" class="form-control" id="surnames" placeholder="Cognoms" autocomplete="off">
+                    <input v-model="surnames.input" type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off" ref="surnamesInput">
                     <label for="surnames">Cognoms</label>
                 </div>
             </div>
         </div>
-       
-
         <div class="form-floating" id="antecedents-textArea-container">
-            <textarea class="form-control" placeholder="Anota antecedents" id="antecedentsTextarea"></textarea>
+            <textarea v-model="record" class="form-control" placeholder="Anota antecedents" id="antecedentsTextarea"></textarea>
             <label for="antecedentsTextarea">Antecedents</label>
         </div>
-
-        <div v-show="newInterlocutor" class="form-check form-switch form-check-reverse my-4" id="save-interlocutor-container">
+        <div class="form-check form-switch form-check-reverse my-4" id="save-interlocutor-container">
             <label class="form-check-label" for="saveInterlocutor">Guardar interlocutor</label>
-            <input class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" tabindex="5" @focusout="nextForm">
+            <input v-model="saveInterlocutor" @change="updateCartaData" class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" @focusout="nextForm">
         </div>
     </form>
 </template>
 <script>
 export default {
+    emits: [
+        'get-interlocutor',
+    ],
     data() {
         return {
-            tabIndex: 1,
-            newInterlocutor: true,
-            phone: '',
-            name: '',
-            surnames: ''
-
+            isNewInterlocutor: true,
+            saveInterlocutor: false,
+            phone: '697215851',
+            name: {
+                input: '',
+                isValid: false
+            },
+            surnames: {
+                input: '',
+                isValid: false
+            },
+            record: '',
+            cartaInterlocutor: {
+                telefon: '',
+                antecedents: '',
+                nom: '',
+                cognom: '',
+                isValid: false,
+                isNewInerlocutor: this.isNewInerlocutor,
+                saveInterlocutor: this.saveInterlocutor
+            }
         }
     },
     methods: {
-        nextForm () {
-            console.log("To the next form i say!")
-        }
+        removeValidationClasses(el) {
+            el.classList.remove('is-valid', 'is-invalid');
+        },
+        handleInput (el) {
+            this.validateInput(el)
+            this.updateCartaData()
+        },
+        validateInput (el) {
+            if (el === this.$refs.nameInput || el === this.$refs.surnamesInput) {
+                this[el.id].isValid = el.value != '' ? true : false;
+                el.classList.toggle('is-valid', this[el.id].isValid)
+                el.classList.toggle('is-invalid', !this[el.id].isValid)
+            }
+        },
+        updateCartaData () {
+           this.cartaInterlocutor = {
+                telefon: this.phone,
+                antecedents: this.record,
+                nom: this.name.input,
+                cognom: this.surnames.input,
+                isValid: this.name.isValid && this.surnames.isValid,
+                isNewInerlocutor: this.isNewInterlocutor,
+                saveInterlocutor: this.saveInterlocutor
+            };
+            this.$emit('get-interlocutor', this.cartaInterlocutor)
+        },
+    },
+    mounted() {
+        this.updateCartaData()
     },
 }
 </script>
 <style scoped>
     #interlocutor-form {
+        position: relative;
         display: flex;
         flex-direction: column;
         height: 100%;
-        max-width: 850px;
+    }
+    #invalid-legend {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+    #invalid-legend span {
+        font-size: 14px;
+        opacity: .8;
+    }
+    #invalid-legend i::before {
+        font-size: 16px;
+        color: #e21212;
     }
     label {
         font-size: 16px;
@@ -90,7 +129,6 @@ export default {
         width: 60%;
     }
     #phone-input-container {
-        width: 30%;
         min-width: 110px;
     }
     #antecedents-textArea-container {
@@ -98,6 +136,8 @@ export default {
     }
     #antecedentsTextarea {
         height: 100%;
+        max-height: 35vh;
+        resize: none;
     }
     .form-check-label {
         -webkit-user-select: none;
