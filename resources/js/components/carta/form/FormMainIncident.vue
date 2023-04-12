@@ -21,13 +21,13 @@
     </div>
     <div v-show="incident.definicio">
       <div class="form-floating">
-        <textarea :value="incidentDefinicio" :style="textAreaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident"></textarea>
+        <textarea :value="incidentDefinicio" :style="textAreaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident" readonly></textarea>
         <label for="incidentDefinicio">Descripció</label>
       </div>
     </div>
     <div v-show="incident.instruccions">
       <div class="form-floating mb-3">
-        <textarea :value="incident.instruccions.toLowerCase()" :style="textAreaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir"></textarea>
+        <textarea :value="incident.instruccions.toLowerCase()" :style="textAreaHeight(incidentInstruccions)" class="form-control-plaintext" id="incidentInstruccions" placeholder="Instruccions a seguir" readonly></textarea>
         <label for="incidentInstruccions">Instruccions a seguir</label>
       </div>
     </div>
@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       tipusIncident: {
+        id: '',
         input: '',
         isValid: false
       },
@@ -70,11 +71,10 @@ export default {
     },
     incidents () {
       if (this.tipusIncident.isValid) {
-        return this.incidentData.incidents.filter(incident => incident.tipus_incidents_id === this.cartaIncident.tipusIncident)
+        return this.incidentData.incidents.filter(incident => incident.tipus_incidents_id === this.tipusIncident.id)
       } else {
         return this.incidentData.incidents ? this.incidentData.incidents : []
       }
-     
     },
     incidentDefinicio (){
       return this.incident.definicio ? this.toLowerCase(this.incident.definicio) : ''
@@ -100,13 +100,14 @@ export default {
           handler(matchedInputValue);
         }
       } else {
-        this[target.id].isValid = false; 
+        this[target.id].isValid = false;
       }
       this.validateInput(target)
       this.updateCartaData()
     },
     tipusIncidentSelected (tipusIncident) {
       this.tipusIncident.isValid = true
+      this.tipusIncident.id = tipusIncident.id
       this.tipusIncident.input = tipusIncident.nom
       if (this.cartaIncident.incident && tipusIncident.id != this.incident.tipus_incidents_id) {
         for(const prop in this.incident) {

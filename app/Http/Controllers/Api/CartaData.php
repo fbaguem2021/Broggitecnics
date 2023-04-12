@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CartaFormDataResource;
+use App\Models\CartaTrucada;
 use App\Models\Comarca;
 use App\Models\Incident;
 use App\Models\Municipi;
@@ -13,7 +13,7 @@ use App\Models\TipusLocalitzacio;
 use App\Models\TipusVies;
 use Illuminate\Http\Request;
 
-class CartaFormData extends Controller
+class CartaData extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -33,7 +33,9 @@ class CartaFormData extends Controller
             'incident' => [
                 'tipusIncident' => TipusIncident::all(),
                 'incidents' => Incident::orderBy('nom')->get()
-            ]
+            ],
+            'lastCodi' => CartaTrucada::latest('id')->pluck('codi_trucada')->first()
+
         ];
 
         return response()->json($data);

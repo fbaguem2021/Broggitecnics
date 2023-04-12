@@ -48,7 +48,6 @@
     </div>
 </template>
 <script>
-import axios from 'axios';
 import InterlocutorForm from './FormMainInterlocutor.vue';
 import LocalitzacioForm from './FormMainLocalitzacio.vue';
 import IncidentForm from './FormMainIncident.vue';
@@ -56,6 +55,14 @@ import * as bootstrap from 'bootstrap';
 
 export default {
   props: {
+    localitzacioData: {
+        type: Object,
+        required: true
+    },
+    incidentData: {
+        type: Object,
+        required: true
+    }
   },
   components: {
     InterlocutorForm,
@@ -79,8 +86,6 @@ export default {
         localitzacio: {},
         incident: {},
         mapSearchString: '',
-        localitzacioData: {},
-        incidentData: {},
         interlocutorTab: Object,
         localitzacioTab: Object,
         incidentTab: Object
@@ -90,14 +95,7 @@ export default {
 
   },
   mounted() {
-    const self = this;
-    axios
-        .get('cartaData')
-        .then(response => {
-            self.localitzacioData = response.data.localitzacio
-            self.incidentData = response.data.incident
-        })
-        .catch((error) => {})
+    
 
     /**
      * Observer sends the location string to the map component to search it

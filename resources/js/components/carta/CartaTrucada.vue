@@ -11,10 +11,12 @@
         <div id="form">
           <div id="form-main" ref="formMain" class="expanded">
             <form-main 
+                :localitzacio-data="localitzacioData" 
+                :incident-data="incidentData"
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
                 @get-carta-incident="updateIncident"
-                @get-map-search-string="updateSearchString">
+                @get-map-search-string="updateSearchString" >
               </form-main>
             <transition name="fade">
               <div v-show="notaIsExpaneded" class="blur-gradient"></div>
@@ -25,7 +27,9 @@
           </div>
         </div>
         <div id="side">
-          <div id="data">DATA</div>
+          <div id="data">
+            <data-carta :codi-trucada="codiTrucada"></data-carta>
+          </div>
           <!-- MAPA -->
           <div id="map">
             <MapApp :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
@@ -44,15 +48,20 @@
 <script>
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
+import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 export default {
   components: {
     FormMain,
     FormNota,
-    MapApp
+    MapApp,
+    DataCarta
   },
   data() {
     return {
+      codiTrucada: '',
+      dataHoraTrucada: '',
+      durada: 0,
       interlocutor: {},
       localitzacio: {},
       incident: {},
@@ -61,10 +70,28 @@ export default {
       saveInterlocutor: false,
       mapSearchString: '',
       notaIsExpaneded: false,
-      alertSuccess: ""
+      alertSuccess: "",
+      localitzacioData: {},
+      incidentData: {},
     }
   },
   methods: {
+    getCartaData () {
+      const self = this;
+      axios
+          .get('cartaData')
+          .then(response => {
+              self.localitzacioData = response.data.localitzacio
+              self.incidentData = response.data.incident
+              self.getCodiTrucada(response.data.lastCodi)
+          })
+          .catch((error) => {})
+    },
+    getCodiTrucada (codi) {
+      let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
+      let prefix = codi.replace(/\d+/, "");
+      this.codiTrucada = prefix + numberPart.toString();
+    },
     añadirAlerta(alert) {
       this.alertSuccess = alert
     },
@@ -99,7 +126,31 @@ export default {
     updateSearchString(mapString) {
       this.mapSearchString = mapString
     },
-  }
+    insertCarta() {
+      const cartaIsValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
+      if (cartaIsValid){
+        console.log("Carta is valid")
+      } else {
+        console.log("Carta it's not valid")
+      }
+    },
+    insertInterlocutor () {
+
+    },
+    updateInterlocutor () {
+
+    },
+    insertAgenciaHasEstat () {
+      //insert agencias has estat
+    },
+    insertExpedient () {
+      // Add rquest to insert Expedient
+    }
+
+  },
+  mounted() {
+    this.getCartaData()
+  },
 }
 </script>
 <style scoped>
