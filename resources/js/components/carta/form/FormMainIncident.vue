@@ -1,17 +1,16 @@
 <template>
   <form 
-    @input.prevent="validateInput($event.target)"
     @focusin=" removeValidationClasses($event.target)"
     @focusout="this.validateInput($event.target)">
     <div class="form-floating mb-3" id="tipusIncident-container">
-      <input v-model="tipusIncident.input" @input="handleInput('tipusIncident', $event, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
+      <input v-model="tipusIncident.input" @input="handleInput($event.target, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
       <label for="tipusIncident">Tipus d'incident</label>
       <datalist  id="tipusIncidentsList">
         <option v-for="(tipus, index) in tipusIncidents" :key="index" :value="tipus.nom"></option>
       </datalist>
     </div>
     <div class="form-floating mb-3" id="incident-container">
-      <input v-model="incident.input" @input="handleInput('incident', $event, incidents)" type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
+      <input v-model="incident.input" @input="handleInput($event.target, incidents)" type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
       <label for="incident">Incident</label>
       <datalist  id="incidentsList">
         <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
@@ -35,7 +34,6 @@
 export default {
   emits: [
     'get-incident',
-    'is-form-valid'
   ],
   props: {
     incidentData: {
@@ -49,6 +47,7 @@ export default {
         isValid: false
       },
       incident: {
+        id: '',
         input: '',
         codi: '',
         definicio: '',
@@ -57,7 +56,8 @@ export default {
         isValid: false
       },
       cartaIncident: {
-        incident: ''
+        incident: '',
+        isValid: false
       }
     }
   },
@@ -66,7 +66,7 @@ export default {
       return this.incidentData.tipusIncident ? this.incidentData.tipusIncident : []
     },
     incidents () {
-      if (this.cartaIncident.tipusIncident) {
+      if (this.tipusIncident.isValid) {
         return this.incidentData.incidents.filter(incident => incident.tipus_incidents_id === this.cartaIncident.tipusIncident)
       } else {
         return this.incidentData.incidents ? this.incidentData.incidents : []
@@ -84,69 +84,40 @@ export default {
     removeValidationClasses(el) {
       el.classList.remove('is-valid', 'is-invalid');
     },
-    validateInput (el) {
-      var isValid = false;
-      if (this[el.id].isValid) {
-        isValid = true
-      } 
-      if (el.id === 'incident') {
-        el.classList.toggle('is-invalid', !isValid)
-      }
-      el.classList.toggle('is-valid', isValid)
-      this.validateForm()
-    },
-    validateForm () {
-      const isValid = this.tipusIncident.isValid
-      if (isValid) {
-        this.$emit('get-incident', this.cartaIncident)
-      }
-      this.$emit('is-form-valid', isValid)
-    },
-    handleInput(inputName, event, list) {
-      const inputValue = event.target.value
-      const matchedInputLetter = list.find(tipus => tipus.nom.toLowerCase().startsWith(inputValue.toLowerCase()))
+    handleInput(target, list) {
+      const inputValue = target.value
       const matchedInputValue = list.find(tipus => tipus.nom.toLowerCase() === inputValue.toLowerCase())
-
+      const handlers = {
+        'tipusIncident': this.tipusIncidentSelected,
+        'incident': this.incidentSelected
+      }
       if (matchedInputValue) {
-        this[inputName].isValid = true
-        switch (event.target.id) {
-          case 'tipusIncident':
-            this.tipusIncidentSelected(matchedInputValue)
-            break;
-          case 'incident':
-            this.incidentSelected(matchedInputValue)
-            break;
-        }
-        this.cartaIncident = {
-          ...this.cartaIncident,
-          [event.target.id]: matchedInputValue.id
+        const handler = handlers[target.id]
+        if (handler) {
+          handler(matchedInputValue);
         }
       } else {
-        this[inputName].isValid = this[inputName].isValid ? false : this[inputName].isValid
-        
-        if (inputValue.trim() === '') {
-          console.log("\nFORM MAIN INCIDENT:")
-          console.log("Input "+event.target.id+"is empppty!! like nada, zero, super empty")
-          this.cartaIncident = {
-            ...this.cartaIncident,
-            [event.target.id]: ''
-          }
-        }
+        this[target.id].isValid = false; 
       }
-
+      this.validateInput(target)
+      this.updateCartaData()
     },
     tipusIncidentSelected (tipusIncident) {
+      this.tipusIncident.isValid = true
+      this.tipusIncident.input = tipusIncident.nom
       if (this.cartaIncident.incident && tipusIncident.id != this.incident.tipus_incidents_id) {
-        console.log("\nFORM MAIN INCIDENT:")
-        console.log("The incident selected doesnt belong to this tipus!")
         for(const prop in this.incident) {
-          this.incident[prop] = ''
+          if (prop != 'isValid') {
+            this.incident[prop] = ''
+          }
         }
         this.cartaIncident.incident = ''
         this.validateInput(this.$refs.incidentInput)
       }
     },
     incidentSelected (incident) {
+      this.incident.isValid = true
+      this.incident.id = incident.id
       this.incident.codi = incident.codi
       this.incident.definicio = incident.definicio
       this.incident.instruccions = incident.instruccions
@@ -158,6 +129,19 @@ export default {
         this.tipusIncident.isValid = true
         this.validateInput(this.$refs.tipusIncidentInput)
       }
+    },
+    validateInput (el) {
+      if (el.id === 'incident') {
+        el.classList.toggle('is-invalid', !this[el.id].isValid)
+      }
+      el.classList.toggle('is-valid', this[el.id].isValid)
+    },
+    updateCartaData () {
+      this.cartaIncident = {
+        incident: this.incident.id,
+        isValid: this.incident.isValid
+      }
+      this.$emit('get-incident', this.cartaIncident)
     },
     toLowerCase (string) {
       return [string].map(item =>

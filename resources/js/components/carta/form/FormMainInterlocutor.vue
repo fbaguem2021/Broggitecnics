@@ -1,6 +1,6 @@
 <template>
     <form id="interlocutor-form" 
-        @input.prevent="validateInput($event.target)"
+        @input.prevent="handleInput($event.target)"
         @focusin=" removeValidationClasses($event.target)"
         @focusout="this.validateInput($event.target)">
         <div class="row">
@@ -14,13 +14,13 @@
         <div class="row">
             <div class="col-4">
                 <div class="form-floating mb-3">
-                    <input v-model="name.input" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off" autofocus>
+                    <input v-model="name.input" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off" autofocus ref="nameInput">
                     <label for="name">Nom</label>
                 </div>
             </div>
             <div class="col-8">
                 <div class="form-floating mb-3">
-                    <input v-model="surnames.input" type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off">
+                    <input v-model="surnames.input" type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off" ref="surnamesInput">
                     <label for="surnames">Cognoms</label>
                 </div>
             </div>
@@ -39,9 +39,6 @@
 export default {
     emits: [
         'get-interlocutor',
-        'is-new-interlocutor',
-        'is-save-interlocutor',
-        'is-form-valid'
     ],
     data() {
         return {
@@ -56,49 +53,41 @@ export default {
                 input: '',
                 isValid: false
             },
-            record: '',
-            cartaInterlocutor: {
-                telefon: '',
-                antecedents: '',
-                nom: '',
-                cognom: ''
-            }
+            record: ''
         }
     },
     methods: {
         removeValidationClasses(el) {
             el.classList.remove('is-valid', 'is-invalid');
         },
+        handleInput (el) {
+            this.validateInput(el)
+            this.updateCartaData()
+        },
         validateInput (el) {
-            if (el.id === 'name' || el.id === 'surnames') {
-                var isValid = false;
-                isValid = el.value != '' ? true : false;
-                this[el.id].isValid = isValid
-                el.classList.toggle('is-valid', isValid)
-                el.classList.toggle('is-invalid', !isValid)
+            if (el === this.$refs.nameInput || el === this.$refs.surnamesInput) {
+                this[el.id].isValid = el.value != '' ? true : false;
+                el.classList.toggle('is-valid', this[el.id].isValid)
+                el.classList.toggle('is-invalid', !this[el.id].isValid)
             }
-            this.validateForm()
         },
-        validateForm() {
-            const isValid = (this.name.isValid && this.surnames.isValid)
-            console.log("Form is valid?: " + isValid)
-            this.$emit('is-form-valid', isValid)
+        updateCartaData () {
+            //object desestructuration
+            const { isNewInterlocutor, saveInterlocutor, phone, name, surnames, record } = this.$data;
+            const cartaInterlocutor = {
+            telefon: phone,
+            antecedents: record,
+            nom: name.input,
+            cognom: surnames.input,
+            isValid: name.isValid && surnames.isValid,
+            isNewInerlocutor: isNewInterlocutor,
+            saveInterlocutor: saveInterlocutor
+            };
+            this.$emit('get-interlocutor', cartaInterlocutor)
         },
-        emitInterlocutor () { 
-            this.$emit('get-interlocutor', this.cartaInterlocutor)
-        },
-        emitSaveInterlocutor() {
-            console.log('FORM MAIN INTERLOCUTOR: input detected\nValue of saveInterlocutor')
-            console.log(this.saveInterlocutor)
-            this.$emit('is-save-interlocutor', this.saveInterlocutor)
-        },
-        emitIsNewInterlocutor () {
-            this.$emit('is-new-interlocutor', this.isNewInterlocutor)
-        }
     },
     mounted() {
-        // DEBUGGING DEV DEV DEV
-        this.emitIsNewInterlocutor
+
     },
 }
 </script>

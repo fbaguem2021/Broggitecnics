@@ -29,27 +29,20 @@
         </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane show active" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
-            <interlocutor-form 
-                @get-interlocutor="emitInterlocutor"
-                @is-save-interlocutor="updateSaveInterlocutor" 
-                @is-form-valid="isInterlocutorValid"
-            />
+        <div class="tab-pane show active" @keydown="handleTabKey($event)" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
+            <interlocutor-form @get-interlocutor="emitInterlocutor"/>
         </div>
-        <div class="tab-pane" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
-            <localitzacio-form 
-                :localitzacioData="localitzacioData" 
-                @get-location="emitLocation" 
+        <div class="tab-pane" @keydown="handleTabKey($event)" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
+            <localitzacio-form :localitzacioData="localitzacioData" 
+                @get-localitzacio="emitLocation" 
                 @get-map-serach-string="updateMapSearchString"
-                @is-form-valid="isLocationValid"
             />
             <!-- @is-form-valid="updateLocationValid" -->
         </div>
-        <div class="tab-pane" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
+        <div class="tab-pane" @keydown="handleTabKey($event)" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
             <incident-form 
                 :incidentData="incidentData"
                 @get-incident="emitIncident"
-                @is-form-valid="isIncidentValid"
                 />
         </div>
     </div>
@@ -120,10 +113,7 @@ export default {
     });
     observer.observe(this.$refs.localitzacioTab, { attributeFilter: ['class'] });
 
-    this.$refs.interlocutorPanel.addEventListener('keydown', this.handleTabKey);
-    this.$refs.localitzacioPanel.addEventListener('keydown', this.handleTabKey);
-    this.$refs.incidentPanel.addEventListener('keydown', this.handleTabKey);
-
+    // Init bootstrap Tab objects
     this.interlocutorTab = new bootstrap.Tab(this.$refs.interlocutorTab);
     this.localitzacioTab = new bootstrap.Tab(this.$refs.localitzacioTab);
     this.incidentTab = new bootstrap.Tab(this.$refs.incidentTab);
@@ -151,7 +141,6 @@ export default {
       }
     }
   },
-  
   getTabIndex(tabPanel) {
     const tabPanes = [this.$refs.interlocutorPanel, this.$refs.localitzacioPanel, this.$refs.incidentPanel];
     return tabPanes.indexOf(tabPanel);
@@ -167,7 +156,6 @@ export default {
         return this.incidentTab;
     }
   },
-
     /**
      * UPDATES
      * ----------------------------
@@ -175,39 +163,25 @@ export default {
     updateMapSearchString (mapString) {
         this.mapSearchString = mapString
     },
-
-    /**
-     * VALIDATIONS
-     * ---------------------------------------------------
-     * Sets forms validation, this affects to the nav-item tabs icons
-     */
-     isInterlocutorValid (isValid) {
-        this.interlocutorValid = isValid
-    },
-    isLocationValid (isValid) {
-        this.localitzacioValid = isValid
-    },
-    isIncidentValid (isValid) {
-        this.incidentValid = isValid;
-    },
-    updateSaveInterlocutor (saveIt) {
-        this.saveInterlocutor = saveIt
-        this.$emit('is-save-interlocutor', this.saveInterlocutor)
-    },
-
     /** 
      * BRIDGE EMITS TO -> CARTA TRUCADA big daddy
      * -----------------------------------------------------
      * Emits localitzacio, interlocutor and incident object
      * when is valid emits the valid object, when it's false empty object
      */
-    emitLocation(loc) {
-        this.$emit('get-carta-location', loc)
-    },
     emitInterlocutor (interlocutor) {
+        this.interlocutor = interlocutor
+        this.interlocutorValid = interlocutor.isValid
         this.$emit('get-carta-interlocutor', interlocutor)
     },
+    emitLocation(loc) {
+        this.localitzacio = loc
+        this.localitzacioValid = loc.isValid
+        this.$emit('get-carta-location', loc)
+    },
     emitIncident (incident) {
+        this.incident = incident
+        this.incidentValid = incident.isValid
         this.$emit('get-carta-incident', incident)
     },
 }

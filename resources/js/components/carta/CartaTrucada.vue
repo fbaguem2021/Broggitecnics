@@ -69,7 +69,7 @@ export default {
       }
     },
     updateLoc (locString) {
-      this.localitzacioString = locString
+      this.localitzacio = locString
     },
     updateInterlocutor(interlocutor) {
       this.interlocutor = interlocutor
