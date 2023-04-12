@@ -128,7 +128,7 @@ body {
     padding: 0px;
     padding: 0px 0px 0px 10px;
     width: 100%;
-    transform: scale(0.982) translateY(0.05rem) translateX(0.13rem);
+    transform: scale(0.982) translateY(0.12rem) translateX(0.13rem);
     border-radius: 5px 0 0 0;
 }
 .form-floating > textarea.form-control:focus ~ label,
@@ -141,7 +141,7 @@ body {
     height: auto;
     padding: 0px 0px 0px 10px;
     width: 100%;
-    transform: scale(0.982) translateY(0.05rem) translateX(0.13rem);
+    transform: scale(0.982) translateY(0.12rem) translateX(0.13rem);
     border-radius: 5px 0 0 0;
 }
 .form-floating > textarea.form-control:-webkit-autofill ~ label 
@@ -153,6 +153,6 @@ body {
     padding: 0px;
     padding: 0px 0px 0px 10px;
     width: 100%;
-    transform: scale(0.982) translateY(0.05rem) translateX(0.13rem);
+    transform: scale(0.982) translateY(0.12rem) translateX(0.13rem);
     border-radius: 5px 0 0 0;
 }
