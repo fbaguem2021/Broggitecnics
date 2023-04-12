@@ -160,7 +160,10 @@ export default {
         'max-height':  `${Math.max(height, minHeight)+40}px`
       };
     },
-  }
+  },
+  mounted() {
+    this.updateCartaData()
+  },
 }
 </script>
 <style scoped>

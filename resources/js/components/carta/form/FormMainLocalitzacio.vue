@@ -382,6 +382,7 @@ export default {
     }
   },
   mounted() {
+    this.updateCartaData()
   },
 }
 </script>

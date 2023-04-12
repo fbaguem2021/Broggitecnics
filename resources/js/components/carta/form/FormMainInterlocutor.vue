@@ -31,7 +31,7 @@
         </div>
         <div class="form-check form-switch form-check-reverse my-4" id="save-interlocutor-container">
             <label class="form-check-label" for="saveInterlocutor">Guardar interlocutor</label>
-            <input v-model="saveInterlocutor" @change="emitSaveInterlocutor" class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" @focusout="nextForm">
+            <input v-model="saveInterlocutor" @change="updateCartaData" class="form-check-input" type="checkbox" role="switch" id="saveInterlocutor" @focusout="nextForm">
         </div>
     </form>
 </template>
@@ -53,7 +53,16 @@ export default {
                 input: '',
                 isValid: false
             },
-            record: ''
+            record: '',
+            cartaInterlocutor: {
+                telefon: '',
+                antecedents: '',
+                nom: '',
+                cognom: '',
+                isValid: false,
+                isNewInerlocutor: this.isNewInerlocutor,
+                saveInterlocutor: this.saveInterlocutor
+            }
         }
     },
     methods: {
@@ -72,22 +81,20 @@ export default {
             }
         },
         updateCartaData () {
-            //object desestructuration
-            const { isNewInterlocutor, saveInterlocutor, phone, name, surnames, record } = this.$data;
-            const cartaInterlocutor = {
-            telefon: phone,
-            antecedents: record,
-            nom: name.input,
-            cognom: surnames.input,
-            isValid: name.isValid && surnames.isValid,
-            isNewInerlocutor: isNewInterlocutor,
-            saveInterlocutor: saveInterlocutor
+           this.cartaInterlocutor = {
+                telefon: this.phone,
+                antecedents: this.record,
+                nom: this.name.input,
+                cognom: this.surnames.input,
+                isValid: this.name.isValid && this.surnames.isValid,
+                isNewInerlocutor: this.isNewInterlocutor,
+                saveInterlocutor: this.saveInterlocutor
             };
-            this.$emit('get-interlocutor', cartaInterlocutor)
+            this.$emit('get-interlocutor', this.cartaInterlocutor)
         },
     },
     mounted() {
-
+        this.updateCartaData()
     },
 }
 </script>

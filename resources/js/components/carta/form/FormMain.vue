@@ -30,7 +30,8 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" @keydown="handleTabKey($event)" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
-            <interlocutor-form @get-interlocutor="emitInterlocutor"/>
+            <interlocutor-form 
+                @get-interlocutor="emitInterlocutor"/>
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
             <localitzacio-form :localitzacioData="localitzacioData" 
@@ -40,8 +41,7 @@
             <!-- @is-form-valid="updateLocationValid" -->
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
-            <incident-form 
-                :incidentData="incidentData"
+            <incident-form :incidentData="incidentData"
                 @get-incident="emitIncident"
                 />
         </div>
@@ -171,6 +171,8 @@ export default {
      */
     emitInterlocutor (interlocutor) {
         this.interlocutor = interlocutor
+        this.newInterlocutor = interlocutor.isNewInerlocutor
+        this.saveInterlocutor = interlocutor.saveInterlocutor
         this.interlocutorValid = interlocutor.isValid
         this.$emit('get-carta-interlocutor', interlocutor)
     },
@@ -184,7 +186,7 @@ export default {
         this.incidentValid = incident.isValid
         this.$emit('get-carta-incident', incident)
     },
-}
+    }
 }
 </script>
 <style scoped>
