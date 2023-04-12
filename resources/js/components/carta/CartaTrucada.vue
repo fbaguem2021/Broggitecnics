@@ -70,6 +70,8 @@ export default {
       this.localitzacio = locString
     },
     updateInterlocutor(interlocutor) {
+      this.newInterlocutor = interlocutor.isNewInerlocutor
+      this.saveInterlocutor = interlocutor.saveInterlocutor
       this.interlocutor = interlocutor
     },
     updateIncident(incident) {

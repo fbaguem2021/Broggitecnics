@@ -9,7 +9,7 @@
       <div class="row align-items-center">
         <div class="d-flex col-4 mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>
-          <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" @click="setOutOfCat" >
+          <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" @click="toggleIsCat($event)">
           <i class="bi bi-arrow-left" id="isCatFocus"></i>
         </div>
       </div>
@@ -203,16 +203,13 @@ export default {
       
     },
     currentLocComponent() {
-      switch (this.tipusLoc.input.toLowerCase()) {
-        case 'carrers':
-          return 'CarrerForm'
-        case 'carretera':
-          return 'CarreteraForm'
-        case 'punt singular':
-          return 'PuntSingularForm'
-        default:
-          return null
+      const componentMap = {
+      'carrers': 'CarrerForm',
+      'carretera': 'CarreteraForm',
+      'punt singular': 'PuntSingularForm',
       }
+      const componentName = componentMap[this.tipusLoc.input.toLowerCase()]
+      return componentName || null
     },
   },
   methods: {
@@ -261,8 +258,11 @@ export default {
       const validIds = ['provincia', 'comarca', 'municipi', 'tipusLoc']
       if (validIds.includes(el.id)) {
         if (el.id === 'tipusLoc') {
+          if (el.value === '') {
+            this.descripcioLocalitzacio = ''
+          }
         el.classList.toggle('is-invalid', !this.tipusLoc.isValid)
-        this.tipusLoc.isValid ? null : this.tipusVia.input = '';
+        !this.tipusLoc.isValid ? this.tipusVia.input = '' : null;
         }
         el.classList.toggle('is-valid', this[el.id].isValid)
       }
@@ -356,12 +356,20 @@ export default {
       this.cartaLocation[property] = ''
       this.validateInput(this.$refs[property + 'Input'])
     },
-    setOutOfCat () {
+    toggleIsCat (e) {
       this.resetProvincia()
       this.resetComarca()
       this.resetMunicipi()
-      this.cartaLocation.tipusLoc = isCat ? '' : 60 // if !isCat set tipus localitzacio id to 60 = Provincia
-      this.cartaLocation.descripcioLoc = ''
+      this.descripcioLocalitzacio = ''
+      this.isCat = this.isCat ? false : true
+      if (this.isCat) {
+        this.tipusLoc.id = ''
+        this.tipusLoc.isValid = false
+      } else {
+        this.tipusLoc.id = 60 // if !isCat set tipus localitzacio id to 60 = Provincia
+        this.tipusLoc.isValid = true
+      }
+      
     },
     //Sends the map search string
     emitMapSearchString () {
