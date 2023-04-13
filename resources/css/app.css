@@ -108,3 +108,51 @@ body {
     width: 120%;
     height: auto;
 }
+
+/* ----- FIXES ----- */
+
+/* Removes mapbox watermakrs so it doesn't interfere with the buttons */
+#mapContainer .mapboxgl-control-container {
+    display: none !important;
+}
+
+/* New label dimensions and positions for floating labels to avoid overlap of input text with input label
+ * This should be fixed by bootstrap, known issue https://github.com/twbs/bootstrap/issues/32800
+*/
+.form-floating > textarea.form-control:not(:-moz-placeholder-shown) ~ label
+.form-floating > textarea.form-control-plaintext:not(:-moz-placeholder-shown) ~ label {
+    opacity: 1;
+    color: rgba(0, 0, 0, 0.5);
+    background-color: #fff;
+    height: auto;
+    padding: 0px;
+    padding: 0px 0px 0px 10px;
+    width: 100%;
+    transform: scale(0.982) translateY(0.12rem) translateX(0.13rem);
+    border-radius: 5px 0 0 0;
+}
+.form-floating > textarea.form-control:focus ~ label,
+.form-floating > textarea.form-control-plaintext ~ label,
+.form-floating > textarea.form-control:not(:placeholder-shown) ~ label 
+.form-floating > textarea.form-control-plaintext:not(:placeholder-shown) ~ label {    
+    opacity: 1;
+    color: rgba(0, 0, 0, 0.5);
+    background-color: #fff;
+    height: auto;
+    padding: 0px 0px 0px 10px;
+    width: 100%;
+    transform: scale(0.982) translateY(0.12rem) translateX(0.13rem);
+    border-radius: 5px 0 0 0;
+}
+.form-floating > textarea.form-control:-webkit-autofill ~ label 
+.form-floating > textarea.form-control-plaintext:-webkit-autofill ~ label{
+    opacity: 1;
+    color: rgba(0, 0, 0, 0.5);
+    background-color: #fff;
+    height: auto;
+    padding: 0px;
+    padding: 0px 0px 0px 10px;
+    width: 100%;
+    transform: scale(0.982) translateY(0.12rem) translateX(0.13rem);
+    border-radius: 5px 0 0 0;
+}

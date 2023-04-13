@@ -7,8 +7,8 @@ export default defineConfig({
     laravel({
       input: [
         'resources/css/landing.css',
-        'resources/css/login.css',
         'resources/scss/app.scss',
+        'resources/css/login.css',
         'resources/js/app.js',
         'resources/js/menu.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js'

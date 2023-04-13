@@ -1,13 +1,16 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
-use App\Models\CartaTrucada;
+use App\Models\Agencia;
 use Illuminate\Http\Request;
+use App\Models\AgenciesPrimaries;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CartaTrucadaResource;
+use App\Http\Resources\AgenciaResource;
+use App\Policies\AgenciaPolicy;
+use Illuminate\Database\QueryException;
 
-class CartaTrucadaController extends Controller
+
+class AgenciaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +19,9 @@ class CartaTrucadaController extends Controller
      */
     public function index()
     {
-        return CartaTrucadaResource::collection(CartaTrucada::all());
-
+        $agencies = Agencia::all();
+        // return AgenciaResource::collection($agencies);
+        return AgenciaResource::collection($agencies);
     }
 
     /**
@@ -28,29 +32,30 @@ class CartaTrucadaController extends Controller
      */
     public function store(Request $request)
     {
-        $carta = new CartaTrucada();
-
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\CartaTrucada  $cartaTrucada
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    //mostrar agencias según el ID de la agencia primaria
     public function show($id)
     {
-        return new CartaTrucadaResource(CartaTrucada::find($id));
+        $agencies = Agencia::where('AgenciesPrimaries_id', $id)->get();
+        return AgenciaResource::collection($agencies);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\CartaTrucada  $cartaTrucada
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, CartaTrucada $cartaTrucada)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -58,10 +63,10 @@ class CartaTrucadaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\CartaTrucada  $cartaTrucada
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CartaTrucada $cartaTrucada)
+    public function destroy($id)
     {
         //
     }

@@ -26,25 +26,24 @@ class CartaTrucadaResource extends JsonResource
             'id' => $this->id,
             'codi_trucada' => $this->codi_trucada,
             'data_hora' => [
-               'data' => $date,
-               'hora' => $time
+                'data' => $date,
+                'hora' => $time
             ],
             'durada' => $this->durada,
-            'interlocutor' => [
-                'nom' => $this->interlocutor->nom,
-                'cognom' => $this->interlocutor->cognoms,
-                'telefon' => $this->interlocutor->telefon,
-                'antecedents' => $this->interlocutor->antecedents,
-            ],
+            'interlocutor' => $this->interlocutor ? [
+                'nom' => $this->interlocutor->nom ?? null,
+                'cognom' => $this->interlocutor->cognoms ?? null,
+                'telefon' => $this->interlocutor->telefon ?? null,
+                'antecedents' => $this->interlocutor->antecedents ?? null,
+            ] : null,
             'localitzacio' => [
                 'tipus' => $this->tipusLocalitzacio->nom,
-                'descripcio' => $this->decripcio_localitzacio,
-                'detall' => $this->detall_localitzacio,
-                'referencies' => $this->altres_ref_localitzacio,
-                'provincia' => $this->provincia->nom,
-                'comarca' => $this->municipi->comarca->nom,
-                'municipi' => $this->municipi->nom,
-                
+                'descripcio' => $this->decripcio_localitzacio ?? null,
+                'detall' => $this->detall_localitzacio ?? null,
+                'referencies' => $this->altres_ref_localitzacio ?? null,
+                'provincia' => $this->provincia ? $this->provincia->nom ?? null : null,
+                'comarca' => $this->municipi ? $this->municipi->comarca->nom ?? null : null,
+                'municipi' => $this->municipi ? $this->municipi->nom ?? null : null,
             ],
             'incident' => [
                 'tipus_incident' => $this->incident->tipusIncident->nom,

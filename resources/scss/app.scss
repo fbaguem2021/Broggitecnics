@@ -5,7 +5,7 @@
     --success: #1266E2;
     --warning: #ffc107;
     --danger: #E21212;
-    --light: #FFFFFF;
+    --light: grey;
     --dark: #000000;
     --nav-height: 80px;
 }
@@ -18,7 +18,7 @@ $tertiary: #12c7e2;
 $success: #1266e2;
 $warning: #ffc107;
 $danger: #e21212;
-$light: #ffffff;
+$light: grey;
 $dark: #000000;
 
 $theme-colors: (
@@ -32,11 +32,14 @@ $theme-colors: (
     "dark": $dark,
 );
 
-$input-btn-focus-width: 0.4rem;
-$input-btn-focus-color-opacity: 0.1;
-$input-btn-focus-color: rgba($success, $input-btn-focus-color-opacity);
+$input-focus-border-width: 2px;
+$input-focus-box-shadow: 0 0 4px 2px rgba($success, 0.2);
 $input-focus-border-color: $success;
 
+$form-check-input-focus-border: $success;
+$form-check-input-focus-box-shadow: 0 0 4px 0px rgba($success, 0.2);
+$form-check-input-checked-bg-color: $success;
+$form-check-input-checked-border-color: $success;
 
 @import "bootstrap/scss/bootstrap";
 @import "bootstrap-icons/font/bootstrap-icons.css";
