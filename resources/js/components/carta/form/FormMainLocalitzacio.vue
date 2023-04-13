@@ -74,10 +74,12 @@
           </transition>
         </div>
       </transition>
-      <div class="form-floating" id="referencies-textArea-container">
-          <textarea v-model="altresReferencies" class="form-control" placeholder="Referencies" id="referenciesTextarea"></textarea>
-          <label for="referenciesTextarea">Altres referències</label>
-      </div>
+      <div id="referencies-textArea-container">
+        <div class="form-floating">
+            <textarea v-model="altresReferencies" class="form-control" placeholder="Referencies" id="referenciesTextarea"></textarea>
+            <label for="referenciesTextarea">Altres referències</label>
+        </div>
+    </div>
     </form>
 </template>
 <script >
@@ -439,7 +441,9 @@ export default {
 
   #referencies-textArea-container {
     flex-grow: 1;
-    margin-bottom: 20px;
+  }
+  #referencies-textArea-container .form-floating{
+    height: 90%;
   }
 
   #referenciesTextarea {
