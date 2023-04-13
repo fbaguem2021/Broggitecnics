@@ -113,6 +113,7 @@ export default {
       this.localitzacio = locString
     },
     updateInterlocutor(interlocutor) {
+      console.log(interlocutor)
       this.newInterlocutor = interlocutor.isNewInerlocutor
       this.saveInterlocutor = interlocutor.saveInterlocutor
       this.interlocutor = interlocutor
@@ -137,16 +138,12 @@ export default {
     insertInterlocutor () {
 
     },
-    updateInterlocutor () {
-
-    },
     insertAgenciaHasEstat () {
       //insert agencias has estat
     },
     insertExpedient () {
       // Add rquest to insert Expedient
     }
-
   },
   mounted() {
     this.getCartaData()
@@ -196,7 +193,7 @@ export default {
     left: 0;
     bottom: 0;
     right: 0;
-    background-color: white;
+    background-color: #ffffff;
     border-radius: 10px;
     z-index: -1;
   }
@@ -215,6 +212,13 @@ export default {
     justify-content: space-between;
     width: 42%;
   }
+  #form-main, #form-nota, #map, #expedients, #data {
+    border-radius: 10px;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 0 4px 1px rgba(0, 0, 0, .12)
+  }
+
   #form-main, #form-nota {
     border: 4px solid var(--primary);
     transition: height .4s ease-in-out;
@@ -226,7 +230,6 @@ export default {
     flex-direction: column;
     height: 56%;
   }
-
   #form-main.expanded {
     height: 80%;
   }
@@ -237,13 +240,9 @@ export default {
   #form-nota.expanded{
     height: 42%;
   }
-  #form-main, #form-nota, #data, #map, #expedients{
-    border-radius: 10px;
-    width: 100%;
-  }
   #data {
     border: 4px solid black;
-    height: 10%;
+    height: 9%;
   }
   #map {
     border: 4px solid var(--secondary);

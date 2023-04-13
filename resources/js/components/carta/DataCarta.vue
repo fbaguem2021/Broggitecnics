@@ -38,7 +38,7 @@ export default {
                 const seconds = duration.seconds()
                 const formattedSeconds = (seconds < 10 ? '0' : '') + seconds //Add leading 0 if seconds are less than 10
                 this.timer = minutes + ':' + formattedSeconds
-                requestAnimationFrame(updateTime)
+                setInterval(updateTime, 1000)
             }
             requestAnimationFrame(updateTime)
         },
@@ -70,9 +70,10 @@ export default {
         height: 100%;
         margin: 0;
         border-radius: 5px;
-        background-color: #313131;
+        background-color: #373737;
     }
     #codi, #timer, #dataHora {
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;

@@ -189,7 +189,7 @@ export default {
     .nav-tabs {
         align-items: end;
         background-color: #DFE2E6;
-        border-bottom: 2px solid var(--primary);
+        border-bottom: 4px solid var(--primary);
         border-radius: 5px 5px 0 0;
     }
     .nav-tabs:first-child {
@@ -221,10 +221,10 @@ export default {
         padding-left: 10px;
     }
    .nav-link.active {
-        border: 2px solid var(--primary);
+        border: 4px solid var(--primary);
         border-bottom: none;
         color: black;
-        height: 105%;
+        height: 109%;
     }
     .tab-content {
         flex-grow: 1;
