@@ -22,7 +22,7 @@
                             disabled>
                     </td>
                     <td class="col-4 align-middle">{{ getLoc(e.localitzacions) }}</td>
-                    <!-- <td class="col-4">{{ getTipus(e.tipus) }}</td> -->
+                    <td class="col-4">{{ getTipus(e.tipus) }}</td>
                     <tr class="col-2 center-child">
                         <button @click="seleccionarExpedient(e.id)"
                             class="btn btn-exp col-9"
