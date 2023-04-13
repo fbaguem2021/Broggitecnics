@@ -18,18 +18,30 @@ export default {
     props: {
         codiTrucada: {
             type: String
+        },
+        isLoaded: {
+            type: Boolean,
+            required: true
         }
     },
     data() {
         return {
-            startTime: moment(),
+            startTime: null,
             timer: '',
             currentDay: '',
             currentTime: '',
         }
     },
+    watch: {
+        isLoaded(cartaIdLoaded) {
+            if (cartaIdLoaded){
+                this.startTimer()
+            }
+        }
+    },
     methods: {
         startTimer() {
+            this.startTime = moment()
             const updateTime = () => {
                 const currentTime = moment()
                 const elapsedTime = currentTime.diff(this.startTime)
@@ -40,7 +52,7 @@ export default {
                 this.timer = minutes + ':' + formattedSeconds
                 setInterval(updateTime, 1000)
             }
-            requestAnimationFrame(updateTime)
+            updateTime()
         },
         getDayTime() {
             moment.locale('ca')
@@ -57,9 +69,7 @@ export default {
         }
     },
     mounted() {
-        // this.getCodiTrucada()
         this.getDayTime()
-        this.startTimer()
     },
 }
 </script>

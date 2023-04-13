@@ -1,4 +1,7 @@
 <template>
+  <Transition name="fade">
+    <loader-splash v-if="!isLoaded"></loader-splash>
+  </Transition>
   <!-- Mostrar alertas success -->
   <div v-if="alertSuccess != ''" class="alert alert-warning alert-dismissible fade show" role="alert">
     {{ alertSuccess }}
@@ -28,7 +31,7 @@
         </div>
         <div id="side">
           <div id="data">
-            <data-carta :codi-trucada="codiTrucada"></data-carta>
+            <data-carta :codi-trucada="codiTrucada" :is-loaded="isLoaded"></data-carta>
           </div>
           <!-- MAPA -->
           <div id="map">
@@ -44,8 +47,23 @@
       </div>
     </div>
   </div>
+  <div id="stripes-1">
+    <svg width="200" height="80" viewBox="0 0 200 80" fill="none">
+        <path d="M0 0H200V20H0V0Z" fill="#E2AA12" />
+        <path d="M0 30H200V50H0V30Z" fill="#E1127A" />
+        <path d="M0 60H200V80H0V60Z" fill="#12C7E2" />
+    </svg>
+  </div>
+  <div id="stripes-2">
+      <svg width="200" height="80" viewBox="0 0 200 80" fill="none">
+          <path d="M0 0H200V20H0V0Z" fill="#E2AA12" />
+          <path d="M0 30H200V50H0V30Z" fill="#E1127A" />
+          <path d="M0 60H200V80H0V60Z" fill="#12C7E2" />
+      </svg>
+  </div>
 </template>
 <script>
+import LoaderSplash from './LoaderSplash.vue'
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
 import DataCarta from './DataCarta.vue';
@@ -55,10 +73,12 @@ export default {
     FormMain,
     FormNota,
     MapApp,
-    DataCarta
+    DataCarta,
+    LoaderSplash
   },
   data() {
     return {
+      isLoaded: false,
       codiTrucada: '',
       dataHoraTrucada: '',
       durada: 0,
@@ -147,6 +167,7 @@ export default {
   },
   mounted() {
     this.getCartaData()
+    setTimeout(()=>{ this.isLoaded = true}, 4000)
   },
 }
 </script>
