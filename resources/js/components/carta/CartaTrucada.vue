@@ -10,8 +10,8 @@
       <div class="content">
         <div id="form">
           <div id="form-main" ref="formMain" class="expanded">
-            <form-main 
-                :localitzacio-data="localitzacioData" 
+            <form-main
+                :localitzacio-data="localitzacioData"
                 :incident-data="incidentData"
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
@@ -34,7 +34,9 @@
           <div id="map">
             <MapApp :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
           </div>
-          <div id="expedients">EXPEDIENTS</div>
+          <div id="expedients">
+                <form-expedients></form-expedients>
+            </div>
         </div>
         <div id="bg"></div>
       </div>
@@ -48,12 +50,14 @@
 <script>
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
+import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 export default {
   components: {
     FormMain,
     FormNota,
+    FormExpedients,
     MapApp,
     DataCarta
   },
@@ -102,7 +106,7 @@ export default {
     expandCompress() {
       this.$refs.formNota.classList.toggle('expanded');
       this.$refs.formMain.classList.toggle('expanded');
-      
+
       if (this.$refs.formNota.classList.contains('expanded')) {
         this.notaIsExpaneded = true
       } else {
