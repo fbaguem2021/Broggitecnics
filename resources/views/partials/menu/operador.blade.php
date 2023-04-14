@@ -14,13 +14,18 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title fw-bold text-center">Trucades rebudes</h4>
+                    <div class="chart-container">
+                        <canvas id="callTypeChart"></canvas>
+                    </div>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title fw-bold text-center">Temps mitjana trucada</h4>
-                    <canvas id="myChart"></canvas>
+                    <div class="chart-container">
+                        <canvas id="avCallChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
