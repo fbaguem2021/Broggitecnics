@@ -42,6 +42,7 @@ export default {
     methods: {
         startTimer() {
             this.startTime = moment()
+            const self = this
             const updateTime = () => {
                 const currentTime = moment()
                 const elapsedTime = currentTime.diff(this.startTime)
@@ -49,10 +50,10 @@ export default {
                 const minutes = duration.minutes()
                 const seconds = duration.seconds()
                 const formattedSeconds = (seconds < 10 ? '0' : '') + seconds //Add leading 0 if seconds are less than 10
-                this.timer = minutes + ':' + formattedSeconds
-                setInterval(updateTime, 1000)
+                self.timer = minutes + ':' + formattedSeconds
             }
             updateTime()
+            setInterval(updateTime, 1000)
         },
         getDayTime() {
             moment.locale('ca')
