@@ -1,50 +1,48 @@
 <template>
-    <div class="container table-container table-scrollable">
-        <table class="table">
-            <thead>
-                <tr class="header row">
-                    <th scope="col" class="col-2 text-center">Trucada Previa</th>
-                    <th scope="col" class="col-4 th-loc">Localització</th>
-                    <th scope="col" class="col-4 th-typ">{{ sending }}</th>
-                    <th scope="col" class="col-2 th-exp">
-                        <button class="col-12 btn btn-sm btn-tertiary text-white text-center">
-                            Nou Expedient
-                        </button>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="row" v-for="e in expedients" :key="e.id">
-                    <td class="col-2 center-child">
-                        <input type="checkbox"
-                            class="form-check-input"
-                            :checked="checkInterlocutor()"
-                            disabled>
-                    </td>
-                    <td class="col-4 align-middle">{{ getLoc(e.localitzacions) }}</td>
-                    <td class="col-4">{{ getTipus(e.tipus) }}</td>
-                    <tr class="col-2 center-child">
-                        <button @click="seleccionarExpedient(e.id)"
-                            class="btn btn-exp col-9"
-                            :class="{ 'btn-outline-tertiary': isSelected(e.id), 'btn-outline-secondary withText': !isSelected(e.id) }">
-                            <i v-if="isSelected(e.id)" class="bi bi-check-all"></i>
-                            <span v-else>Vincular</span>
-                        </button>
+    <div class="table-container table-scrollable"
+        style="position: absolute;">
+            <table class="table" id="tabla-expedients">
+                <thead>
+                    <tr class="row bg-white">
+                        <th scope="col" class="col-2 text-center"
+                            :style="test">Trucada Previa</th>
+                        <th scope="col" class="col-4 th-loc">Localització</th>
+                        <th scope="col" class="col-4 th-typ"></th>
+                        <th scope="col" class="col-2 th-exp">
+                            <button class="col-12 btn btn-sm btn-tertiary text-white text-center">
+                                Nou Expedient
+                            </button>
+                        </th>
                     </tr>
-                </tr>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <tr class="row" v-for="e in expedients" :key="e.id">
+                        <td class="col-2 center-child">
+                            <input type="checkbox"
+                                class="form-check-input"
+                                :checked="checkInterlocutor()"
+                                disabled>
+                        </td>
+                        <td class="col-4 align-middle">{{ getLoc(e.localitzacions) }}</td>
+                        <td class="col-4">{{ getTipus(e.tipus) }}</td>
+                        <td class="col-2 center-child">
+                            <button @click="seleccionarExpedient(e.id)"
+                                class="btn btn-exp col-9"
+                                :class="{ 'btn-outline-tertiary': isSelected(e.id), 'btn-outline-secondary withText': !isSelected(e.id) }">
+                                <i v-if="isSelected(e.id)" class="bi bi-check-all"></i>
+                                <span v-else>Vincular</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
     </div>
 </template>
-
 <script>
 export default {
     // emits: ['expedient_vinculat'],
     props: {
-        sending: {
-            type: String,
-            default: "None sent"
-        },
+
     },
     data() {
         return {
@@ -56,6 +54,15 @@ export default {
         this.getExpedients()
     },
     methods: {
+        getStyles() {
+            const tab = document.querySelector('#tabla-expedients');
+            let styles;
+            if ( tab != null ) {
+                // console.log('top',tab.offsetTop)
+                styles = `--top: ${tab.offsetTop}; --left: ${tab.offsetLeft}; --width: ${tab.offsetWidth};`
+            }
+            return styles;
+        },
         getExpedients() {
             const self = this
             axios.get('expedients/cartaTrucada')
@@ -107,6 +114,9 @@ export default {
         // logged_user() {
         //     return window.Usuario
         // }
+        test() {
+            return this.getStyles()
+        }
     },
 }
 </script>
@@ -120,6 +130,26 @@ export default {
     .table-container > table {
         height: 100%;
     }
+    table {
+        margin-bottom: 0;
+    }
+    /* thead {
+        height: 65px;
+        max-height: 65px;
+    }
+    thead tr {
+        position: absolute;
+        left: 0;
+        right: 0;
+    }
+    tr {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    tbody {
+        --percentage: 42;
+        --padding: 0.5rem;
+    } */
     .table-scrollable {
         position: relative;
         height: 100% !important;
@@ -158,8 +188,5 @@ export default {
         top: 50%;
         left: 50%;
         transform: translateX(-50%) translateY(-50%);
-    }
-    .withText {
-        content: 'Vincular';
     }
 </style>
