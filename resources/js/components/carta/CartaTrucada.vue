@@ -5,7 +5,7 @@
   <!-- Mostrar alertas success -->
   <div v-if="alertSuccess != ''" id="carta-alert" class="alert alert-info alert-dismissible fade show" role="alert">
     {{ alertSuccess }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert()"></button>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert"></button>
   </div>
 
   <div id="card-wrapper">
@@ -119,7 +119,6 @@ export default {
     },
     restartAlert() {
       this.alertSuccess=""
-
     },
     expandCompress() {
       this.$refs.formNota.classList.toggle('expanded');
