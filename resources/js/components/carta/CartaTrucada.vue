@@ -3,7 +3,7 @@
     <loader-splash v-if="!isLoaded"></loader-splash>
   </Transition>
   <!-- Mostrar alertas success -->
-  <div v-if="alertSuccess != ''" class="alert alert-warning alert-dismissible fade show" role="alert">
+  <div v-if="alertSuccess != ''" id="carta-alert" class="alert alert-info alert-dismissible fade show" role="alert">
     {{ alertSuccess }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert()"></button>
   </div>
@@ -80,6 +80,7 @@ export default {
     return {
       isLoaded: false,
       codiTrucada: '',
+      codiNewExpedient: '',
       dataHoraTrucada: '',
       durada: 0,
       interlocutor: {},
@@ -103,14 +104,15 @@ export default {
           .then(response => {
               self.localitzacioData = response.data.localitzacio
               self.incidentData = response.data.incident
-              self.getCodiTrucada(response.data.lastCodi)
+              self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
+              self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
           })
           .catch((error) => {})
     },
-    getCodiTrucada (codi) {
+    getNewCodi (codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
       let prefix = codi.replace(/\d+/, "");
-      this.codiTrucada = prefix + numberPart.toString();
+      return prefix + numberPart.toString();
     },
     añadirAlerta(alert) {
       this.alertSuccess = alert
@@ -172,6 +174,15 @@ export default {
 }
 </script>
 <style scoped>
+  #carta-alert {
+    position: absolute;
+    width: 50%;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0, .1)
+  }
   .blur-gradient {
       position: absolute;
       bottom: 0;

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CartaTrucada;
 use App\Models\Comarca;
+use App\Models\Expedient;
 use App\Models\Incident;
 use App\Models\Municipi;
 use App\Models\Provincia;
@@ -34,7 +35,8 @@ class CartaData extends Controller
                 'tipusIncident' => TipusIncident::all(),
                 'incidents' => Incident::orderBy('nom')->get()
             ],
-            'lastCodi' => CartaTrucada::latest('id')->pluck('codi_trucada')->first()
+            'cartaLastCodi' => CartaTrucada::latest('id')->pluck('codi_trucada')->first() ? : 'TR230',
+            'expedientLatCodi' => Expedient::latest('id')->pluck('codi')->first() ? : 'EX230',
 
         ];
 
