@@ -41,5 +41,8 @@
 @endsection
 
 @section('scripts')
-    @vite('resources/js/menu.js')
+    @vite('resources/js/scripts/menu.js')
+    @if (Auth::user()->rol->id === 1)
+        @vite('resources/js/scripts/menuOperador.js')
+    @endif
 @endsection

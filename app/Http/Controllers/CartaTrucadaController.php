@@ -12,10 +12,19 @@ class CartaTrucadaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        
-        return view('pages.carta');
+        $isManual = $request->input('isManual');
+        $phone = $request->input('phone');
+
+        $message= "NO DATA RECIVED";
+        if ($isManual) {
+            $message = "is Manual recived";
+        }
+        if($phone) {
+            $message = "Phone recived";
+        }
+        return view('pages.carta', compact('message'));
     }
 
     /**

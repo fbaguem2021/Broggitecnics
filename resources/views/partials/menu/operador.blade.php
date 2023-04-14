@@ -20,6 +20,7 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title fw-bold text-center">Temps mitjana trucada</h4>
+                    <canvas id="myChart"></canvas>
                 </div>
             </div>
         </div>
@@ -45,12 +46,12 @@
                     <div class="col-md-8 d-flex align-items-center">
                         <div class="input-group align-items-center">
                             <label class="switch">
-                                <input type="checkbox" name="isRandom">
+                                <input type="checkbox" name="isManual">
                                 <span class="slider round"></span>
                             </label>
                             <input type="text" class="form-control side" id="side" maxlength="9" name="phone"
                                 placeholder="000 000 000" aria-describedby="basic-addon1">
-                                <label id="phone-mode" class="ms-3">Aleatori</label>
+                            <label id="phone-mode" class="ms-3">Aleatori</label>
                         </div>
                     </div>
                 </div>
