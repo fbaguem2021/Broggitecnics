@@ -33,7 +33,7 @@ Route::middleware(['auth'])->group(function() {
     })->name('operadors');
 });
 
-Route::get('/carta', [CartaTrucadaController::class, 'index']);
+Route::get('/carta', [CartaTrucadaController::class, 'index'])->name('carta');
 
 Route::get('/operadors', function () {
     return view('operadors');

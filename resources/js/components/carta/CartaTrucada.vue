@@ -31,11 +31,11 @@
         </div>
         <div id="side">
           <div id="data">
-            <!-- <data-carta :codi-trucada="codiTrucada" :is-loaded="isLoaded"></data-carta> -->
+            <data-carta :codi-trucada="codiTrucada" :is-loaded="isLoaded"></data-carta>
           </div>
           <!-- MAPA -->
           <div id="map">
-            <!-- <MapApp :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" /> -->
+            <MapApp :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
           </div>
           <div id="expedients">EXPEDIENTS</div>
         </div>
@@ -66,14 +66,14 @@
 import LoaderSplash from './LoaderSplash.vue'
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
-// import DataCarta from './DataCarta.vue';
-// import MapApp from './mapa/MapApp.vue';
+import DataCarta from './DataCarta.vue';
+import MapApp from './mapa/MapApp.vue';
 export default {
   components: {
     FormMain,
     FormNota,
-    // MapApp,
-    // DataCarta,
+    MapApp,
+    DataCarta,
     LoaderSplash
   },
   data() {

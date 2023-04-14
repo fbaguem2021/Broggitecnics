@@ -39,24 +39,24 @@
         <h3 class="title mt-2 mt-md-5 fw-bold text-center">Trucada</h3>
         <div class="body">
             <p>Incia una carta de trucada amb un número de telèfon aleatori o intrudeix-ne un.</p>
-            <div class="row w-100 justify-content-center">
-                <label class="col-md-1 col-form-label d-flex justify-content-center"><i class="bi bi-telephone-inbound pe-1"></i></label>
-                <div class="col-md-8 d-flex align-items-center">
-                    <div class="input-group align-items-center">
-                        <label class="switch">
-                            <input type="checkbox">
-                            <span class="slider round"></span>
-                        </label>
-                        <input type="text" class="form-control side" id="side" maxlength="9"
-                            placeholder="000 000 000" aria-describedby="basic-addon1">
-                            <label id="phone-mode" class="ms-3">Aleatori</label>
+            <form action="{{ route('carta') }}" method="GET">
+                <div class="row w-100 justify-content-center">
+                    <label class="col-md-1 col-form-label d-flex justify-content-center"><i class="bi bi-telephone-inbound pe-1"></i></label>
+                    <div class="col-md-8 d-flex align-items-center">
+                        <div class="input-group align-items-center">
+                            <label class="switch">
+                                <input type="checkbox" name="isRandom">
+                                <span class="slider round"></span>
+                            </label>
+                            <input type="text" class="form-control side" id="side" maxlength="9" name="phone"
+                                placeholder="000 000 000" aria-describedby="basic-addon1">
+                                <label id="phone-mode" class="ms-3">Aleatori</label>
+                        </div>
                     </div>
-
                 </div>
-            </div>
-            <button class="btn btn-tertiary">Iniciar trucada</button>
+                <button type="submit" class="btn btn-tertiary" >Iniciar trucada</button>
+            </form>
         </div>
     </div>
-
     <div class="menu-bg"></div>
 </div>
