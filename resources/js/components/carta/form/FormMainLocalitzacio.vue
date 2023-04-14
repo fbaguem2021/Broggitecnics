@@ -443,7 +443,7 @@ export default {
     flex-grow: 1;
   }
   #referencies-textArea-container .form-floating{
-    height: 90%;
+    height: 100%;
   }
 
   #referenciesTextarea {

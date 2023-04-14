@@ -167,7 +167,7 @@ export default {
   },
   mounted() {
     this.getCartaData()
-    setTimeout(()=>{ this.isLoaded = true}, 4000)
+    setTimeout(()=>{ this.isLoaded = true}, 1000)
   },
 }
 </script>

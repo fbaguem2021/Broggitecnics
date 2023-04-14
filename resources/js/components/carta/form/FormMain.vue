@@ -227,11 +227,16 @@ export default {
         height: 109%;
     }
     .tab-content {
+        position: relative;
         flex-grow: 1;
     }
     .tab-pane {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
         height: 100%;
-        padding: 20px 40px 0 40px;
+        padding: 20px 40px 20px 40px;
     }
     .bi-clipboard2-x {
         color: #e21212;
