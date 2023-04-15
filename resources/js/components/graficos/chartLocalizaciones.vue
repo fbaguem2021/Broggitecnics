@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import barChart from './BarChart.vue';
+import barChart from './barChart.vue';
 export default {
     data() {
         return {

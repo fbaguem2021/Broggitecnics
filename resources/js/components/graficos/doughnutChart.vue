@@ -37,7 +37,7 @@ export default {
     async mounted() {
 
         axios
-            .get('/Broggitecnics/public/api/llamadasChart')
+            .get('/llamadasChart')
             .then(response => {
                 console.log(response)
                 const colors = ['#FF4136', // Rojo vivo
