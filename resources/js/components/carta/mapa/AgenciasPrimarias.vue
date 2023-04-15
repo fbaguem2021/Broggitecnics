@@ -2,7 +2,7 @@
     <!-- Muestra mapa en pequeño y al confirmar seleccion teleport a modal full screen -->
     <div id="smallMap">
         <Teleport v-if="isMounted" :disabled="!isTeleport" :to="targetTp">
-            <BaseMap v-if="targetTp == '#smallMap'" style="height:32vh; width:100%" :seleccion="seleccion" :send="confirmar"
+            <BaseMap v-if="targetTp == '#smallMap'" style="height:100%; width:100%" :seleccion="seleccion" :send="confirmar"
                 @restarSend="restartConfirm" @cambiarSeleccion="cambiarSeleccion" @getAgencia="getAgenciaSeleccionada"
                 :agenciasFinales="agenciaSeleccionada" :direccionIncidente="arraySearch" />
             <BaseMap v-else style="height:100%; width:100%" :seleccion="seleccion" :send="confirmar"
@@ -11,7 +11,7 @@
         </Teleport>
     </div>
 
-    <div class="ps-2 mt-1">
+    <div id="agencies-form" class="ps-2 mt-1">
         <form>
             <div class="form-check form-check-inline">
                 <input class="form-check-input" type="checkbox" name="transit" id="transit" :value="1"
@@ -324,6 +324,13 @@ export default {
 </script>
 
 <style scoped>
+
+#smallMap{
+    height: 80%;
+}
+#agencies-form{
+    height: 80%;
+}
 #botonesMapa {
     position: absolute;
     left: 85%;
