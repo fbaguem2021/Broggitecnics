@@ -14,6 +14,6 @@ class Agencia extends Model
 
     //Relacion 1:N agenciesPrimaries(N)
     public function agenciesPrimaries(){
-        return $this->belongsTo(AgenciesPrimaries::class, 'AgenciesPrimaries_id');
+        return $this->belongsTo(AgenciesPrimaries::class, 'agencies_primaries_id');
     }
 }

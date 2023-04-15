@@ -199,7 +199,7 @@ export default {
             }
         },
         isMapSelect: function (newVal, oldVal) {
-
+            alert('ismapaSelect')
             this.stringAgencias = ""
             this.agenciaSeleccionada.forEach(element => {
                 let insert = ""
@@ -275,11 +275,12 @@ export default {
         },
         eliminarEstaAgencia() {
             this.agenciaSeleccionada.forEach(element => {
-                if (element[2] == this.nuevaSeleccion.properties.title.AgenciesPrimaries_id) {
+                if (element[2] == this.nuevaSeleccion.properties.title.agencies_primaries_id) {
                     this.agenciaSeleccionada.splice(this.agenciaSeleccionada.indexOf(element));
-                    this.agenciaSeleccionada.push([this.nuevaSeleccion.properties.title.id, this.nuevaSeleccion.properties.title.nom, this.nuevaSeleccion.properties.title.AgenciesPrimaries_id]);
+                    this.agenciaSeleccionada.push([this.nuevaSeleccion.properties.title.id, this.nuevaSeleccion.properties.title.nom, this.nuevaSeleccion.properties.title.agencies_primaries_id]);
                     this.$emit("añadirAlert", "S'ha substituït l'agència correctament")
                     this.alert = "S'ha substituït l'agència correctament"
+                    this.isMapSelect=!this.isMapSelect
                 }
                 this.modalCambioSeleccion.hide()
             });

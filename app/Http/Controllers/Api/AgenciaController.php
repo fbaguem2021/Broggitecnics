@@ -44,7 +44,7 @@ class AgenciaController extends Controller
     //mostrar agencias según el ID de la agencia primaria
     public function show($id)
     {
-        $agencies = Agencia::where('AgenciesPrimaries_id', $id)->get();
+        $agencies = Agencia::where('agencies_primaries_id', $id)->get();
         return AgenciaResource::collection($agencies);
     }
 
