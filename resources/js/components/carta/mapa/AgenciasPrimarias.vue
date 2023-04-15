@@ -78,13 +78,12 @@
     <div class="modal" tabindex="-1" id="mapaModal">
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content">
-                <div class="modal-header">
-                    <div id="alert" v-if="alert != ''" class="alert alert-warning alert-dismissible fade show" role="alert">
+                <div class="modal-body" id="bigMap">
+                    <div id="alert" v-if="alert != ''" class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ alert }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert()"></button>
                     </div>
                 </div>
-                <div class="modal-body" id="bigMap"></div>
                 <div class="modal-footer">
                     <div class="row w-100">
                         <div id="imprimirAgencias" class="col-sm-10 d-grid gap-2 d-md-flex justify-content-md-start">
@@ -275,11 +274,12 @@ export default {
         },
         eliminarEstaAgencia() {
             this.agenciaSeleccionada.forEach(element => {
-                if (element[2] == this.nuevaSeleccion.properties.title.AgenciesPrimaries_id) {
+                if (element[2] == this.nuevaSeleccion.properties.title.agencies_primaries_id) {
                     this.agenciaSeleccionada.splice(this.agenciaSeleccionada.indexOf(element));
-                    this.agenciaSeleccionada.push([this.nuevaSeleccion.properties.title.id, this.nuevaSeleccion.properties.title.nom, this.nuevaSeleccion.properties.title.AgenciesPrimaries_id]);
+                    this.agenciaSeleccionada.push([this.nuevaSeleccion.properties.title.id, this.nuevaSeleccion.properties.title.nom, this.nuevaSeleccion.properties.title.agencies_primaries_id]);
                     this.$emit("añadirAlert", "S'ha substituït l'agència correctament")
                     this.alert = "S'ha substituït l'agència correctament"
+                    this.isMapSelect=!this.isMapSelect
                 }
                 this.modalCambioSeleccion.hide()
             });
@@ -369,7 +369,13 @@ export default {
     opacity: 1;
 }
 #alert{
-    width:100%
+    width:100%;
+    position: absolute;
+    left:0;
+    right:0;
+    z-index:3
+
 }
+
 
 </style>

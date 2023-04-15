@@ -15,6 +15,6 @@ class AgenciesPrimaries extends Model
 
     //Relacion 1:N con agencies
     public function agencia(){
-        return $this->hasMany(Agencia::class, 'AgenciesPrimaries_id');
+        return $this->hasMany(Agencia::class, 'agencies_primaries_id');
     }
 }

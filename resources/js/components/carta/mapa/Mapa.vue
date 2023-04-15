@@ -150,7 +150,7 @@ export default {
                                 console.log('ELEMENT AGENCIA SELECCIONADA - GUARDAR GEOCODER')
                                 console.log(element)
                                 let nom = element.properties.title.nom
-                                let idTipoAgencia = element.properties.title.AgenciesPrimaries_id
+                                let idTipoAgencia = element.properties.title.agencies_primaries_id
 
                                 // si ya existe una de este tipo agencia guardado no hace push y sale modal diciendo si quiere cambiar la seleccion if(me.seleccionAgencias) 
                                 if (me.seleccionAgencias.length > 0) {
@@ -242,10 +242,9 @@ export default {
                                     console.error(response);
                                     reject("Invalid response");
                                 } else {
-                                    console.log(response)
-                                    me.lat = parseFloat(response.data.features[0].center[0]);
+                                    try {
+                                        me.lat = parseFloat(response.data.features[0].center[0]);
                                     me.lang = parseFloat(response.data.features[0].center[1]);
-
                                     //Formato estilo GeoJson para guardar la info del incidente en una variable del componente y poder mostr el marcador en el mapa
                                     let newData = {
                                         type: "Feature",
@@ -263,6 +262,38 @@ export default {
                                     lugar.push(newData);
 
                                     resolve({ lat: me.lat, lang: me.lang });
+                                    } catch (error) {
+                                        console.error('error: ' + error)
+
+                                        /* 
+                                        
+                                        
+                                        Alert danger informando que no se ha introducido ninguna agencia
+                                        
+                                        
+                                        */
+                                    }
+                                    console.log(response)
+                                    // me.lat = parseFloat(response.data.features[0].center[0]);
+                                    // me.lang = parseFloat(response.data.features[0].center[1]);
+
+                                    // //Formato estilo GeoJson para guardar la info del incidente en una variable del componente y poder mostr el marcador en el mapa
+                                    // let newData = {
+                                    //     type: "Feature",
+                                    //     geometry: {
+                                    //         type: "Point",
+                                    //         coordinates: response.data.features[0].center,
+                                    //     },
+                                    //     properties: {
+                                    //         title: 'localizacion',
+                                    //         description: 'INCIDENT: ' + response.data.features[0].place_name
+                                    //     }
+                                    // };
+
+                                    // let lugar = me.incidentGeocoder;
+                                    // lugar.push(newData);
+
+                                    // resolve({ lat: me.lat, lang: me.lang });
                                 }
                             })
                             .catch((error) => {
@@ -370,12 +401,12 @@ export default {
                                 },
                                 properties: {
                                     title: localizacion,
-                                    description: localizacion.nom + '<div class="d-grid gap-2 col-6 mx-auto"><button type="button" class="btn btn-primary btn-sm" id="botonPop" tipo-agencia="' + localizacion.AgenciesPrimaries_id + '" tipo-loc="localizaciones' + localizacion.AgenciesPrimaries_id + '" agencia-id="' + localizacion.id + '"> Seleccionar  </button></div>',
+                                    description: localizacion.nom + '<div class="d-grid gap-2 col-6 mx-auto"><button type="button" class="btn btn-primary btn-sm" id="botonPop" tipo-agencia="' + localizacion.agencies_primaries_id + '" tipo-loc="localizaciones' + localizacion.agencies_primaries_id + '" agencia-id="' + localizacion.id + '"> Seleccionar  </button></div>',
                                 }
                             };
 
                             //si se recibe más de una seleccion, se guardan en jsons distintos para poder asignarles luego un marcador personalizado correspondiente
-                            let id = localizacion.AgenciesPrimaries_id;
+                            let id = localizacion.agencies_primaries_id;
                             this.seleccion.forEach(element => {
                                 let seleccion = [];
                                 switch (id) {
