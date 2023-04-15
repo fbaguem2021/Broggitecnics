@@ -49,7 +49,7 @@ export default {
   '#01FF70', // Verde brillante (otra variante)
   '#F012BE', // Rosa fuerte
   '#3D9970', // Verde oscuro
-  '#FFD700'  // Dorado
+  '#003399'  // Dorado
                 ]
                 response.data.forEach((element, index) => {
                     this.chartData.labels.push(element.nom)
