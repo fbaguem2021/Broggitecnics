@@ -329,7 +329,7 @@ export default {
     height: 80%;
 }
 #agencies-form{
-    height: 80%;
+    height: 20%;
 }
 #botonesMapa {
     position: absolute;
