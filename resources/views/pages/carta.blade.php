@@ -8,7 +8,7 @@
   <title>Carta</title>
 </head>
 <body>
-  <h1>{{$message}}</h1>
+  {{-- <h1>{{$message}}</h1> --}}
   <carta-app></carta-app>
 </body>
 </html>

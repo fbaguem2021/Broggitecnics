@@ -199,6 +199,7 @@ export default {
     }
     .fade-enter-from, .fade-leave-to {
     opacity: 0;
+    /* transform: translateY(100%); */
     }
   #card-wrapper {
     display: flex;
