@@ -184,7 +184,7 @@ export default {
     }
 
     thead {
-      padding-top: 16px;
+      height: 46px;
       position: sticky;
       top: 0;
       background-color: #e6e4e4;

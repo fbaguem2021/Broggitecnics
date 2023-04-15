@@ -142,12 +142,15 @@ export default {
 }
 </script>
 <style scoped>
+.container {
+    height: 100%;
+}
 .header {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding: 40px 0;
+    padding: 6vh 0;
     border-radius: 10px;
 }
 
@@ -186,7 +189,9 @@ export default {
 
     border-radius: 0 5px 5px 0;
 }
-
+.table-container {
+    height: 50%;
+}
 .table-container .nav-item {
     width: 50%
 }
@@ -199,8 +204,8 @@ export default {
     border-bottom: none;
 }
 
-.table-container #tabContent {
-    height: 450px;
+#tabContent {
+    height: 100%;
 }
 
 #all-expedients-container {
