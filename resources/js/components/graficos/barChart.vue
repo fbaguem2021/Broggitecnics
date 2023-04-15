@@ -1,97 +1,80 @@
+<!-- TOP 10 municipios con más incidentes -->
 <template>
-    <Bar v-if="loaded" :options="chartOptions" :data="chartData" />
-    <button @click="addLabel">PRUEBA</button>
-  </template>
+  <div class="chart-container" style="position: relative; height:50vh; width:50vw">
+    <Bar v-if="loaded" :data="chartData" :options="chartOptions" />
+</div>
+    
   
-  <script>
-  import { Bar } from 'vue-chartjs'
-  import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
-  
-  ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
-  
+</template>
 
-  export default {
+<script>
+import { Bar } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
+
+export default {
   name: 'BarChart',
   components: { Bar },
   data: () => ({
     loaded: false,
-    
-    chartData: null,
+    chartData: {
+
+      labels: [],
+      datasets: [{
+        label: "Nº d'incidents",
+        data: [],
+        backgroundColor: []
+      }]
+    },
     chartOptions: {
-          responsive: true
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false // Hide the legend
         }
-  }),
-  async mounted () {
-    this.loaded = false
-
-    try {
-      const { userlist } = await fetch('/api/userlist')
-      this.chartdata = userlist
-
-      this.loaded = true
-    } catch (e) {
-      console.error(e)
+      },
+      scales: {
+    y: {
+      precision: 0 // Set precision to 0
     }
+  }
+    }
+  }),
+
+  async mounted() {
+
+    axios
+      .get('/Broggitecnics/public/api/incidentesChart')
+      .then(response => {
+        console.log(response)
+        const colors = ['#FF4136', // Rojo vivo
+  '#2ECC40', // Verde brillante
+  '#FF851B', // Naranja brillante
+  '#7FDBFF', // Azul claro
+  '#FFDC00', // Amarillo brillante
+  '#B10DC9', // Magenta vivo
+  '#01FF70', // Verde brillante (otra variante)
+  '#F012BE', // Rosa fuerte
+  '#3D9970', // Verde oscuro
+  '#FFD700'  // Dorado
+]
+        response.data.forEach((element, index) => {
+          this.chartData.labels.push(element.nom)
+          this.chartData.datasets[0].data.push(element.num_expedients)
+          this.chartData.datasets[0].backgroundColor.push(colors[index % colors.length])
+        });
+        this.loaded = true
+        this.$emit('rankingData',this.chartData)
+
+      })
+      .catch(error => {
+        this.isError = true
+        console.error(error)
+      })
   }
 }
 
+</script>
+<style scoped></style>
 
-
-
-
-
-
-
-
-
-
-
-  // export default {
-  //   name: 'BarChart',
-  //   components: { Bar },
-  // //   computed: {
-  // //   chartData() {
-  // //     return {
-  // //       title: ['slfdkhskld'],
-  // //       labels: ['January', 'Februar', 'March', 'April', 'May', 'june'], 
-  // //       datasets: [{ data: [40, 20, 12, 15, 12, 3] }]
-  // //     }
-  // //   },
-  // //   chartOptions() {
-  // //     return {
-  // //       responsive: true
-  // //     }
-  // //   }
-  // // },
-  //   data() {
-  //     return {
-  //       chartData: {
-  //         labels: [ 'January', 'Februar', 'March', 'April' ],
-  //         datasets: [ { data: [40, 20, 12, 15] } ]
-  //       },
-  //       chartOptions: {
-  //         responsive: true
-  //       }
-  //     }
-  //   },
-  //   methods: {
-      
-  //   addLabel() {
-  //     alert('add')
-  //     this.chartData.labels.push('May') // add a new label to the labels array
-  //     this.chartData.datasets[0].data.push(30)
-  //     // this.$refs.chart.update()
-  //   }
-  //   // updateChart() {
-  //   //   // generate new data
-  //   //   const newData = [20, 25, 35, 30]
-
-  //   //   // update chart data
-  //   //   this.chartData.datasets[0].data = newData
-
-  //   //   // update chart
-  //   //   this.$refs.chart.update()
-  //   // }
-  // }
-  // }
-  </script>

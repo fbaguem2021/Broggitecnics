@@ -7,10 +7,12 @@ import './bootstrap';
 import { createApp } from 'vue';
 import expedients from './components/expedients/ExpedientsMain.vue';
 import operadors from './components/operadors/Main.vue'
-import chartLoc from './components/graficos/localidadesChart.vue'
-import barChart from './components/graficos/barChart.vue'
+// import chartLoc from './components/graficos/barChart.vue'
+import rankingLoc from './components/graficos/chartLocalizaciones.vue'
+import chartLlamadas from './components/graficos/chartLlamadas.vue'
 
 createApp(expedients).mount('expedients-main');
 createApp(operadors).mount('operadors');
-createApp(chartLoc).mount('#chartLoc');
-createApp(barChart).mount('#barChart')
+// createApp(chartLoc).mount('#chartLoc');
+createApp(rankingLoc).mount('#rankingLoc')
+createApp(chartLlamadas).mount('#chartLlamadas')

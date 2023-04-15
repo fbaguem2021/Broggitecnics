@@ -48,7 +48,11 @@ Route::get('bootstrap', function () {
     return view('bootstrap');
 });
 
-// Ruta graficos localizacion
+// Ruta grafico localizacion
 Route::get('/chartLoc', function () {
-    return view('charts.index');
+    return view('charts.chartIncidentsMunicipi');
+});
+//Ruta grafico llamadas
+Route::get('/chartLlamada', function () {
+    return view('charts.chartLlamadasTipoInci');
 });

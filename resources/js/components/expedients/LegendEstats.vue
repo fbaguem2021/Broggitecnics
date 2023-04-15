@@ -42,7 +42,7 @@ export default {
 }
 
 </script>
-<style lang="css">
+<style scoped lang="css">
 .block {
     width: 100%;
     height: fit-content;
