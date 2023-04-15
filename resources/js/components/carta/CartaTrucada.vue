@@ -35,7 +35,7 @@
           </div>
           <!-- MAPA -->
           <div id="map">
-            <MapApp :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
+            <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
           </div>
           <div id="expedients">EXPEDIENTS</div>
         </div>
@@ -309,6 +309,9 @@ export default {
     border: none;
   }
   #map {
-  position: relative
+    position: relative
+  }
+  #mapa-app {
+    height: 100%;
   }
 </style>
