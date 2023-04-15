@@ -4,7 +4,7 @@
             <tr>
                 <th scope="col" v-for="(filtre, index) in filtres" :key="index" :style="{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }">
                     {{filtre.label}}
-                    <span
+                    <span v-if="filtre.label != 'Incidents' && filtre.label != 'Localització'"
                         :class="orderByColumn === filtre.col && orderDir === 'desc' ? 'triangle' : 'triangle rotate'"
                         @click="orderBy(filtre.col)">
                     </span>
@@ -15,8 +15,20 @@
         <tbody>
             <tr v-for="(exp, index) in expedients" :key="index">
                 <td>{{exp.codi_expedient}}</td>
-                <td>loc</td>
-                <td>ins</td>
+                <td>
+                  <div class="justify-center">
+                    <div style="text-align: start; width: 60%">
+                      {{exp.localitzacions}}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="justify-center">
+                    <div style="text-align: start;  ">
+                      {{exp.incidents}}
+                    </div>
+                  </div>
+                </td>
                 <td>{{exp.cartes_count}}</td>
                 <td>{{elapsedTime(exp.modificat)}}</td>
                 <td>{{createdAt(exp.creat)}}</td>
@@ -188,6 +200,14 @@ export default {
       position: sticky;
       top: 0;
       background-color: #e6e4e4;
+    }
+    .justify-end {
+      display: flex;
+      justify-content: end;
+    }
+    .justify-center {
+      display: flex;
+      justify-content: center;
     }
 
     .triangle {

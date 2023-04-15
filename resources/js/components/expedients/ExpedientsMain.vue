@@ -209,7 +209,7 @@ export default {
 }
 
 #all-expedients-container {
-    padding-right: 30px;
+    padding: 0 8px
 }
 
 #all-expedients-tab, #all-expedients-container {

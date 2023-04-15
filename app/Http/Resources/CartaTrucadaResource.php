@@ -46,7 +46,7 @@ class CartaTrucadaResource extends JsonResource
                 'municipi' => $this->municipi ? $this->municipi->nom ?? null : null,
             ],
             'incident' => [
-                'tipus_incident' => $this->incident->tipusIncident->nom,
+                'tipus_incident' => $this->incident->tipusIncidents->nom,
                 'codi_incident' => $this->incident->codi,
                 'incident' => $this->incident->nom,
                 'defincio' => $this->incident->definicio,

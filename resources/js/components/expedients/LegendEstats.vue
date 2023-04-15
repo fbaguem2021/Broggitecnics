@@ -13,32 +13,33 @@
 </template>
 <script>
 export default {
-  props: {
-    estats: {
-      type: Array,
-      required: true
-    }
-  },
-  data () {
-    return {
-
-    }
-  },
-  mounted () {
-
-  },
-  methods: {
-    estatsUppercase () {
-      const upperCaseStatus = this.estats.map(estat => ({
-        ...estat,
-        estat: estat.estat.toUpperCase()
-      }))
-      return upperCaseStatus;
+    emits: ['orderByEstat'],
+    props: {
+        estats: {
+            type: Array,
+            required: true
+        }
     },
-    sendData (estatID) {
-      this.$emit('orderByEstat', estatID);
+    data () {
+        return {
+
+        }
+    },
+    mounted () {
+
+    },
+    methods: {
+        estatsUppercase () {
+            const upperCaseStatus = this.estats.map(estat => ({
+            ...estat,
+            estat: estat.estat.toUpperCase()
+            }))
+            return upperCaseStatus;
+        },
+        sendData (estatID) {
+            this.$emit('orderByEstat', estatID);
+        }
     }
-  }
 }
 
 </script>

@@ -1,7 +1,7 @@
 <template lang="">
     <div>
         <p v-if="s">Selecciona un expedient</p>
-        <div class='container'>
+        <div class='container' style="margin-top: 40px">
           <h4>Cartes de trucada</h4>
           <table class="table table-hover text-center">
             <thead>
@@ -64,6 +64,7 @@ export default {
 </script>
 <style scoped>
   .container {
+    margin-top: 40px;
     padding: 0 100px;
   }
   .inspect-carta::before {
