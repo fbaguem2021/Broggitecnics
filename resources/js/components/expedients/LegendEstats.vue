@@ -115,4 +115,5 @@ export default {
 .estat-5 {
     background-color: #8924D9;
     color: white;
-}</style>
+}
+</style>

@@ -204,7 +204,6 @@ export default {
 }
 
 #all-expedients-container {
-    padding-top: 16px;
     padding-right: 30px;
 }
 
@@ -219,6 +218,7 @@ export default {
 
 #all-expedients-container, #show-expedient-container{
     height: 100%;
+    overflow-y: scroll;
 }
 
 #all-expedients-tab, #show-expedient-tab {

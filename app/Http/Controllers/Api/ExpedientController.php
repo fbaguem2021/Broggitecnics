@@ -33,7 +33,7 @@ class ExpedientController extends Controller
             $query->where($filter, $value);
         }
 
-        $expedients = $query->paginate(8);
+        $expedients = $query->get();
 
             
         return ExpedientResource::collection($expedients);
