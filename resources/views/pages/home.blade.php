@@ -1,7 +1,7 @@
 @extends('layout.base')
 
 @section('style')
-    @vite(['resources/css/landing.css', 'resources/js/menu.js'])
+    @vite('resources/css/menus.css')
 @endsection
 
 @section('content')
@@ -17,9 +17,9 @@
                 @include('partials.menu.admin')
                 @break
             @default
-            <div class="container menu">
-                <div class="menu-bg"></div>
-            </div>
+                <div class="container menu">
+                    <div class="menu-bg"></div>
+                </div>
         @endswitch 
     @endif
 
@@ -38,4 +38,11 @@
             <path d="M0 60H200V80H0V60Z" fill="#12C7E2" />
         </svg>
     </div>
+@endsection
+
+@section('scripts')
+    @vite('resources/js/scripts/menu.js')
+    @if (Auth::user()->rol->id === 1)
+        @vite('resources/js/scripts/menuOperador.js')
+    @endif
 @endsection

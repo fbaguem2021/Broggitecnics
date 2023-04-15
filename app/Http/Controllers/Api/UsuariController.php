@@ -2,22 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\UsuariResource;
+use stdClass;
 use App\Models\Usuari;
 use Illuminate\Http\Request;
-use stdClass;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UsuariResource;
+use Illuminate\Database\QueryException;
 
 class UsuariController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return UsuariResource::collection(Usuari::paginate(5));
+        $rol = \App\Models\Rol::where('id',1)->get();
+        $queryid = $request->query('id', 4);
+
+        $tipo = Usuari::find($queryid)->tipus_usuaris_id;
+        $usuaris = Usuari::where('tipus_usuaris_id', $tipo)->orderBy('id', 'asc')->paginate(5);
+        // $usuaris = Usuari::orderBy('id', 'asc')->paginate(5);
+        return UsuariResource::collection($usuaris);
     }
 
     /**
@@ -49,18 +58,45 @@ class UsuariController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->json()->all();
+
+        $usr = new Usuari;
+        $usr->username          = $data['username'];
+        $usr->contrasenya       = bcrypt($data['contrasenya']);
+        $usr->nom               = $data['nom'];
+        $usr->cognoms           = $data['cognoms'];
+        $usr->tipus_usuaris_id  = $data['tipus_usuaris_id'];
+
+        try {
+            $usr->save();
+            // $response = (new UsuariResource($usr))
+            //             ->response()
+            //             ->setStatusCode(201, 'Registre creat correctament');
+            $response = response()->json(['missatge'=>'Registre creat correctament', 'code'=>201]);
+        } catch (QueryException $ex) {
+            $mensaje = "Error al crear registre";
+            $response = response()->json(['missatge'=>$mensaje, 400]);
+        }
+
+        return $response;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Usuari  $usuari
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Usuari $usuari)
+    public function show(int $id)
     {
-        //
+        // @param  \App\Models\Usuari  $usuari
+        // Usuari $usuari
+        $usuari = Usuari::find($id);
+        if ($usuari == null) {
+            return response()->json(['missatge'=>'Usuario no encontrado', 'code'=>404]);
+        }
+        // $col = UsuariResource::collection(Usuari::where('id', $usuari->id)->get())[0]->id;
+        return UsuariResource::collection(Usuari::where('id', $usuari->id)->get())[0];
     }
 
     /**
@@ -72,7 +108,37 @@ class UsuariController extends Controller
      */
     public function update(Request $request, Usuari $usuari)
     {
-        //
+        $pssw = (bool)$request->query('password', false);
+
+        $data = $request->json()->all();
+
+        $usr = Usuari::find($usuari->id);
+        // $usr->username = $data['username'];
+        $usuari->username = $data['username'];
+        if ($pssw) {
+            // $usr->contrasenya = bcrypt($data['contrasenya']);
+            $usuari->contrasenya = bcrypt($data['contrasenya']);
+        }
+        // $usr->nom = $data['nom'];
+        // $usr->cognoms = $data['cognoms'];
+        // $usr->tipus_usuaris_id = $data['tipus_usuaris_id'];
+        $usuari->nom = $data['nom'];
+        $usuari->cognoms = $data['cognoms'];
+        $usuari->tipus_usuaris_id = $data['tipus_usuaris_id'];
+
+        try {
+            // $usuari->save();
+            // $usr->save();
+            // $response = (new UsuariResource($usr))
+            //             ->response()
+            //             ->setStatusCode(201);
+            $response = response()->json(['missatge'=>'Registre modificat correctament', 'code'=>201]);
+        } catch (QueryException $ex) {
+            $mensaje = "Error al modificar el registre";
+            $response = response()->json(['missatge'=>$mensaje, 'code'=>400]);
+        }
+        // return response()->json(['error'=>'esto es una prueva', 400]);
+        return $response;
     }
 
     /**
@@ -83,6 +149,13 @@ class UsuariController extends Controller
      */
     public function destroy(Usuari $usuari)
     {
-        //
+        try {
+            $usuari->delete();
+            $response = response()->json(['missatge'=>'Registre borrat correctament', 'code'=>200]);
+        } catch (QueryException $ex) {
+            $mensaje = 'Error al borrar el registre';
+            $response = response()->json(['missatge' => $mensaje, 'code'=>400]);
+        }
+        return $response;
     }
 }

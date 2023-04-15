@@ -14,17 +14,21 @@ class AgenciaResource extends JsonResource
      */
     public function toArray($request)
     {
+
+        return parent::toArray($request);
+        /*
+        
+        CODIGO GUILLEM
         return [
             'id' => $this->id,
             'nom' => $this->nom,
-            'localitzacio' => [
-                'provincia' => $this->municipi->comarca->provincia->nom,
-                'comarca' => $this->municipi->comarca->nom,
-                'municipi' => $this->municipi->nom,
-                'carrer' => $this->carrer,
-                'codi_postal' => $this->codi_postal,
-            ],
+            'provincia' => $this->municipi->comarca->provincia->nom,
+            'comarca' => $this->municipi->comarca->nom,
+            'municipi' => $this->municipi->nom,
+            'carrer' => $this->carrer,
+            'codi_postal' => $this->codi_postal,
             'estat' => $this->cartaHasAgencies[0]->estatAgencia
         ];
+        */
     }
 }

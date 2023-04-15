@@ -1,11 +1,11 @@
 @extends('layout.base')
 
 @section('style')
-    @vite('resources/css/login.css')
+    @vite('resources/css/landing.css')
 @endsection
 
 @section('content')
-  <div class="container">
+  <div class="login-container">
       {{-- mensajes de error --}}
       {{-- @include('partials.mensajes') --}}
       <div class='card' id="login">
