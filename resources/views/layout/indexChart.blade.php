@@ -12,7 +12,7 @@
             <h1><i class="bi bi-clipboard-data pe-2"></i>GRAFICS</h1>
             <ul style="padding-left:0; list-style: none;" class="mt-5">
                 <li ><a  style="text-decoration: none; color: white" href="{{url('chartLoc')}}">Top 10 municipis amb més incidents</a></li>
-                <li class="mt-4"><a style="text-decoration: none; color:white" href="{{url('chartLlamada')}}">Top 10 trucades per municipi</a></li>
+                <li class="mt-4"><a style="text-decoration: none; color:white" href="{{url('chartLlamada')}}">Top 10 municipis amb mes trucades</a></li>
             </ul>
         </div>
 

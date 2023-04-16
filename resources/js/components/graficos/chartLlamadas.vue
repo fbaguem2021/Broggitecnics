@@ -1,7 +1,7 @@
 <template>
     <div class="row" style="height: 41%">
         <div class="pt-4 text-center" id="titulo">
-            <h1><i class="bi bi-trophy me-3"></i>Top 10 trucades per municipi</h1>
+            <h1><i class="bi bi-trophy me-3"></i>Top 10 municipis amb mes trucades</h1>
         </div>
 
         <!-- Hacer v-for en el div id= lista -->
