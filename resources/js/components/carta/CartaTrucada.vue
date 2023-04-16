@@ -173,6 +173,7 @@ export default {
 }
 </script>
 <style scoped>
+
   #carta-alert {
     position: absolute;
     width: 50%;
@@ -202,16 +203,15 @@ export default {
     /* transform: translateY(100%); */
     }
   #card-wrapper {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    /* border: 4px solid red */
+    flex-grow: 1;
+    margin: 20px;
+
   }
   #card-container {
-    flex-grow: 1;
-    margin: 20px 20px 40px 20px;
-    /* border: 1px solid blue */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    min-width: 800px;
   }
   .content {
     position: relative;
@@ -285,11 +285,12 @@ export default {
     height: 42%;
   }
   .buttons {
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     column-gap: 30px;
+    padding-top: 1%;
     margin-left: auto;
-    height: 10%;
     width: 42%;
   }
   .buttons #cancel {
@@ -302,7 +303,6 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 2.5% 0;
     width: 180px;
     border-radius: 5px;
     color: white;
