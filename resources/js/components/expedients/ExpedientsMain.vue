@@ -46,7 +46,7 @@
             </ul>
             <div class="tab-content" id="tabContent">
                 <div class="tab-pane show active" id="all-expedients-container" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <expedients-table ref="expedientsTable" :estats="estats" :filtres="filtres" @change-tab="switchTab"></expedients-table>
+                    <expedients-table ref="expedientsTable" :estats="estats" :filtres="filtres" @change-tab="switchTab" @refresh-legend="selectEstats"></expedients-table>
                 </div>
                 <div class="tab-pane" id="show-expedient-container" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                     <show-expedient ref="showExpedientComponent"></show-expedient>

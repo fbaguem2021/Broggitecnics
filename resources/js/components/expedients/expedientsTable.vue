@@ -63,6 +63,7 @@ import axios from 'axios'
 import moment from 'moment';
 
 export default {
+  emits: ['refresh-legend'],
   props: {
     estats: {
       type: Array,
@@ -118,6 +119,7 @@ export default {
         });
     },
     submit (keepOrder) {
+      this.$emit('refresh-legend')
       const self = this;
       if (keepOrder) {
         axios
