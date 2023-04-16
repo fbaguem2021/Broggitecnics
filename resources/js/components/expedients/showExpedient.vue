@@ -88,7 +88,6 @@
                       <label for="descripcioLoc">Descripció</label>
                     </div>
                   </div>
-    
                 </div>
                 <div class="form-floating mb-3">
                   <textarea  type="text" class="form-control" id="referenciesLoc" :value="cartaSelected.localitzacio.referencies" placeholder="Antecedents" disabled></textarea>
@@ -97,6 +96,49 @@
               </div>
               <div id="incident">
                 <h5>INCIDENT</h5>
+                <div class="row">
+                  <div class="col-3">
+                    <div class="form-floating mb-3">
+                      <textarea  type="text" class="form-control" id="tipusIncident" :value="cartaSelected.incident.codi_incident" placeholder="Codi incident" disabled></textarea>
+                      <label for="tipusIncident">Codi incident</label>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-floating mb-3">
+                      <textarea  type="text" class="form-control" id="tipusIncident" :value="cartaSelected.incident.tipus_incident" placeholder="Tipus incident" disabled></textarea>
+                      <label for="tipusIncident">Tipus d'incident</label>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-floating mb-3">
+                  <textarea  type="text" class="form-control" id="incidentLabel" :value="cartaSelected.incident.incident" placeholder="Incident" disabled></textarea>
+                  <label for="incidentLabel">Incident</label>
+                </div>
+              </div>
+              <div id="agencies">
+                <h5>AGENCIES</h5>
+                <div class="agencia mb-2" v-for="(agencia, index) in cartaSelected.agencies" :key="index">
+                  <div class="row">
+                    <div class="col-8" style="display: flex; align-items: center">
+                      {{agencia.nom}}
+                    </div>
+                    <div class="col-4">
+                      <div class="form-floating">
+                        <select class="form-select" 
+                                :id="'agenciaID' + agencia.id" 
+                                :class=" 'state'+agencia.estat.id"
+                                aria-label="Floating label select example">
+                          <option v-for="(estat, index) in estatsAgencies" :key="index" 
+                              value="{{estat.id}}" 
+                              :selected="agencia.estat.id === estat.id"
+                              class="{{estat.class}}"
+                              >{{estat.label}}</option>
+                        </select>
+                        <label for="floatingSelect">Estat de l'agència</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <button ref="collapseBtn" id="collapse-btn" class="btn btn-primary" type="button" @click="toggleCollapse">
@@ -136,6 +178,23 @@ export default {
         'Data',
         'Durada',
         'Operador'
+      ],
+      estatsAgencies: [
+        {
+          id: 1,
+          label: "Contactat",
+          class: "contacted"
+        },
+        {
+          id: 2,
+          label: "En procés",
+          class: "processing"
+        },
+        {
+          id: 3,
+          label: "Finalitzat",
+          class: "closed"
+        }
       ],
       cartaModal: null,
       collapse: null
@@ -177,7 +236,7 @@ export default {
 <style scoped>
 
 #cartaModal .modal-dialog {
-  max-width: 620px;
+  max-width: 720px;
 }
 #cartaModal .modal-content {
   position: relative;
@@ -204,11 +263,24 @@ export default {
   content: '\F14B'
 }
 
-
   .container {
     margin-top: 40px;
     padding: 0 100px;
   }
+  #localitzacio, #incident, #agencies {
+    margin-top: 40px;
+  }
+
+  .state1 {
+    background-color: #24DB4A;
+  }
+  .state2 {
+    background-color: #E9E241;
+  }
+  .state3 {
+    background-color: #47B2FF;
+  }
+
   .inspect-carta::before {
     font-size: 24px;
     content: '\F341';
