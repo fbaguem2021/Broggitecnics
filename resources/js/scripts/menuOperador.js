@@ -6,18 +6,20 @@ const avCallDuration = document.getElementById("avCallChart").getContext("2d");
 var avCallData = {
     datasets: [
         {
-          data: [50, 50],
+          data: [60, 40],
           backgroundColor: ["#75E050", "white"],
           borderWidth: 1,
         },
       ],
 }
 var avCallOptions = {
-aspectRatio: 2.2,
-cutout: '75%',
-circumference: 180,
-rotation: -90,
-events: []
+    aspectRatio: 2,
+    cutout: '65%',
+    circumference: 180,
+    rotation: -90,
+    plugins: {
+    },
+    events: []
 }
 var avCallDurationChart = new Chart(avCallDuration, {
   type: "doughnut",
