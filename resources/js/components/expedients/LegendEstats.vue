@@ -13,7 +13,7 @@
 </template>
 <script>
 export default {
-    emits: ['orderByEstat'],
+    emits: ['selectByEstat'],
     props: {
         estats: {
             type: Array,
@@ -37,7 +37,7 @@ export default {
             return upperCaseStatus;
         },
         sendData (estatID) {
-            this.$emit('orderByEstat', estatID);
+            this.$emit('selectByEstat', estatID);
         }
     }
 }

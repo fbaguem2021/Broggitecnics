@@ -23,25 +23,29 @@ class ExpedientResource extends JsonResource {
         $response = [
             'id' => $this->id,
             'codi_expedient' => $this->codi,
-            'localitzacions' => Expedient::select(DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'))
-                ->leftJoin('cartes_trucades', 'expedients.id', '=', 'cartes_trucades.expedients_id')
-                ->leftJoin('provincies', 'cartes_trucades.provincies_id', '=', 'provincies.id')
-                ->where('expedients.id', $this->id)
-                ->pluck('localitzacions')
-                ->first(),
-            'incidents' => Expedient::select(DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as incidents'))
-                ->leftJoin('cartes_trucades', 'expedients.id', '=', 'cartes_trucades.expedients_id')
-                ->leftJoin('incidents', 'cartes_trucades.incidents_id', '=', 'incidents.id')
-                ->leftJoin('tipus_incidents', 'incidents.tipus_incidents_id', '=', 'tipus_incidents.id')
-                ->where('expedients.id', $this->id)
-                ->pluck('incidents')
-                ->first(),
             'modificat' => $this->updated_at,
             'creat' => $this->created_at,
             'estat_expedient_id' => $this->estatExpedient->id,
             'estat_expedient' => $this->estatExpedient->estat,
             'cartes_count' => $this->cartes_count
         ];
+        if ($include_cartes) {
+            $response['cartes_trucada'] = CartaTrucadaResource::collection(CartaTrucada::where('expedients_id', $this->id)->get());
+        } else {
+            $response['localitzacions'] = Expedient::select(DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'))
+                                            ->leftJoin('cartes_trucades', 'expedients.id', '=', 'cartes_trucades.expedients_id')
+                                            ->leftJoin('provincies', 'cartes_trucades.provincies_id', '=', 'provincies.id')
+                                            ->where('expedients.id', $this->id)
+                                            ->pluck('localitzacions')
+                                            ->first();
+            $response['incidents'] = Expedient::select(DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as incidents'))
+                                        ->leftJoin('cartes_trucades', 'expedients.id', '=', 'cartes_trucades.expedients_id')
+                                        ->leftJoin('incidents', 'cartes_trucades.incidents_id', '=', 'incidents.id')
+                                        ->leftJoin('tipus_incidents', 'incidents.tipus_incidents_id', '=', 'tipus_incidents.id')
+                                        ->where('expedients.id', $this->id)
+                                        ->pluck('incidents')
+                                        ->first();
+        }
 
 
         /* 
@@ -64,9 +68,7 @@ class ExpedientResource extends JsonResource {
 
 
 
-        if ($include_cartes) {
-            $response['cartes_trucada'] = CartaTrucadaResource::collection(CartaTrucada::where('expedients_id', $this->id)->get());
-        }
+        
 
         return $response;
     }

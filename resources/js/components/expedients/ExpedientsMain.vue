@@ -2,7 +2,7 @@
     <div class="container">
         <div class="header">
             <div id="legend">
-                <legendStatus  :estats="estats" @orderByEstat="handleEstat"></legendStatus>
+                <legendStatus  :estats="estats" @selectByEstat="selectByEstat"></legendStatus>
             </div>
             <div class="search-box">
                 <div class="row p-0 g-0">
@@ -46,7 +46,7 @@
             </ul>
             <div class="tab-content" id="tabContent">
                 <div class="tab-pane show active" id="all-expedients-container" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <expedients-table :estats="estats" :filtres="filtres" @change-tab="switchTab"></expedients-table>
+                    <expedients-table ref="expedientsTable" :estats="estats" :filtres="filtres" @change-tab="switchTab"></expedients-table>
                 </div>
                 <div class="tab-pane" id="show-expedient-container" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                     <show-expedient ref="showExpedientComponent"></show-expedient>
@@ -60,7 +60,7 @@
 import axios from 'axios';
 import legendStatus from './LegendEstats.vue';
 import ExpedientsTable from './expedientsTable.vue';
-import showExpedient from './ShowExpedient.vue';
+import showExpedient from './showExpedient.vue';
 import * as bootstrap from 'bootstrap';
 
 export default {
@@ -131,8 +131,10 @@ export default {
           console.log(response);
         })
         .catch((error) => { });
+    },
+    selectByEstat(estatID){
+        this.$refs.expedientsTable.selectExpedientsByEstat(estatID)
     }
-
   },
   mounted () {
     this.selectEstats();

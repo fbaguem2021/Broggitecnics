@@ -3,11 +3,15 @@
         <thead>
             <tr>
                 <th scope="col" v-for="(filtre, index) in filtres" :key="index" :style="{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }">
+                  <div class="theader-item-container" 
+                    :class=" orderByColumn === filtre.col ? 'active' : '' "
+                    v-on =" filtre.label != 'Incidents' && filtre.label != 'Localització' ? { click: () => orderBy(filtre.col) } : {}">
                     {{filtre.label}}
-                    <span v-if="filtre.label != 'Incidents' && filtre.label != 'Localització'"
-                        :class="orderByColumn === filtre.col && orderDir === 'desc' ? 'triangle' : 'triangle rotate'"
-                        @click="orderBy(filtre.col)">
+                    <span
+                      v-if=" filtre.label != 'Incidents' && filtre.label != 'Localització' "
+                      :class=" orderByColumn === filtre.col && orderDir === 'desc' ? 'triangle' : 'triangle rotate' ">
                     </span>
+                  </div>
                 </th>
                 <th></th>
             </tr>
@@ -182,7 +186,7 @@ export default {
 
   mounted () {
     this.submit(true)
-  }
+  },
 }
 </script>
 
@@ -194,12 +198,21 @@ export default {
       text-align: end;
       padding-right: 10px;
     }
-
     thead {
       height: 46px;
       position: sticky;
       top: 0;
       background-color: #e6e4e4;
+    }
+    .theader-item-container.active {
+      background-color: #ffffff;
+      border-radius: 4px;
+      color: black;
+      margin: -2px;
+      border: 2px solid black;
+    }
+    .theader-item-container:hover {
+      cursor: pointer;
     }
     .justify-end {
       display: flex;
@@ -209,7 +222,6 @@ export default {
       display: flex;
       justify-content: center;
     }
-
     .triangle {
       display: inline-flex;
       align-items: center;
@@ -221,38 +233,26 @@ export default {
       margin-left: 6px;
       transform: rotate(0deg);
     }
-
-    .triangle:hover {
-      cursor: pointer;
-    }
-
     .triangle.rotate {
       transform: rotate(180deg);
     }
-
-
-
     .bi-folder2::before {
       font-size: 25px;
       transform: scale(1);
       display: inline;
     }
-
     .bi-folder2:hover::before {
       content: "\F3D8";
       cursor: pointer;
       transform: scale(1.08);
     }
-
     .bi-folder:hover::before {
       content: "\F3D5";
       cursor: pointer;
     }
-
     .estat-5 option{
       color: black;
     }
-
     select {
       border-radius: 4px;
       padding: 2px 0 2px 2px;
