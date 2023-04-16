@@ -81,7 +81,8 @@
                 <div class="modal-body" id="bigMap">
                     <div id="alert" v-if="alert != ''" class="alert alert-success alert-dismissible fade show" role="alert">
                         {{ alert }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert()"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                            @click="restartAlert()"></button>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -147,7 +148,7 @@
                     <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">
                         Cancel·la
                     </button>
-                    
+
                 </div>
             </div>
         </div>
@@ -191,10 +192,10 @@ export default {
         arraySearch: {
             immediate: true,
             handler(newVal, oldVal) {
-                if(newVal!=""){
+                if (newVal != "") {
                     this.confirmar = true
                 }
-                
+
             }
         },
         isMapSelect: function (newVal, oldVal) {
@@ -221,8 +222,8 @@ export default {
     },
 
     methods: {
-        restartAlert(){  
-                this.alert=""
+        restartAlert() {
+            this.alert = ""
         },
         showHelpMessageAfterDelay(eleccio) {
             switch (eleccio) {
@@ -269,7 +270,7 @@ export default {
             let me = this
             this.nuevaSeleccion = newSel
             this.modalCambioSeleccion.show()
-            
+
 
         },
         eliminarEstaAgencia() {
@@ -279,14 +280,15 @@ export default {
                     this.agenciaSeleccionada.push([this.nuevaSeleccion.properties.title.id, this.nuevaSeleccion.properties.title.nom, this.nuevaSeleccion.properties.title.agencies_primaries_id]);
                     this.$emit("añadirAlert", "S'ha substituït l'agència correctament")
                     this.alert = "S'ha substituït l'agència correctament"
-                    this.isMapSelect=!this.isMapSelect
+                    this.isMapSelect = !this.isMapSelect
                 }
                 this.modalCambioSeleccion.hide()
             });
 
         },
         getAgenciaSeleccionada(arrayAgencia) {
-
+            this.$emit("añadirAlert", "S'ha seleccionat l'agencia correctament")
+                    this.alert = "S'ha seleccionat l'agencia correctament"
             this.agenciaSeleccionada = arrayAgencia
             this.isMapSelect = !this.isMapSelect
 
@@ -324,18 +326,29 @@ export default {
 </script>
 
 <style scoped>
-
-#smallMap{
+#smallMap {
     height: 80%;
 }
-#agencies-form{
+
+#agencies-form {
     height: 20%;
 }
+
 #botonesMapa {
     position: absolute;
-    left: 85%;
-    bottom: 19%;
+    left: 88%;
+    bottom: 25%;
     z-index: 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px
 }
 
 
@@ -375,14 +388,12 @@ export default {
 .help-message.show {
     opacity: 1;
 }
-#alert{
-    width:100%;
+
+#alert {
+    width: 100%;
     position: absolute;
-    left:0;
-    right:0;
-    z-index:3
-
+    left: 0;
+    right: 0;
+    z-index: 3
 }
-
-
 </style>
