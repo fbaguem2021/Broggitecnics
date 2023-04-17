@@ -1,13 +1,14 @@
 <template>
     <div class="table-container table-scrollable"
         style="position: absolute;">
+        <div>
             <table class="table" id="tabla-expedients">
                 <thead>
                     <tr class="row bg-white">
                         <th scope="col" class="col-2 text-center"
                             :style="test">Trucada Previa</th>
                         <th scope="col" class="col-4 th-loc">Localització</th>
-                        <th scope="col" class="col-4 th-typ"></th>
+                        <th scope="col" class="col-4 th-typ">Incidents</th>
                         <th scope="col" class="col-2 th-exp">
                             <button class="col-12 btn btn-sm btn-tertiary text-white text-center">
                                 Nou Expedient
@@ -17,7 +18,7 @@
                 </thead>
                 <tbody>
                     <tr class="row" v-for="e in expedients" :key="e.id">
-                        <td class="col-2 center-child">
+                        <td class="col-2 centered">
                             <input type="checkbox"
                                 class="form-check-input"
                                 :checked="checkInterlocutor()"
@@ -25,9 +26,9 @@
                         </td>
                         <td class="col-4 align-middle">{{ getLoc(e.localitzacions) }}</td>
                         <td class="col-4">{{ getTipus(e.tipus) }}</td>
-                        <td class="col-2 center-child">
+                        <td class="col-2 centered">
                             <button @click="seleccionarExpedient(e.id)"
-                                class="btn btn-exp col-9"
+                                class="btn btn-exp col-9 text-center"
                                 :class="{ 'btn-outline-tertiary': isSelected(e.id), 'btn-outline-secondary withText': !isSelected(e.id) }">
                                 <i v-if="isSelected(e.id)" class="bi bi-check-all"></i>
                                 <span v-else>Vincular</span>
@@ -36,6 +37,7 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
     </div>
 </template>
 <script>
@@ -124,43 +126,49 @@ export default {
     .table-container {
         width: 100%;
         height: 100%;
-        padding: 0.5rem 2rem;
+        /* padding: 0.5rem 2rem; */
         /* position: relative; */
     }
-    .table-container > table {
+    .table-container table {
         height: 100%;
     }
     table {
         margin-bottom: 0;
     }
-    /* thead {
-        height: 65px;
-        max-height: 65px;
-    }
-    thead tr {
-        position: absolute;
-        left: 0;
-        right: 0;
-    }
-    tr {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-    tbody {
-        --percentage: 42;
-        --padding: 0.5rem;
-    } */
     .table-scrollable {
-        position: relative;
+        position: absolute;
+        /* position: relative; */
         height: 100% !important;
-        overflow: scroll;
+        /* overflow: scroll; */
         overflow-x: hidden;
     }
-    .th-loc {
-
+    .table-scrollable > div {
+        position: relative;
+        overflow: scroll;
+        overflow-x: hidden;
+        height: 100% !important;
+        padding: 0;
     }
-    .th-typ {
-
+    .table-scrollable thead {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1000;
+    }
+    .centered {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .centered > button {
+        text-align: center;
+    }
+    thead > tr.row {
+        display: block;
+    }
+    tr.row {
+        margin-left: 0;
+        margin-right: 0;
     }
     .th-exp {
         padding-left: 0;
@@ -169,24 +177,15 @@ export default {
     .btn-exp {
         height: 100%;
     }
-    .hidden {
-        display: none;
-    }
-    .btn-expedient {
-        padding: 0;
-        /* font-size: 12px; */
-    }
-    .center-child {
+    /* .center-child {
         position: relative;
         padding: 0px !important;
-    }
-    .center-child > * {
+    } */
+    /* .center-child > * {
         margin: 0px !important;
         position: absolute;
-        /* width: 100%;
-        height: 100%; */
         top: 50%;
         left: 50%;
         transform: translateX(-50%) translateY(-50%);
-    }
+    } */
 </style>
