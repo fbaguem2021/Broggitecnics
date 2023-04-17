@@ -29,9 +29,11 @@
                         <td class="col-2 centered">
                             <button @click="seleccionarExpedient(e.id)"
                                 class="btn btn-exp col-9 text-center"
-                                :class="{ 'btn-outline-tertiary': isSelected(e.id), 'btn-outline-secondary withText': !isSelected(e.id) }">
+                                :class="{ 'btn-outline-tertiary': isSelected(e.id), 'btn-outline-secondary': !isSelected(e.id) }">
                                 <i v-if="isSelected(e.id)" class="bi bi-check-all"></i>
                                 <span v-else>Vincular</span>
+                                <!-- <i v-if="isSelected(e.id)" class="bi bi-check-circle"></i>
+                                <i v-else class="bi bi-x-circle"></i> -->
                             </button>
                         </td>
                     </tr>
@@ -126,10 +128,8 @@ export default {
     .table-container {
         width: 100%;
         height: 100%;
-        /* padding: 0.5rem 2rem; */
-        /* position: relative; */
     }
-    .table-container table {
+    .table-container > div > table {
         height: 100%;
     }
     table {
@@ -137,9 +137,7 @@ export default {
     }
     .table-scrollable {
         position: absolute;
-        /* position: relative; */
         height: 100% !important;
-        /* overflow: scroll; */
         overflow-x: hidden;
     }
     .table-scrollable > div {
@@ -149,7 +147,7 @@ export default {
         height: 100% !important;
         padding: 0;
     }
-    .table-scrollable thead {
+    .table-scrollable > div > table > thead {
         position: sticky;
         top: 0;
         background-color: white;

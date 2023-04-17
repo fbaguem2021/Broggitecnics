@@ -34,7 +34,7 @@
           <div id="map">
             <MapApp :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
           </div>
-          <div id="expedients">
+          <div id="expedients" style="position: relative;">
                 <form-expedients></form-expedients>
             </div>
         </div>
