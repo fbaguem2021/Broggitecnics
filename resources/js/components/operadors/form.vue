@@ -173,7 +173,7 @@ export default {
             const self = this
             this.modal.hide()
             // console.log(this);
-            axios.post('/api/usuari',this._userdata)
+            axios.post('/usuari',this._userdata)
                 .then( (response) => {
                     console.log(response);
                     // console.log(self)
@@ -189,7 +189,7 @@ export default {
         modificarUsuario() {
             const self = this
             this.modal.hide()
-            let url = `/api/usuari/${this.edituser.id}`;
+            let url = `/usuari/${this.edituser.id}`;
             if (this.tipoModal == 'pssw') {
                 url += '?password=true'
             }
@@ -207,7 +207,7 @@ export default {
             const self = this
             this.modal.hide()
 
-            axios.delete(`/api/usuari/${this.idUsuario}`)
+            axios.delete(`/usuari/${this.idUsuario}`)
                 .then( (response) => {
                     console.log(response);
                     // Lanza un evento luego de que se borre el usuario
@@ -220,7 +220,7 @@ export default {
         },
         getUsuario(edit=true) {
             const self = this
-            axios.get(`/api/usuari/${this.idUsuario}`)
+            axios.get(`/usuari/${this.idUsuario}`)
                 .then( (response) => {
                     return response.data
                 })
