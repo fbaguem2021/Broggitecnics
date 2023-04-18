@@ -2,18 +2,20 @@
     <table class="table table-hover text-center">
         <thead>
             <tr>
-                <th scope="col" v-for="(filtre, index) in filtres" :key="index" :style="{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }">
+                <th v-for="(filtre, index) in filtres" :key="index" 
+                    :style = "{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }"
+                    :width = " filtre.id === 2 ? '20%' : filtre.id === 3 ? '25%' : '10%' ">
                   <div class="theader-item-container" 
-                    :class=" orderByColumn === filtre.col ? 'active' : '' "
+                    :class = " orderByColumn === filtre.col ? 'active' : '' "
                     v-on =" filtre.label != 'Incidents' && filtre.label != 'Localització' ? { click: () => orderBy(filtre.col) } : {}">
                     {{filtre.label}}
                     <span
-                      v-if=" filtre.label != 'Incidents' && filtre.label != 'Localització' "
+                      v-if = " filtre.label != 'Incidents' && filtre.label != 'Localització' "
                       :class=" orderByColumn === filtre.col && orderDir === 'desc' ? 'triangle' : 'triangle rotate' ">
                     </span>
                   </div>
                 </th>
-                <th></th>
+                <th width='5%'></th>
             </tr>
         </thead>
         <tbody v-if="isLoaded">
@@ -56,12 +58,10 @@
                 </td>
             </tr>
         </tbody>
-        <div v-else style="width: 100%; height: 100%; display: flex; justify-content:center; align-items:center; position: absolute">
-    
+        <div v-else="isLoaded" class="spinner-container">
             <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
+                <span class="visually-hidden">Loading...</span>
             </div>
-         
         </div>
     </table>
 </template>
@@ -70,7 +70,9 @@ import axios from 'axios'
 import moment from 'moment';
 
 export default {
-  emits: ['refresh-legend'],
+  emits: [
+    'refresh-legend'
+  ],
   props: {
     estats: {
       type: Array,
@@ -97,11 +99,13 @@ export default {
       this.$emit('change-tab', expID, expCodi)
     },
     selectExpedientsByEstat (estatID) {
+      this.isLoaded = false
       const self = this;
       axios
         .get(`expedients/estat_expedients_id/${estatID}`)
         .then(response => {
           self.expedients = response.data;
+          this.isLoaded = true
         })
         .catch((error) => { });
     },
@@ -121,7 +125,6 @@ export default {
     },
     submit (keepOrder) {
       this.isLoaded = false
-      this.$emit('refresh-legend')
       const self = this;
       if (keepOrder) {
         axios
@@ -149,12 +152,27 @@ export default {
            });
       }
     },
+    selectExpedientsBy(col, value) {
+      this.isLoaded = false
+      const self = this;
+      axios
+        .get(`expedients/${col}/${value}`)
+        .then(response => {
+          console.log(response);
+          self.expedients = response.data
+          this.isLoaded = true
+        })
+        .catch((error) => { 
+          console.log(error)
+        });
+    },
     updateSelect (expID, estatID) {
       const self = this;
       axios
         .put(`expedient/${expID}`, { estat_expedient_id: estatID })
         .then(response => {
           console.log(response);
+          this.$emit('refresh-legend')
           self.submit(true);
         })
         .catch((error) => { });
@@ -203,8 +221,14 @@ export default {
 <style scoped>
     .table {
       border-collapse: collapse;
-      height: calc(100% - 46px);
-      position: relative;
+    }
+    .spinner-container {
+      position: absolute;
+      width: 100%; 
+      height: calc(100% - 60px); 
+      display: flex; 
+      justify-content:center; 
+      align-items:center; 
     }
     .spinner-border {
       height: 60px;
@@ -216,10 +240,13 @@ export default {
       padding-right: 10px;
     }
     thead {
-      height: 46px;
+      height: 58px;
       position: sticky;
       top: 0;
       background-color: #e6e4e4;
+    }
+    th {
+      vertical-align: middle;
     }
     .theader-item-container.active {
       background-color: #ffffff;

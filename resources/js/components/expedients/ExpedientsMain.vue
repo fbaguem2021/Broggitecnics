@@ -7,23 +7,26 @@
             <div class="search-box">
                 <div class="row p-0 g-0">
                     <div class="col-4 p-0">
-                        <select name="filtro"
+                        <select v-model="filterBySelected.col" name="filtro"
                             class="form-select"
                             aria-label="Filtro">
-                            <option selected value="">Tots</option>
-                            <option v-for="(filtre, index) in filtres" :key="index"
+                            <option value="all" >Tots</option>
+                            <option v-for="filtre, index in filtres" :key="index"
+                                v-show=" filtre.id <= 4"
                                 :value="filtre.col">
                                 {{ filtre.label }}
                             </option>
                         </select>
                     </div>
                     <input
+                        v-model="filterBySelected.input"
+                        @keydown.enter= "searchBarSubmit"
                         type="text"
                         class="col-7 form-input">
                     <button
                         type="submit"
                         class="col-1 btn btn-light text-dark"
-                        @click="submit">
+                        @click="searchBarSubmit">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
@@ -75,37 +78,47 @@ export default {
       estats: [],
       filtres: [
         {
-          label: 'Codi',
-          col: 'codi'
+            id: 1,
+            label: 'Codi',
+            col: 'codi'
         },
         {
+          id: 2,
           label: 'Localització',
-          col: ''
+          col: 'loc'
         },
         {
+            id: 3,
           label: 'Incidents',
-          col: ''
+          col: 'inc'
         },
         {
+            id: 4,
           label: 'Cartes',
           col: 'cartes_count'
         },
         {
+            id: 5,
           label: 'Modificació',
           col: 'updated_at'
         },
         {
+            id: 6,
           label: 'Creació',
           col: 'created_at'
         },
         {
+            id: 7,
           label: 'Estat',
           col: 'estat_expedients_id'
         }
-
       ],
       selectedEstat: '',
       message: '',
+      filterBySelected: {
+        col: 'all',
+        input: ''
+      },
       allExpedientsTab: null,
       expedientTab: null,
       showExpedientCodi: ''
@@ -133,10 +146,18 @@ export default {
         .catch((error) => { });
     },
     selectByEstat(estatID){
+        this.allExpedientsTab.show()
         this.$refs.expedientsTable.selectExpedientsByEstat(estatID)
+    },
+    searchBarSubmit() {
+        this.allExpedientsTab.show()
+        const col = this.filterBySelected.col
+        const value = this.filterBySelected.col == 'all' ? '' : this.filterBySelected.input
+        this.$refs.expedientsTable.selectExpedientsBy(col, value)
     }
   },
   mounted () {
+
     this.selectEstats();
     this.allExpedientsTab = new bootstrap.Tab(this.$refs.allExpedientsTab);
     this.expedientTab = new bootstrap.Tab(this.$refs.expedientTab);
@@ -211,6 +232,7 @@ export default {
 }
 
 #all-expedients-container {
+    position: relative;
     padding: 0 8px
 }
 
@@ -226,6 +248,7 @@ export default {
 #all-expedients-container, #show-expedient-container{
     height: 100%;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 #all-expedients-tab, #show-expedient-tab {

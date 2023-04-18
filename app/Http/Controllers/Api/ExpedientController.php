@@ -17,24 +17,50 @@ class ExpedientController extends Controller
      */
     public function index($filter , $value = null, $direction = null)
     {
+        try {
+            $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', 
+                        DB::raw('COUNT(cartes_trucades.id) as cartes_count'),
+                        DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
+                        DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as incidents'))
+                        ->leftJoin('cartes_trucades', 'expedients.id', '=', 'cartes_trucades.expedients_id')
+                        ->leftJoin('incidents', 'cartes_trucades.incidents_id', '=', 'incidents.id')
+                        ->leftJoin('tipus_incidents', 'incidents.tipus_incidents_id', '=', 'tipus_incidents.id')
+                        ->leftJoin('provincies', 'cartes_trucades.provincies_id', '=', 'provincies.id')
+                        ->where('expedients.id','>=',0)
+                        ->groupBy('expedients.id')
+                        ->groupBy('expedients.codi')
+                        ->groupBy('expedients.estat_expedients_id')
+                        ->groupBy('expedients.created_at')
+                        ->groupBy('expedients.updated_at');
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
 
-        $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
-            ->leftJoin('cartes_trucades', 'cartes_trucades.expedients_id', '=', 'expedients.id')
-            ->groupBy('expedients.id')
-            ->groupBy('expedients.codi')
-            ->groupBy('expedients.estat_expedients_id')
-            ->groupBy('expedients.created_at')
-            ->groupBy('expedients.updated_at');
 
-        if ($filter == 'all') {
-            
+        
+        if ($filter == 'none'){
+
         } else if ($filter == 'orderBy'){
             $query->orderBy($value, $direction);
-        } else  if ($filter == 'none'){
 
-        }
-        else{
-            $query->where($filter, $value);
+        } else if ($filter) {
+            switch ($filter) {
+                case 'all':
+                    break;
+                case 'codi':
+                    $query->where('expedients.codi', 'like', " '%$value%' ");
+                    break;
+                case 'loc':
+                    $query->havingRaw(" GROUP_CONCAT(DISTINCT provincies.nom) LIKE '%$value%' ");
+                    break;
+                case 'inc':
+                    $query->havingRaw(" GROUP_CONCAT(DISTINCT tipus_incidents.nom) LIKE '%$value%' ");
+                    break;
+                case 'cartes_count':
+                    $query->havingRaw(" COUNT(cartes_trucades.id) LIKE '%$value%' ");
+                    break;
+            }
+            
         }
 
         $expedients = $query->get();
@@ -68,6 +94,10 @@ class ExpedientController extends Controller
                         ->leftJoin('cartes_trucades', 'cartes_trucades.expedients_id', '=', 'expedients.id')
                         ->where('expedients.id', $id)
                         ->groupBy('expedients.id')
+                        ->groupBy('expedients.codi')
+                        ->groupBy('expedients.estat_expedients_id')
+                        ->groupBy('expedients.created_at')
+                        ->groupBy('expedients.updated_at')
                         ->first();
                 
         return new ExpedientResource($expedient);

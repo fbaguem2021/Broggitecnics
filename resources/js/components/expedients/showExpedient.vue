@@ -281,6 +281,10 @@ export default {
     background-color: #47B2FF;
   }
 
+  option {
+    background-color: white;
+  }
+
   .inspect-carta::before {
     font-size: 24px;
     content: '\F341';
