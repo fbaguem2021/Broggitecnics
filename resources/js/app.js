@@ -15,4 +15,4 @@ import mapaApp from './components/carta/mapa/MapApp.vue'
 // createApp(mapaApp).mount('#mapaApp')
 createApp(carta).mount('carta-app');
 createApp(expedients).mount('expedients-app');
-// createApp(operadors).mount('operadors');
+createApp(operadors).mount('operadors');
