@@ -16,7 +16,7 @@
                 <th></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody v-if="isLoaded">
             <tr v-for="(exp, index) in expedients" :key="index">
                 <td>{{exp.codi_expedient}}</td>
                 <td>
@@ -56,6 +56,13 @@
                 </td>
             </tr>
         </tbody>
+        <div v-else style="width: 100%; height: 100%; display: flex; justify-content:center; align-items:center; position: absolute">
+    
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+         
+        </div>
     </table>
 </template>
 <script>
@@ -78,7 +85,8 @@ export default {
     return {
       expedients: [],
       orderByColumn: 'updated_at',
-      orderDir: 'desc'
+      orderDir: 'desc',
+      isLoaded: false
     }
   },
   methods: {
@@ -109,16 +117,10 @@ export default {
       console.log(this.orderDir)
       this.orderByColumn = orderCol;
       const self = this;
-      axios
-        .get(`expedients/orderBy/${this.orderByColumn}/${self.orderDir}`)
-        .then(response => {
-          self.expedients = response.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.submit(true)
     },
     submit (keepOrder) {
+      this.isLoaded = false
       this.$emit('refresh-legend')
       const self = this;
       if (keepOrder) {
@@ -127,9 +129,12 @@ export default {
           .then(response => {
             console.log(response);
             self.expedients = response.data;
+            self.isLoaded = true;
             self.expedientsByEstat();
           })
-          .catch((error) => { });
+          .catch((error) => { 
+            console.log(error)
+          });
       } else {
         axios
           .get('expedients/all')
@@ -137,8 +142,11 @@ export default {
             console.log(response);
             self.expedients = response.data;
             self.expedientsByEstat();
+            this.isLoaded = true;
           })
-          .catch((error) => { });
+          .catch((error) => {
+            console.log(error)
+           });
       }
     },
     updateSelect (expID, estatID) {
@@ -195,6 +203,13 @@ export default {
 <style scoped>
     .table {
       border-collapse: collapse;
+      height: calc(100% - 46px);
+      position: relative;
+    }
+    .spinner-border {
+      height: 60px;
+      width: 60px;
+      border-width: 6px;
     }
     .table tbody tr td:first-child {
       text-align: end;

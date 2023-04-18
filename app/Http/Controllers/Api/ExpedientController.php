@@ -20,7 +20,11 @@ class ExpedientController extends Controller
 
         $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
             ->leftJoin('cartes_trucades', 'cartes_trucades.expedients_id', '=', 'expedients.id')
-            ->groupBy('expedients.id');
+            ->groupBy('expedients.id')
+            ->groupBy('expedients.codi')
+            ->groupBy('expedients.estat_expedients_id')
+            ->groupBy('expedients.created_at')
+            ->groupBy('expedients.updated_at');
 
         if ($filter == 'all') {
             
