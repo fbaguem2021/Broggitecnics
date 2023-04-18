@@ -211,6 +211,13 @@ export default {
                 this.stringAgencias += insert + ' || '
 
             });
+        },
+        agenciaSeleccionada: {
+            deep: true,
+            handler: function (newVal, oldVal) {
+                console.log('agencia seleccionada');
+                this.$emit("enviarAgenciasSelec", newVal);
+            }
         }
     },
 
@@ -288,7 +295,7 @@ export default {
         },
         getAgenciaSeleccionada(arrayAgencia) {
             this.$emit("añadirAlert", "S'ha seleccionat l'agencia correctament")
-                    this.alert = "S'ha seleccionat l'agencia correctament"
+            this.alert = "S'ha seleccionat l'agencia correctament"
             this.agenciaSeleccionada = arrayAgencia
             this.isMapSelect = !this.isMapSelect
 

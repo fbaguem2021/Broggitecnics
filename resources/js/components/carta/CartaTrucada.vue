@@ -33,9 +33,10 @@
           <div id="data">
             <data-carta :codi-trucada="codiTrucada" :is-loaded="isLoaded"></data-carta>
           </div>
+
           <!-- MAPA -->
           <div id="map">
-            <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
+            <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients">EXPEDIENTS</div>
         </div>
@@ -69,6 +70,7 @@ import FormNota from './form/FormNota.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 export default {
+  emits: ['agenciasSeleccionadas'],
   components: {
     FormMain,
     FormNota,
@@ -94,9 +96,14 @@ export default {
       alertSuccess: "",
       localitzacioData: {},
       incidentData: {},
+      idAgenciasSeleccionadas: []
     }
   },
   methods: {
+    agenciasSeleccionadas(idAgencias){
+      alert('funcion en carta')
+      this.idAgenciasSeleccionadas = idAgencias
+    },
     getCartaData () {
       const self = this;
       axios

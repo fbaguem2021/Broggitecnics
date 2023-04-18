@@ -271,11 +271,14 @@ export default {
                 });
 
             }
+
             //Actualizar latitud y longitud en variable global del componente
+            if(me.direccionIncidente !== ""){
             getMapData(me).then(({ lat, lang }) => {
                 me.lat = lat
                 me.lang = lang
             });
+        }
         },
 
         cargarImagenesPersonalizadas(me, map) {
