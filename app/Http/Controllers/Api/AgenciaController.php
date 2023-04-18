@@ -20,7 +20,6 @@ class AgenciaController extends Controller
     public function index()
     {
         $agencies = Agencia::all();
-        // return AgenciaResource::collection($agencies);
         return AgenciaResource::collection($agencies);
     }
 
