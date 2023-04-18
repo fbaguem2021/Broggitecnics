@@ -171,18 +171,18 @@ export default {
             let url;
             if (self.buscador.filtrado == '') {
                 let id = window.Usuario.id;
-                url = `/api/usuari?id=${id}&page=${this.pageinfo.current_page}`
-                // console.log(`/api/usuari?page=${this.current_page}`);
+                url = `/usuari?id=${id}&page=${this.pageinfo.current_page}`
+                // console.log(`/usuari?page=${this.current_page}`);
             } else {
-                url = `/api/usuari-buscar${this.query}`;
-                // console.log(`normal: /api/usuari-buscar?${self.filtrado}=${self.buscado}?page=${page}`);
-                // console.log(`query:  /api/usuari-buscar${this.query}`);
+                url = `/usuari-buscar${this.query}`;
+                // console.log(`normal: /usuari-buscar?${self.filtrado}=${self.buscado}?page=${page}`);
+                // console.log(`query:  /usuari-buscar${this.query}`);
             }
             return url;
         },
         getData(page = 1) {
             const self = this;
-            // axios.get(`/api/usuari?page=${page}`)
+            // axios.get(`/usuari?page=${page}`)
             axios.get(this.getUrl())
                 .then(response => {
                     // console.log(response);
