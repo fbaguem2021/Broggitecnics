@@ -48,7 +48,7 @@ class ExpedientController extends Controller
                 case 'all':
                     break;
                 case 'codi':
-                    $query->where('expedients.codi', 'like', " '%$value%' ");
+                    $query->where(" expedients.codi LIKE %$value% ");
                     break;
                 case 'loc':
                     $query->havingRaw(" GROUP_CONCAT(DISTINCT provincies.nom) LIKE '%$value%' ");
