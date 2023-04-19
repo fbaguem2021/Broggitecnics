@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <h4 class="card-title fw-bold text-center">Temps mitjana trucada</h4>
                     <div class="chart-container">
-                        <div style="position: relative;">
+                  
                             <canvas id="avCallChart"></canvas>
                             <span style="
                                 position: absolute;
@@ -32,8 +32,7 @@
                                 left: 50%;
                                 transform: translateX(-50%);
                             ">130s</span>
-                        </div>
-                        
+                       
                     </div>
                 </div>
             </div>

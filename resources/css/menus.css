@@ -84,20 +84,36 @@
     grid-area: 2 / 2 / 2 / 2;
 }
 
+#info-app .card {
+    height: 100%;
+}
 #operator-data .card-title{
     margin: 0;
 }
 
 #operator-data .card-body {
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-#operator-data .chart-container {
+#operator-data .chart-container, #operator-data.expanded .chart-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 1;
+}
+
+#callTypeChart, #avCallChart {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    object-fit: contain;
 }
 
 #operator-data .card.expanded {
@@ -140,6 +156,11 @@
     #operator-data {
         height: 16%;
     }
+    #operator-data .chart-container {
+        opacity: 0;
+        transition: all .2s linear;
+        transition-delay: .2s;
+     }
 
     #info-app.expanded, #operator-data.expanded {
         height: 60%;
