@@ -1,11 +1,12 @@
 <template>
+    <message-app ref="messageApp"></message-app>
     <div class="container">
         <div class="header">
             <div id="legend">
                 <legendStatus  :estats="estats" @selectByEstat="selectByEstat"></legendStatus>
             </div>
             <div class="search-box">
-                <div class="row p-0 g-0">
+                <div class="input-group p-0 g-0">
                     <div class="col-4 p-0">
                         <select v-model="filterBySelected.col" name="filtro"
                             class="form-select"
@@ -18,11 +19,14 @@
                             </option>
                         </select>
                     </div>
+             
+                    <span v-if="filterBySelected.col === 'codi'" class="input-group-text">EXP-</span>
                     <input
                         v-model="filterBySelected.input"
                         @keydown.enter= "searchBarSubmit"
                         type="text"
-                        class="col-7 form-input">
+                        class="form-control col-4">
+                    
                     <button
                         type="submit"
                         class="col-1 btn btn-light text-dark"
@@ -64,13 +68,15 @@ import axios from 'axios';
 import legendStatus from './LegendEstats.vue';
 import ExpedientsTable from './expedientsTable.vue';
 import showExpedient from './showExpedient.vue';
+import messageApp from '../MessageApp.vue';
 import * as bootstrap from 'bootstrap';
 
 export default {
   components: {
     legendStatus,
     ExpedientsTable,
-    showExpedient
+    showExpedient,
+    messageApp
   },
   data () {
     return {
@@ -143,21 +149,25 @@ export default {
           self.estats = response.data;
           console.log(response);
         })
-        .catch((error) => { });
+        .catch((error) => { 
+            console.log(error)
+            this.$refs.messageApp.createAlert(error.response.status + ' ' + error.response.statusText, "danger", error.response.data.message)
+        });
     },
     selectByEstat(estatID){
         this.allExpedientsTab.show()
-        this.$refs.expedientsTable.selectExpedientsByEstat(estatID)
+        this.$refs.expedientsTable.selectExpedientsBy('estat_expedients_id', estatID)
     },
     searchBarSubmit() {
         this.allExpedientsTab.show()
         const col = this.filterBySelected.col
-        const value = this.filterBySelected.col == 'all' ? '' : this.filterBySelected.input
+        let value = this.filterBySelected.col == 'all' ? '' : this.filterBySelected.input
+        if(col === 'codi') { value = 'EXP-'+value}
+        console.log(value)
         this.$refs.expedientsTable.selectExpedientsBy(col, value)
     }
   },
   mounted () {
-
     this.selectEstats();
     this.allExpedientsTab = new bootstrap.Tab(this.$refs.allExpedientsTab);
     this.expedientTab = new bootstrap.Tab(this.$refs.expedientTab);

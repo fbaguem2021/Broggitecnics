@@ -98,17 +98,6 @@ export default {
       console.log(expCodi);
       this.$emit('change-tab', expID, expCodi)
     },
-    selectExpedientsByEstat (estatID) {
-      this.isLoaded = false
-      const self = this;
-      axios
-        .get(`expedients/estat_expedients_id/${estatID}`)
-        .then(response => {
-          self.expedients = response.data;
-          this.isLoaded = true
-        })
-        .catch((error) => { });
-    },
     orderBy (orderCol) {
       if (orderCol === 'estat_expedients_id') {
         // Reversed for expedient estat
@@ -128,7 +117,7 @@ export default {
       const self = this;
       if (keepOrder) {
         axios
-          .get(`expedients/orderBy/${self.orderByColumn}/${self.orderDir}`)
+          .get(`expedients-gestio/orderBy/${self.orderByColumn}/${self.orderDir}`)
           .then(response => {
             console.log(response);
             self.expedients = response.data;
@@ -140,7 +129,7 @@ export default {
           });
       } else {
         axios
-          .get('expedients/all')
+          .get('expedients-gestio/all')
           .then(response => {
             console.log(response);
             self.expedients = response.data;
@@ -156,7 +145,7 @@ export default {
       this.isLoaded = false
       const self = this;
       axios
-        .get(`expedients/${col}/${value}`)
+        .get(`expedients-gestio/${col}/${value}`)
         .then(response => {
           console.log(response);
           self.expedients = response.data
@@ -169,7 +158,7 @@ export default {
     updateSelect (expID, estatID) {
       const self = this;
       axios
-        .put(`expedient/${expID}`, { estat_expedient_id: estatID })
+        .put(`expedients-gestio/${expID}`, { estat_expedient_id: estatID })
         .then(response => {
           console.log(response);
           this.$emit('refresh-legend')

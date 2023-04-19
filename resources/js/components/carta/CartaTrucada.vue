@@ -1,4 +1,5 @@
 <template>
+  <message-app ref="messageApp"></message-app>
   <Transition name="fade">
     <loader-splash v-if="!isLoaded"></loader-splash>
   </Transition>
@@ -68,13 +69,15 @@ import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
+import MessageApp from '../MessageApp.vue';
 export default {
   components: {
     FormMain,
     FormNota,
     MapApp,
     DataCarta,
-    LoaderSplash
+    LoaderSplash,
+    MessageApp
   },
   data() {
     return {
@@ -168,7 +171,7 @@ export default {
   },
   mounted() {
     this.getCartaData()
-    setTimeout(()=>{ this.isLoaded = true}, 3000)
+    setTimeout(()=>{ this.isLoaded = true}, 10)
   },
 }
 </script>
