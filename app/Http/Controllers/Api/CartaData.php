@@ -39,7 +39,6 @@ class CartaData extends Controller
             'expedientLatCodi' => Expedient::latest('id')->pluck('codi')->first() ? : 'EX230',
 
         ];
-
         return response()->json($data);
     }
 

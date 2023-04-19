@@ -17,14 +17,15 @@ class CartaTrucadaController extends Controller
         $isManual = $request->input('isManual');
         $phone = $request->input('phone');
 
-        $message= "NO DATA RECIVED";
+        $cookieName = 'interlocutor_phone';
         if ($isManual) {
-            $message = "is Manual recived";
+            $cookieValue = json_encode(['isManual' => true, 'phone' => $phone]);
+        } else {
+            $cookieValue = json_encode(['isManual' => false]);
         }
-        if($phone) {
-            $message = "Phone recived";
-        }
-        return view('pages.carta', compact('message'));
+        $cookieExpiration = 10; 
+        return response(view('pages.carta'))
+            ->cookie($cookieName, $cookieValue, $cookieExpiration, null, null, false, false);
     }
 
     /**

@@ -175,7 +175,8 @@ export default {
     },
     insertExpedient () {
       // Add rquest to insert Expedient
-    }
+    },
+    
   },
   mounted() {
     this.getCartaData()
