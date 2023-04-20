@@ -100,7 +100,8 @@ export default {
   },
   emits: [
     "get-localitzacio",
-    'get-map-serach-string'
+    'get-map-serach-string',
+    'localitzacio-error'
   ],
   data() {
     return {
@@ -392,6 +393,9 @@ export default {
         this.$refs.provincia.classList.toggle('col-6');
         this.$refs.municipi.classList.toggle('col-4');
         this.$refs.municipi.classList.toggle('col-5'); // col-5 to give space(col-1) to reset button
+    },
+    showError (error) {
+      this.$emit('localitzacio-error', error)
     }
   },
   mounted() {

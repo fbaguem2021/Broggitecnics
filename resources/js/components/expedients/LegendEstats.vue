@@ -13,7 +13,10 @@
 </template>
 <script>
 export default {
-    emits: ['selectByEstat'],
+    emits: [
+        'selectByEstat',
+        'legend-error'
+    ],
     props: {
         estats: {
             type: Array,
@@ -38,6 +41,9 @@ export default {
         },
         sendData (estatID) {
             this.$emit('selectByEstat', estatID);
+        },
+        showError(error) {
+            this.$emit('leg end-error', error)
         }
     }
 }

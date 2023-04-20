@@ -3,7 +3,11 @@
     <div class="container">
         <div class="header">
             <div id="legend">
-                <legendStatus  :estats="estats" @selectByEstat="selectByEstat"></legendStatus>
+                <legendStatus 
+                    :estats="estats" 
+                    @selectByEstat="selectByEstat"
+                    @legend-error="showError"
+                    ></legendStatus>
             </div>
             <div class="search-box">
                 <div class="input-group p-0 g-0">
@@ -53,10 +57,20 @@
             </ul>
             <div class="tab-content" id="tabContent">
                 <div class="tab-pane show active" id="all-expedients-container" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <expedients-table ref="expedientsTable" :estats="estats" :filtres="filtres" @change-tab="switchTab" @refresh-legend="selectEstats"></expedients-table>
+                    <expedients-table 
+                        ref="expedientsTable" 
+                        :estats="estats" 
+                        :filtres="filtres" 
+                        @change-tab="switchTab" 
+                        @refresh-legend="selectEstats"
+                        @table-error="showError"
+                        ></expedients-table>
                 </div>
                 <div class="tab-pane" id="show-expedient-container" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                    <show-expedient ref="showExpedientComponent"></show-expedient>
+                    <show-expedient 
+                        ref="showExpedientComponent"
+                        @show-expedient-error="showError"
+                    ></show-expedient>
                 </div>
             </div>
         </div>
@@ -150,8 +164,7 @@ export default {
           console.log(response);
         })
         .catch((error) => { 
-            console.log(error)
-            this.$refs.messageApp.createAlert(error.response.status + ' ' + error.response.statusText, "danger", error.response.data.message)
+            this.showError(error)
         });
     },
     selectByEstat(estatID){
@@ -165,6 +178,9 @@ export default {
         if(col === 'codi') { value = 'EXP-'+value}
         console.log(value)
         this.$refs.expedientsTable.selectExpedientsBy(col, value)
+    },
+    showError(error) {
+        this.$refs.messageApp.createErrorAlert(error)
     }
   },
   mounted () {

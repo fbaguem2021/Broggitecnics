@@ -71,7 +71,8 @@ import moment from 'moment';
 
 export default {
   emits: [
-    'refresh-legend'
+    'refresh-legend',
+    'table-error'
   ],
   props: {
     estats: {
@@ -122,10 +123,9 @@ export default {
             console.log(response);
             self.expedients = response.data;
             self.isLoaded = true;
-            self.expedientsByEstat();
           })
           .catch((error) => { 
-            console.log(error)
+            self.showError(error)
           });
       } else {
         axios
@@ -137,7 +137,7 @@ export default {
             this.isLoaded = true;
           })
           .catch((error) => {
-            console.log(error)
+            self.showError(error)
            });
       }
     },
@@ -152,7 +152,7 @@ export default {
           this.isLoaded = true
         })
         .catch((error) => { 
-          console.log(error)
+          self.showError(error)
         });
     },
     updateSelect (expID, estatID) {
@@ -164,7 +164,9 @@ export default {
           this.$emit('refresh-legend')
           self.submit(true);
         })
-        .catch((error) => { });
+        .catch((error) => { 
+          self.showError(error)
+        });
     },
     elapsedTime (dateTime) {
       const now = moment();
@@ -198,6 +200,9 @@ export default {
     createdAt(dateTime) {
       const formattedDateTime = moment(dateTime).format('DD-MM-YY');
       return formattedDateTime;
+    },
+    showError(error) {
+      this.$emit('table-error', error)
     }
   },
 

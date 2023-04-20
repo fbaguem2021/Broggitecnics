@@ -31,18 +31,22 @@
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" @keydown="handleTabKey($event)" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
             <interlocutor-form 
-                @get-interlocutor="emitInterlocutor"/>
+                @get-interlocutor="emitInterlocutor"
+                @interlocutor-error="showError"
+                />
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
             <localitzacio-form :localitzacioData="localitzacioData" 
                 @get-localitzacio="emitLocation" 
                 @get-map-serach-string="updateMapSearchString"
-            />
+                @localitzacio-error="showError"
+                />
             <!-- @is-form-valid="updateLocationValid" -->
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
             <incident-form :incidentData="incidentData"
                 @get-incident="emitIncident"
+                @incident-error="showError"
                 />
         </div>
     </div>
@@ -74,6 +78,7 @@ export default {
     'get-carta-location',
     'get-carta-incident',
     'get-map-search-string',
+    'formMain-error'
   ],
   data() {
     return {
@@ -91,30 +96,6 @@ export default {
         incidentTab: Object
     }
   },
-  computed: {
-
-  },
-  mounted() {
-    
-
-    /**
-     * Observer sends the location string to the map component to search it
-     * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
-     */ 
-    const observer = new MutationObserver(mutation => {
-        if (!mutation[0].target.classList.contains('active') && this.mapSearchString != '') {
-            this.$emit('get-map-search-string', this.mapSearchString)
-            console.log("\n\nFORM MAIN: emiting map search string")
-        }
-    });
-    observer.observe(this.$refs.localitzacioTab, { attributeFilter: ['class'] });
-
-    // Init bootstrap Tab objects
-    this.interlocutorTab = new bootstrap.Tab(this.$refs.interlocutorTab);
-    this.localitzacioTab = new bootstrap.Tab(this.$refs.localitzacioTab);
-    this.incidentTab = new bootstrap.Tab(this.$refs.incidentTab);
-  },
-  
   methods: {
     /**
      * Checks for tab key pressed
@@ -182,7 +163,30 @@ export default {
         this.incidentValid = incident.isValid
         this.$emit('get-carta-incident', incident)
     },
+    showError (error) {
+        this.$emit('formMain-error', error)
     }
+  },
+  mounted() {
+    
+
+    /**
+     * Observer sends the location string to the map component to search it
+     * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
+     */ 
+    const observer = new MutationObserver(mutation => {
+        if (!mutation[0].target.classList.contains('active') && this.mapSearchString != '') {
+            this.$emit('get-map-search-string', this.mapSearchString)
+            console.log("\n\nFORM MAIN: emiting map search string")
+        }
+    });
+    observer.observe(this.$refs.localitzacioTab, { attributeFilter: ['class'] });
+
+    // Init bootstrap Tab objects
+    this.interlocutorTab = new bootstrap.Tab(this.$refs.interlocutorTab);
+    this.localitzacioTab = new bootstrap.Tab(this.$refs.localitzacioTab);
+    this.incidentTab = new bootstrap.Tab(this.$refs.incidentTab);
+  }
 }
 </script>
 <style scoped>

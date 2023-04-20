@@ -1,8 +1,13 @@
 <template>
+
+  <!-- Message app that displays an absolute alert at the top -->
   <message-app ref="messageApp"></message-app>
+
+  <!-- Splash loading animation -->
   <Transition name="fade">
     <loader-splash v-if="!isLoaded"></loader-splash>
   </Transition>
+
   <!-- Mostrar alertas success -->
   <div v-if="alertSuccess != ''" id="carta-alert" class="alert alert-info alert-dismissible fade show" role="alert">
     {{ alertSuccess }}
@@ -12,7 +17,9 @@
   <div id="card-wrapper">
     <div id="card-container">
       <div class="content">
+        <!-- Carta left block -->
         <div id="form">
+          <!-- Form main Interlocutor, Localitzacio and Incident -->
           <div id="form-main" ref="formMain" class="expanded">
             <form-main 
                 :localitzacio-data="localitzacioData" 
@@ -20,21 +27,30 @@
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
                 @get-carta-incident="updateIncident"
-                @get-map-search-string="updateSearchString" >
+                @get-map-search-string="updateSearchString"
+                @form-main-error="showError"
+                >
               </form-main>
-            <transition name="fade">
+            <!-- Bottom main form blur gradient to indicate that there is content overflowing in the form main block when nota is expanded -->
+            <Transition name="fade">
               <div v-show="notaIsExpaneded" class="blur-gradient"></div>
-            </transition>
+            </Transition>
           </div>
+          <!-- Form nota comuna -->
           <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
-            <form-nota @get-notaComuna="updateNotaCoumna"></form-nota>
+            <form-nota 
+              @get-notaComuna="updateNotaCoumna"
+              
+              ></form-nota>
           </div>
         </div>
+
+        <!-- Carta right block -->
         <div id="side">
           <div id="data">
             <data-carta :codi-trucada="codiTrucada" :is-loaded="isLoaded"></data-carta>
           </div>
-          <!-- MAPA -->
+          <!-- mapa -->
           <div id="map">
             <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" />
           </div>
@@ -110,7 +126,9 @@ export default {
               self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
               self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
           })
-          .catch((error) => {})
+          .catch((error) => {
+            self.showError(error)
+          })
     },
     getNewCodi (codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
@@ -167,6 +185,9 @@ export default {
     },
     insertExpedient () {
       // Add rquest to insert Expedient
+    },
+    showError(error) {
+        this.$refs.messageApp.createErrorAlert(error)
     }
   },
   mounted() {

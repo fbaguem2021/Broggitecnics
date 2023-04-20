@@ -167,6 +167,9 @@
 import axios from 'axios';
 import * as bootstrap from 'bootstrap';
 export default {
+  emits: [
+    'showExpedient-error'
+  ],
   data () {
     return {
       expedient: [],
@@ -225,6 +228,9 @@ export default {
       this.cartaSelected = carta
       this.collapse.hide();
       this.cartaModal.show();
+    },
+    showError (error) {
+      this.$emit('showExpedient-error',)
     }
   },
   mounted() {

@@ -27,7 +27,7 @@
             {{ message }}
             <div v-if="data">
                 <hr>
-                <p class="mb-0">{{ data }}</p>
+                <span class="mb-0">{{ data }}</span>
             </div>
             <button type="button" class="btn-close" aria-label="Close" @click="closeAlert"></button>
         </div>
@@ -48,18 +48,55 @@ export default {
             this.data = data
             this.showAlert()
         },
+        createErrorAlert(error) {
+            this.type="danger"
+            console.log(error)
+            if (error.response) {
+                const status = error.response.status
+                switch (status) {
+                    case 400:
+                        this.message = 'Petició incorrecta';
+                        break;
+                    case 401:
+                        this.message = 'No autoritzat';
+                        break;
+                    case 403:
+                        this.message = 'Prohibit el accès';
+                        break;
+                    case 404:
+                        this.message = 'Recurs no trobat';
+                        break;
+                    case 500:
+                        this.message = "Error intern del servidor - Posis en contacte amb un adminsitrador de l'aplicació";
+                        if (error.response.data.message.startsWith("SQLSTATE")) {
+                            const errorType = "SQLSTATE"
+                            const errorCode = error.response.data.message.split("[")[2].split("]")[0];
+                            this.data = `${errorType} Codi d'error: ${errorCode}`
+                        }
+                        break;
+                    default:
+                        this.message = 'Error';
+                }
+            } else if (error.request) {
+                this.message = "No s'ha rebut cap resposta"
+            } else {
+                this.message = "S'ha produït un error"
+                this.data = error.message;
+            }
+            this.showAlert()
+        },
         showAlert () {
             this.$refs.alert.style.display = 'block';
             setTimeout(()=>{
                 this.$refs.alert.classList.add('show')      
             }, 100)
+            // setTimeout(()=>{this.closeAlert()}, 10000)
         },
         closeAlert () {
             this.$refs.alert.classList.remove('show')
             setTimeout(()=>{
                 this.$refs.alert.style.display = 'none';
             }, 100)
-            setTimeout(()=>{ this.showAlert()}, 2000)
         }
     },
 }

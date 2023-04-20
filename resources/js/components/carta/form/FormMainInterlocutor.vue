@@ -42,12 +42,13 @@
 export default {
     emits: [
         'get-interlocutor',
+        'interlocutor-error'
     ],
     data() {
         return {
             isNewInterlocutor: true,
             saveInterlocutor: false,
-            phone: '697215851',
+            phone: '',
             name: {
                 input: '',
                 isValid: false
@@ -95,6 +96,9 @@ export default {
             };
             this.$emit('get-interlocutor', this.cartaInterlocutor)
         },
+        showError (error) {
+            this.$emit('interlocutor-error', error)
+        }
     },
     mounted() {
         this.updateCartaData()
