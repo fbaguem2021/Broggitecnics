@@ -47,7 +47,7 @@ export default {
         return {
             isNewInterlocutor: true,
             saveInterlocutor: false,
-            phone: '697215851',
+            phone: '',
             name: {
                 input: '',
                 isValid: false
@@ -69,6 +69,26 @@ export default {
         }
     },
     methods: {
+        checkInterlocutor() {
+            const interlocutoCookie = this.getCookie('interlocutor_phone')
+            if (interlocutoCookie) {
+                console.log(interlocutoCookie)
+            } else {
+           
+            }
+
+        },
+        getCookie(name) {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name)) {
+                    return JSON.parse(decodeURIComponent(cookie.substring(name.length + 1)));
+                } else {
+                    return null
+                }
+            }
+        },
         removeValidationClasses(el) {
             el.classList.remove('is-valid', 'is-invalid');
         },
@@ -97,6 +117,7 @@ export default {
         },
     },
     mounted() {
+        this.checkInterlocutor()
         this.updateCartaData()
     },
 }

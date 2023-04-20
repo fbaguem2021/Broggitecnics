@@ -18,27 +18,69 @@ class ExpedientController extends Controller
     public function index($filter , $value = null, $direction = null)
     {
 
-        $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
-            ->leftJoin('cartes_trucades', 'cartes_trucades.expedients_id', '=', 'expedients.id')
-            ->groupBy('expedients.id');
+        // $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
+        //     ->leftJoin('cartes_trucades', 'cartes_trucades.expedients_id', '=', 'expedients.id')
+        //     ->groupBy('expedients.id');
+
+        $query = new Expedient;
 
         if ($filter == 'all') {
-            
+
         } else if ($filter == 'orderBy'){
             $query->orderBy($value, $direction);
         } else  if ($filter == 'none'){
 
-        }
-        else{
+        } else if ($filter == 'cartaTrucada') {
+            $query = DB::table('expedients')
+                ->select('expedients.id','expedients.codi',
+                        DB::raw('CONCAT("[",GROUP_CONCAT(DISTINCT \'"\',interlocutors.id,\'"\'),"]") as interlocutors'),
+                        DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
+                        DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as tipus'),
+                        DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
+                ->leftJoin('cartes_trucades', 'expedients.id', '=', 'cartes_trucades.expedients_id')
+                ->leftJoin('incidents', 'cartes_trucades.incidents_id', '=', 'incidents.id')
+                ->leftJoin('tipus_incidents', 'incidents.tipus_incidents_id', '=', 'tipus_incidents.id')
+                ->leftJoin('provincies', 'cartes_trucades.provincies_id', '=', 'provincies.id')
+                ->leftJoin('interlocutors', 'cartes_trucades.interlocutors_id', '=', 'interlocutors.id')
+                // ->where('expedients.id','>=',0)
+                ->groupBy('expedients.id','expedients.codi')
+                ->orderBy('expedients.id');
+
+            return response()->json($query->get());
+        } else{
             $query->where($filter, $value);
         }
 
         $expedients = $query->paginate(8);
 
-            
         return ExpedientResource::collection($expedients);
     }
-    
+
+    /**
+     * Devuelve un json con la información de los expedientes para la carta de llamada
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function expedients_carta(Request $request) {
+        $query = DB::table('expedients')
+            ->select('expedients.id','expedients.codi',
+                DB::raw('CONCAT("[",GROUP_CONCAT(DISTINCT \'"\',interlocutors.id,\'"\'),"]") as interlocutors'),
+                DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
+                DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as tipus'),
+                DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
+            ->leftJoin('cartes_trucades', 'expedients.id', '=', 'cartes_trucades.expedients_id')
+            ->leftJoin('incidents', 'cartes_trucades.incidents_id', '=', 'incidents.id')
+            ->leftJoin('tipus_incidents', 'incidents.tipus_incidents_id', '=', 'tipus_incidents.id')
+            ->leftJoin('provincies', 'cartes_trucades.provincies_id', '=', 'provincies.id')
+            ->leftJoin('interlocutors', 'cartes_trucades.interlocutors_id', '=', 'interlocutors.id')
+            // ->where('expedients.id','>=',0)
+            ->groupBy('expedients.id','expedients.codi')
+            ->orderBy('expedients.id');
+
+        return response()->json($query->get());
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -65,7 +107,7 @@ class ExpedientController extends Controller
                         ->where('expedients.id', $id)
                         ->groupBy('expedients.id')
                         ->first();
-                
+
         return new ExpedientResource($expedient);
     }
 

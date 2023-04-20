@@ -128,7 +128,7 @@ class UsuariController extends Controller
 
         try {
             // $usuari->save();
-            // $usr->save();
+            $usr->save();
             // $response = (new UsuariResource($usr))
             //             ->response()
             //             ->setStatusCode(201);
