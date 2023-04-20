@@ -71,6 +71,13 @@ export default {
         }
     },
     methods: {
+        /**
+         * Gets the cookie with the phone input data
+        
+         * If the phone number was typed at the menu, it checks if it exists in the db
+        
+         * If no phone number was typed it generates a random one
+         */
         getInterlocutorCookie () {
             const interlocutorCookie = this.getCookie('interlocutor_phone')
             if ( interlocutorCookie.isManual && interlocutorCookie.phone ) {
@@ -80,6 +87,11 @@ export default {
             }
             
         },
+        /**
+         * Gets the cookie generated in the controller with the data:
+         
+         * isManual true | false -> indicates if the user checked the manual checkbox (true) or automated (false)
+         */
         getCookie(name) {
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
@@ -91,14 +103,18 @@ export default {
                 }
             }
         },
+        /**
+         * Checks in the database for interlocutor with same phone as user input
+         
+         * If it finds the interlocutor laods it to the component
+         * If not sets the phone the user inputed
+         */
         checkInterlocutor(phone) {
             const self = this
             axios.get(`interlocutorCheck/${phone}`)
                     .then(response => {
-                        // If interlocutor is found in db load it
                         if (response.data.match) {
                             self.loadInterlocutor(response.data.interlocutor)
-                        // if not set the phone number to the user input from home menu
                         } else {
                             self.phone = phone
                         }
@@ -107,6 +123,11 @@ export default {
                         console.log(error)
                     })
         },
+        /**
+         * Loads all interlocutor data to the component and sets newinterlocutor = false
+         
+         * Calls handleInput to validate the data and update it to the main component -> FormMain -> CartaTrucada
+         */
         loadInterlocutor (interlocutor) {
             this.phone = interlocutor.telefon
             this.name.input = interlocutor.nom
@@ -116,19 +137,29 @@ export default {
             this.handleInput(this.$refs.nameInput)
             this.handleInput(this.$refs.surnamesInput)
         },
+        /**
+         * Gets a random phone number
+         
+         * 5% chance to load an existing phone number and all the interlocutor data
+         */
         generateNumber () {
             const self = this
-            axios.get('interlocutorGenerate')
+            axios.get( 'interlocutorGenerate' )
                   .then(response => {
-                    if(!response.data.match) {
+                    if ( !response.data.match ) {
                         self.phone = response.data.phone
                     } else {
-                        self.loadInterlocutor(response.data.interlocutor)
+                        self.loadInterlocutor( response.data.interlocutor )
                     }
-                    console.log(response)
+                    console.log( response )
                   })
-                  .catch((error) => {})
+                  .catch( (error) => {
+                    console.log( error )
+                  })
         },
+        /**
+         * Updates the object that is sended to the father component with this component data values
+         */
         updateCartaData () {
            this.cartaInterlocutor = {
                 telefon: this.phone,
@@ -141,13 +172,22 @@ export default {
             };
             this.$emit('get-interlocutor', this.cartaInterlocutor)
         },
+        /**
+         * Removes all validation calsses when focusing an input to improve visability
+         */
         removeValidationClasses(el) {
             el.classList.remove('is-valid', 'is-invalid');
         },
+        /**
+         * Validate the elements input and upadtes this component data to father
+         */
         handleInput (el) {
             this.validateInput(el)
             this.updateCartaData()
         },
+        /**
+         * Simple input validation that sets valid the input if is not empty
+         */
         validateInput (el) {
             if (el === this.$refs.nameInput || el === this.$refs.surnamesInput) {
                 this[el.id].isValid = this[el.id].input != '' ? true : false;
