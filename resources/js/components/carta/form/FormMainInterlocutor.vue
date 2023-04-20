@@ -39,6 +39,8 @@
     </form>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
     emits: [
         'get-interlocutor',
@@ -70,13 +72,41 @@ export default {
     },
     methods: {
         checkInterlocutor() {
-            const interlocutoCookie = this.getCookie('interlocutor_phone')
-            if (interlocutoCookie) {
-                console.log(interlocutoCookie)
+            const interlocutorCookie = this.getCookie('interlocutor_phone')
+            if (interlocutorCookie.isManual && interlocutorCookie.phone) {
+                const self = this
+                axios.get(`interlocutorCheck/${interlocutorCookie.phone}`)
+                        .then(response => {
+                            // If interlocutor is found in db load it
+                            if (response.data.match) {
+                                self.setInterlocutor(response.data.interlocutor)
+                            // if not set the phone number to the user home input
+                            } else {
+                                self.phone = interlocutorCookie.phone
+                            }
+                        })
+                        .catch((error) => {
+                            console.log()
+                        })
             } else {
-           
+                this.generateNumber()
             }
-
+        },
+        setInterlocutor (interlocutor) {
+            this.phone = interlocutor.telefon
+            this.name.input = interlocutor.nom
+            this.surnames.input = interlocutor.cognoms
+            this.record = interlocutor.antecedents
+            this.isNewInterlocutor = false
+        },
+        generateNumber () {
+            const self = this
+            axios.get('interlocutorGenerate')
+                  .then(response => {
+                    // self.phone = response.phone
+                    console.log(response)
+                  })
+                  .catch((error) => {})
         },
         getCookie(name) {
             const cookies = document.cookie.split(';');

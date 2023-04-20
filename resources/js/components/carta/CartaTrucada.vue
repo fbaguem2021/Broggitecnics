@@ -145,7 +145,6 @@ export default {
       this.localitzacio = locString
     },
     updateInterlocutor(interlocutor) {
-      console.log(interlocutor)
       this.newInterlocutor = interlocutor.isNewInerlocutor
       this.saveInterlocutor = interlocutor.saveInterlocutor
       this.interlocutor = interlocutor
