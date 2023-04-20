@@ -44,33 +44,77 @@ class CartaData extends Controller
     }
 
     public function checkNumber($number) {
+        $m = "RESPONSE FROM API GENERATE NUMBER";
         try {
             $interlocutor = Interlocutor::where('telefon', $number)->first();
             if ($interlocutor) {
-                $response = ["match" => true, "interlocutor" => $interlocutor];
+                $response = [
+                    "message" => $m,
+                    "match" => true, 
+                    "interlocutor" => $interlocutor
+                ];
             } else {
-                $response = ["match" => false];
+                $response = [
+                    "match" => false,
+                    "phone" => $number
+                ];
             }
         } catch (\Throwable $th) {
-            $response = ["ERROR" => $th];
+            $response = [
+                "message" => $m,
+                "error" => $th,
+                "match" => false,
+                "phone" => $number
+            ];
         }
         return response()->json($response);
     }
 
+    /**
+     * 95% probability to:
+     *   Generate a random phone number
+     * 5% probabilit to:
+     *   Get a existing phone number aka get a random interlocutor   
+     * @return void
+     */
     public function generateNumber() {
         $m = "RESPONSE FROM API GENERATE NUMBER";
+        $probability = mt_rand(1, 100);
 
         //95% probability
-        $prefix = "6";
-        $randomNumber = mt_rand(10000000, 99999999);
-        $randomPhone = $prefix . $randomNumber;
-        return response()->json(["message" => $m, "phone" => $randomPhone]);
+        if ($probability <= 95) {
+            $randomPhone = $this->generateRandPhoneNumber();
+            $response = (object) [
+                "message" => $m,
+                "match" => false, 
+                "phone" => $randomPhone
+            ];
+            return response()->json($response);
+        } else {
+            //5% probability
+            try {
+                $interlocutor = Interlocutor::inRandomOrder()->first();
+                $response = [
+                    "message" => $m,
+                    "match" => true, 
+                    "interlocutor" => $interlocutor
+                ];
+            } catch (\Throwable $th) {
+                $response = [
+                    "message" => $m,
+                    "error" => $th,
+                    "match" => false,
+                    "phone" => $this->generateRandPhoneNumber()
+                ];
+            }
+            return response()->json($response);
+        }
+    }
 
-        //5% probability
-        $interlocutor = Interlocutor::inRandomOrder()->select('telefon')->first();
-        $randomTelefon = $interlocutor->telefon;
-        // checkNumber($randomTelefon);
-       
+    private function generateRandPhoneNumber() {
+        $prefix = "6";
+        $randomPhoneNumber = mt_rand(10000000, 99999999);
+        return  $prefix . $randomPhoneNumber;
     }
 
     /**

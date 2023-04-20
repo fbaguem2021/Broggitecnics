@@ -71,42 +71,14 @@ export default {
         }
     },
     methods: {
-        checkInterlocutor() {
+        getInterlocutorCookie () {
             const interlocutorCookie = this.getCookie('interlocutor_phone')
-            if (interlocutorCookie.isManual && interlocutorCookie.phone) {
-                const self = this
-                axios.get(`interlocutorCheck/${interlocutorCookie.phone}`)
-                        .then(response => {
-                            // If interlocutor is found in db load it
-                            if (response.data.match) {
-                                self.setInterlocutor(response.data.interlocutor)
-                            // if not set the phone number to the user home input
-                            } else {
-                                self.phone = interlocutorCookie.phone
-                            }
-                        })
-                        .catch((error) => {
-                            console.log()
-                        })
+            if ( interlocutorCookie.isManual && interlocutorCookie.phone ) {
+                this.checkInterlocutor(interlocutorCookie.phone)
             } else {
                 this.generateNumber()
             }
-        },
-        setInterlocutor (interlocutor) {
-            this.phone = interlocutor.telefon
-            this.name.input = interlocutor.nom
-            this.surnames.input = interlocutor.cognoms
-            this.record = interlocutor.antecedents
-            this.isNewInterlocutor = false
-        },
-        generateNumber () {
-            const self = this
-            axios.get('interlocutorGenerate')
-                  .then(response => {
-                    // self.phone = response.phone
-                    console.log(response)
-                  })
-                  .catch((error) => {})
+            
         },
         getCookie(name) {
             const cookies = document.cookie.split(';');
@@ -119,19 +91,43 @@ export default {
                 }
             }
         },
-        removeValidationClasses(el) {
-            el.classList.remove('is-valid', 'is-invalid');
+        checkInterlocutor(phone) {
+            const self = this
+            axios.get(`interlocutorCheck/${phone}`)
+                    .then(response => {
+                        // If interlocutor is found in db load it
+                        if (response.data.match) {
+                            self.loadInterlocutor(response.data.interlocutor)
+                        // if not set the phone number to the user input from home menu
+                        } else {
+                            self.phone = phone
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
         },
-        handleInput (el) {
-            this.validateInput(el)
-            this.updateCartaData()
+        loadInterlocutor (interlocutor) {
+            this.phone = interlocutor.telefon
+            this.name.input = interlocutor.nom
+            this.surnames.input = interlocutor.cognoms
+            this.record = interlocutor.antecedents
+            this.isNewInterlocutor = false
+            this.handleInput(this.$refs.nameInput)
+            this.handleInput(this.$refs.surnamesInput)
         },
-        validateInput (el) {
-            if (el === this.$refs.nameInput || el === this.$refs.surnamesInput) {
-                this[el.id].isValid = el.value != '' ? true : false;
-                el.classList.toggle('is-valid', this[el.id].isValid)
-                el.classList.toggle('is-invalid', !this[el.id].isValid)
-            }
+        generateNumber () {
+            const self = this
+            axios.get('interlocutorGenerate')
+                  .then(response => {
+                    if(!response.data.match) {
+                        self.phone = response.data.phone
+                    } else {
+                        self.loadInterlocutor(response.data.interlocutor)
+                    }
+                    console.log(response)
+                  })
+                  .catch((error) => {})
         },
         updateCartaData () {
            this.cartaInterlocutor = {
@@ -145,10 +141,23 @@ export default {
             };
             this.$emit('get-interlocutor', this.cartaInterlocutor)
         },
+        removeValidationClasses(el) {
+            el.classList.remove('is-valid', 'is-invalid');
+        },
+        handleInput (el) {
+            this.validateInput(el)
+            this.updateCartaData()
+        },
+        validateInput (el) {
+            if (el === this.$refs.nameInput || el === this.$refs.surnamesInput) {
+                this[el.id].isValid = this[el.id].input != '' ? true : false;
+                el.classList.toggle('is-valid', this[el.id].isValid)
+                el.classList.toggle('is-invalid', !this[el.id].isValid)
+            }
+        }
     },
     mounted() {
-        this.checkInterlocutor()
-        this.updateCartaData()
+        this.getInterlocutorCookie()
     },
 }
 </script>
