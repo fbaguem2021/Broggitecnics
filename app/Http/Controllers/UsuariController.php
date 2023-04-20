@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuari;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Utilitat;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\QueryException;
 
 class UsuariController extends Controller
 {
@@ -31,7 +33,7 @@ class UsuariController extends Controller
             Auth::login($user);
             $response = redirect('/home');
         } else {
-            $request->flash('error', 'Usuari o contrasenya incorrectes');
+            $request->session()->flash('error', 'Usuari o contrasenya incorrectes');
             $response = redirect('/login')->withInput();
         }
         return $response;
@@ -42,9 +44,11 @@ class UsuariController extends Controller
         Auth::logout();
         return redirect('/');
     }
+
     public function showRegistre(){
         return view('layout.newUser');
     }
+
     public function store(Request $request){
         $usuario = new Usuari();
         $strNom=$request->input('nom');
@@ -56,10 +60,22 @@ class UsuariController extends Controller
         $first_character = mb_substr($strNom, 0, 1);
         $array = explode(" ",$strCogn);
         $first_cognom = $array[0];
-        $usuario->username = $first_character.$first_cognom;
+        $usuario->username = strtolower($first_character.$first_cognom);
         $usuario->contrasenya=\bcrypt($request->input('pass'));       
         $usuario->tipus_usuaris_id=1;
-        $usuario->save();
-        return redirect('/login');
+        
+        
+        try {
+            $usuario->save();
+            $response = redirect('/login')->withInput(['userName'=> strtolower($first_character.$first_cognom)]);
+        } catch (QueryException $ex) {
+            $mensaje = Utilitat::errorMessage($ex);
+            $request->session()->flash('error', $mensaje);
+            $response = redirect()->action([UsuariController::class, 'showRegistre'])->withInput();
+            
+            
+        }
+        return $response;
+        
     }
 }
