@@ -15,6 +15,9 @@
 import moment from 'moment/moment.js';
 import 'moment/locale/ca'
 export default {
+    emits: [
+        'carta-durada'
+    ],
     props: {
         codiTrucada: {
             type: String
@@ -30,6 +33,7 @@ export default {
             timer: '',
             currentDay: '',
             currentTime: '',
+            elapsedSeconds: 0
         }
     },
     watch: {
@@ -51,6 +55,7 @@ export default {
                 const seconds = duration.seconds()
                 const formattedSeconds = (seconds < 10 ? '0' : '') + seconds //Add leading 0 if seconds are less than 10
                 self.timer = minutes + ':' + formattedSeconds
+                this.$emit('carta-durada', seconds)
             }
             updateTime()
             setInterval(updateTime, 1000)

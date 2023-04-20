@@ -44,9 +44,11 @@ import axios from 'axios'
 export default {
     emits: [
         'get-interlocutor',
+        'interlocutor-is-loaded'
     ],
     data() {
         return {
+            isLoaded: false,
             isNewInterlocutor: true,
             saveInterlocutor: false,
             phone: '',
@@ -78,14 +80,19 @@ export default {
         
          * If no phone number was typed it generates a random one
          */
-        getInterlocutorCookie () {
+        async getInterlocutorCookie () {
+            console.log("inside interlocutor cookie")
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
             const interlocutorCookie = this.getCookie('interlocutor_phone')
             if ( interlocutorCookie.isManual && interlocutorCookie.phone ) {
-                this.checkInterlocutor(interlocutorCookie.phone)
+                await this.checkInterlocutor(interlocutorCookie.phone)
             } else {
-                this.generateNumber()
+                await this.generateNumber()
             }
-            
+            this.interlocutorIsLoaded()
         },
         /**
          * Gets the cookie generated in the controller with the data:
@@ -109,7 +116,7 @@ export default {
          * If it finds the interlocutor laods it to the component
          * If not sets the phone the user inputed
          */
-        checkInterlocutor(phone) {
+        async checkInterlocutor(phone) {
             const self = this
             axios.get(`interlocutorCheck/${phone}`)
                     .then(response => {
@@ -122,6 +129,26 @@ export default {
                     .catch((error) => {
                         console.log(error)
                     })
+        },
+        /**
+         * Gets a random phone number
+         
+         * 5% chance to load an existing phone number and all the interlocutor data
+         */
+         async generateNumber () {
+            const self = this
+            axios.get( 'interlocutorGenerate' )
+                  .then(response => {
+                    console.log(response)
+                    if ( !response.data.match ) {
+                        self.phone = response.data.phone
+                    } else {
+                        self.loadInterlocutor( response.data.interlocutor )
+                    }
+                  })
+                  .catch( (error) => {
+                    console.log( error )
+                  })
         },
         /**
          * Loads all interlocutor data to the component and sets newinterlocutor = false
@@ -137,25 +164,9 @@ export default {
             this.handleInput(this.$refs.nameInput)
             this.handleInput(this.$refs.surnamesInput)
         },
-        /**
-         * Gets a random phone number
-         
-         * 5% chance to load an existing phone number and all the interlocutor data
-         */
-        generateNumber () {
-            const self = this
-            axios.get( 'interlocutorGenerate' )
-                  .then(response => {
-                    if ( !response.data.match ) {
-                        self.phone = response.data.phone
-                    } else {
-                        self.loadInterlocutor( response.data.interlocutor )
-                    }
-                    console.log( response )
-                  })
-                  .catch( (error) => {
-                    console.log( error )
-                  })
+        interlocutorIsLoaded() {
+            this.isLoaded = true
+            this.$emit('interlocutor-is-loaded', this.isLoaded)
         },
         /**
          * Updates the object that is sended to the father component with this component data values

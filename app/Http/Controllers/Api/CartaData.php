@@ -84,12 +84,7 @@ class CartaData extends Controller
         //95% probability
         if ($probability <= 95) {
             $randomPhone = $this->generateRandPhoneNumber();
-            $response = (object) [
-                "message" => $m,
-                "match" => false, 
-                "phone" => $randomPhone
-            ];
-            return response()->json($response);
+            return $this->checkNumber($randomPhone);
         } else {
             //5% probability
             try {
