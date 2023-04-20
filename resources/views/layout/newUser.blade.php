@@ -5,8 +5,12 @@
 @endsection
 
 @section('content')
-    {{-- mensajes de error --}}
-    {{-- @include('partials.mensajes') --}}
+@if (Session::has("error"))
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+    {{ Session::get("error") }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+@endif
     <div class="login-container">
         <div class='card' id="register">
             <a id="close-btn" href="{{url('/')}}">
@@ -34,15 +38,6 @@
                         <button type="submit" id="submit-btn" class="btn btn-outline-primary mt-4">Acceptar</button>
                     </form>
                 </div> 
-            </div>
-            <div style="position: absolute;
-            top: 14%;
-            right: -80%;
-            width: 300px;">
-                <p class="text-center">-- DEV --</p>
-                <p class="m-0">← esto se puede borrar es pa poner algo que sino queda muy seco</p>
-                <br>
-                <p>Falta visiblitat de quin sera el nom d'usuari</p>
             </div>
         </div>
     </div>

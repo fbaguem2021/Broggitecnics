@@ -5,9 +5,15 @@
 @endsection
 
 @section('content')
-  <div class="login-container">
-      {{-- mensajes de error --}}
-      {{-- @include('partials.mensajes') --}}
+
+@if (Session::has("error"))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ Session::get("error") }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+  <div class="login-container">  
       <div class='card' id="login">
         <a id="close-btn" href="{{url('/')}}">
           <i class="bi bi-x-lg"></i>
