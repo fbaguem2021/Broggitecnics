@@ -158,7 +158,7 @@ export default {
     selectEstats () {
       const self = this;
       axios
-        .get('estatpedient')
+        .get('estatExpedient')
         .then(response => {
           self.estats = response.data;
           console.log(response);
@@ -185,6 +185,7 @@ export default {
   },
   mounted () {
     this.selectEstats();
+    this.$refs.messageApp.createAlert("Hello world", "info", "HOOOW u dooooing booooooooooiiiiiiii")
     this.allExpedientsTab = new bootstrap.Tab(this.$refs.allExpedientsTab);
     this.expedientTab = new bootstrap.Tab(this.$refs.expedientTab);
   }
