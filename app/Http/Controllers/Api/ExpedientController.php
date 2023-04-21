@@ -137,16 +137,7 @@ class ExpedientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $expedient = Expedient::find($id);
-
-        if (!$expedient) {
-            return response()->json(['message' => 'Expedient not found'], 404);
-        }
-
-        $expedient->estat_expedients_id = $request->input('estat_expedient_id');
-        $expedient->save();
-
-        return response()->json(['message' => 'Expedient updated successfully'], 200);
+       
     }
 
     /**

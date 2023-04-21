@@ -158,7 +158,7 @@ export default {
     selectEstats () {
       const self = this;
       axios
-        .get('estatExpedient')
+        .get('estatpedient')
         .then(response => {
           self.estats = response.data;
           console.log(response);

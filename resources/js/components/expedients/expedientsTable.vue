@@ -158,7 +158,7 @@ export default {
     updateSelect (expID, estatID) {
       const self = this;
       axios
-        .put(`expedients-gestio/${expID}`, { estat_expedient_id: estatID })
+        .put(`estatExpedient/${expID}`, { estat_expedient_id: estatID })
         .then(response => {
           console.log(response);
           this.$emit('refresh-legend')

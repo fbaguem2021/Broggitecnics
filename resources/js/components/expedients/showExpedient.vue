@@ -27,7 +27,7 @@
     <div ref="cartaModal" class="modal fade" id="cartaModal" tabindex="-1" aria-labelledby="logCartaTrucada" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div v-if="cartaSelected" class="modal-header">
+            <div class="modal-header">
               <h1 class="modal-title fs-3 fw-bold" id="exampleModalLabel">CARTA #{{cartaSelected.codi_trucada}}</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -127,12 +127,12 @@
                         <select class="form-select" 
                                 :id="'agenciaID' + agencia.id" 
                                 :class=" 'state'+agencia.estat.id"
-                                aria-label="Floating label select example">
+                                aria-label="Floating label select example"
+                                @change="updateAgenciaState(cartaSelected.id, agencia.id, $event.target.value)">
                           <option v-for="(estat, index) in estatsAgencies" :key="index" 
-                              value="{{estat.id}}" 
+                              :value="estat.id" 
                               :selected="agencia.estat.id === estat.id"
-                              class="{{estat.class}}"
-                              >{{estat.label}}</option>
+                              >{{estat.estat}}</option>
                         </select>
                         <label for="floatingSelect">Estat de l'agència</label>
                       </div>
@@ -140,6 +140,11 @@
                   </div>
                 </div>
               </div>
+            </div>
+            <div v-else class="modal-body spinner-container">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
             </div>
             <button ref="collapseBtn" id="collapse-btn" class="btn btn-primary" type="button" @click="toggleCollapse">
               <i class="bi bi-arrows-expand"></i>
@@ -182,23 +187,7 @@ export default {
         'Durada',
         'Operador'
       ],
-      estatsAgencies: [
-        {
-          id: 1,
-          label: "Contactat",
-          class: "contacted"
-        },
-        {
-          id: 2,
-          label: "En procés",
-          class: "processing"
-        },
-        {
-          id: 3,
-          label: "Finalitzat",
-          class: "closed"
-        }
-      ],
+      estatsAgencies: [],
       cartaModal: null,
       collapse: null
     }
@@ -218,6 +207,29 @@ export default {
         })
         .catch((error) => { });
     },
+    getEstatAgencies() {
+      const self = this;
+      axios
+        .get('estatAgencies/')
+        .then(response => {
+          console.log(response)
+          self.estatsAgencies = response.data;
+        })
+        .catch((error) => { });
+    },
+    updateAgenciaState(cartaTrucadaId, agenciaId, newEstatValue) {
+      this.cartaSelected = false
+      const self = this
+      axios.put(`updateEstatAgencia/${cartaTrucadaId}/${agenciaId}`, {new_estat_agencies_id: newEstatValue})
+          .then(response => {
+            if (!response.data.error) {
+              self.cartaSelected = response.data.updatedCarta
+            } 
+          })
+          .catch((error)=>{
+            console.log(error)
+          })
+    },
     toLowerCase (string) {
       return [string].map(item =>
         item.charAt(0).toUpperCase() + item.slice(1).toLowerCase()
@@ -234,6 +246,7 @@ export default {
     }
   },
   mounted() {
+    this.getEstatAgencies();
     this.cartaModal = new bootstrap.Modal(this.$refs.cartaModal);
     this.collapse = new bootstrap.Collapse(this.$refs.collapse);
   }
@@ -248,6 +261,10 @@ export default {
   position: relative;
   overflow: visible !important;
 }
+#cartaModal .modal-body {
+  min-height: 600px;
+}
+
 #collapse-container {
   height: 100%;
   position: absolute;

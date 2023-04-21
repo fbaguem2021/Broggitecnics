@@ -21,97 +21,138 @@
                 </path>
             </symbol>
         </svg>
-        <div ref="alert" class="alert alert-dismissible fade" role="alert"
-            :class=" 'alert-'+type">
-            <svg id="alert-icon" class="bi flex-shrink-0 me-2" role="img"><use :xlink:href=" '#'+type "/></svg>
-            {{ message }}
-            <div v-if="data">
-                <hr>
-                <span class="mb-0">{{ data }}</span>
+        <div class="alert-container">
+            <div v-if="errorAlert.display" ref="errorAlert" class="alert alert-dismissible fade" role="alert"
+                :class=" 'alert-'+errorAlert.type">
+                <svg id="alert-icon" class="bi flex-shrink-0 me-2" role="img"><use :xlink:href=" '#'+errorAlert.type "/></svg>
+                {{ errorAlert.message }}
+                <div v-if="errorAlert.data">
+                    <hr>
+                    <span class="mb-0">{{ errorAlert.data }}</span>
+                </div>
+                <button type="button" class="btn-close" aria-label="Close" @click="closeErrorAlert"></button>
             </div>
-            <button type="button" class="btn-close" aria-label="Close" @click="closeAlert"></button>
+            <div v-if="messageAlert.display" ref="messageAlert" class="alert alert-dismissible fade" role="alert"
+                :class=" 'alert-'+messageAlert.type">
+                <svg id="alert-icon" class="bi flex-shrink-0 me-2" role="img"><use :xlink:href=" '#'+messageAlert.type "/></svg>
+                {{ messageAlert.message }}
+                <div v-if="messageAlert.data">
+                    <hr>
+                    <span class="mb-0">{{ messageAlert.data }}</span>
+                </div>
+                <button type="button" class="btn-close" aria-label="Close" @click="closeMessageAlert"></button>
+            </div>
         </div>
 </template>
 <script>
 export default {
     data() {
         return {
-            message: '',
-            type: '',
-            data: ''
+            errorAlert: {
+                display: false,
+                message: '',
+                type: 'danger',
+                data: ''
+            },
+            messageAlert: {
+                display: false,
+                message: '',
+                type: '',
+                data: ''
+            }
+            
         }
     },
     methods: {
         createAlert(message, type, data = null) {
-            this.message = message
-            this.type = type
-            this.data = data
-            this.showAlert()
+            this.messageAlert.message = message
+            this.messageAlert.type = type
+            this.messageAlert.data = data
+            this.showMessageAlert()
         },
         createErrorAlert(error) {
-            this.type="danger"
             console.log(error)
             if (error.response) {
                 const status = error.response.status
                 switch (status) {
                     case 400:
-                        this.message = 'Petició incorrecta';
+                        this.errorAlert.message = 'Petició incorrecta';
                         break;
                     case 401:
-                        this.message = 'No autoritzat';
+                        this.errorAlert.message = 'No autoritzat';
                         break;
                     case 403:
-                        this.message = 'Prohibit el accès';
+                        this.errorAlert.message = 'Prohibit el accès';
                         break;
                     case 404:
-                        this.message = 'Recurs no trobat';
+                        this.errorAlert.message = 'Recurs no trobat';
                         break;
                     case 500:
-                        this.message = "Error intern del servidor - Posis en contacte amb un adminsitrador de l'aplicació";
+                        this.errorAlert.message = "Error intern del servidor - Posis en contacte amb un adminsitrador de l'aplicació";
                         if (error.response.data.message.startsWith("SQLSTATE")) {
                             const errorType = "SQLSTATE"
                             const errorCode = error.response.data.message.split("[")[2].split("]")[0];
-                            this.data = `${errorType} Codi d'error: ${errorCode}`
+                            this.errorAlert.data = `${errorType} Codi d'error: ${errorCode}`
                         }
                         break;
                     default:
-                        this.message = 'Error';
+                        this.errorAlert.message = 'Error';
                 }
             } else if (error.request) {
-                this.message = "No s'ha rebut cap resposta"
+                this.errorAlert.message = "No s'ha rebut cap resposta"
             } else {
-                this.message = "S'ha produït un error"
-                this.data = error.message;
+                this.errorAlert.message = "S'ha produït un error"
+                this.errorAlert.data = error.message;
             }
-            this.showAlert()
+            this.showErrorAlert()
         },
-        showAlert () {
-            this.$refs.alert.style.display = 'block';
+        showErrorAlert () {
+            this.errorAlert.display = true;
             setTimeout(()=>{
-                this.$refs.alert.classList.add('show')      
+                this.$refs.errorAlert.classList.add('show')      
             }, 100)
             // setTimeout(()=>{this.closeAlert()}, 10000)
         },
-        closeAlert () {
-            this.$refs.alert.classList.remove('show')
+        showMessageAlert () {
+            this.messageAlert.display = true;
             setTimeout(()=>{
-                this.$refs.alert.style.display = 'none';
+                this.$refs.messageAlert.classList.add('show')      
+            }, 100)
+            // setTimeout(()=>{this.closeAlert()}, 10000)
+        },
+        closeErrorAlert () {
+            this.$refs.errorAlert.classList.remove('show')
+            setTimeout(()=>{
+                this.$refs.errorAlert.style.display = 'none';
+                this.errorAlert.display = false
+            }, 100)
+        },
+        closeMessageAlert () {
+            this.$refs.messageAlert.classList.remove('show')
+            setTimeout(()=>{
+                this.$refs.messageAlert.style.display = 'none';
+                this.messageAlert.display = false
             }, 100)
         }
     },
 }
 </script>
 <style lang="css" scoped>
-.alert {
+.alert-container {
     position: absolute;
     top: 0;
+    display: flex;
+    flex-direction: column;
     width: 50%;
     left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+.alert {
     border-radius: 0 0 6px 6px;
     border-width: 1px;
     border-style: solid;
-    transform: translateX(-50%);
-    z-index: 10;
+    margin: 0;
 }
 #alert-icon {
     width: 20px;

@@ -7,10 +7,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\AgenciaController;
+use App\Http\Controllers\Api\CartaHasAgencies;
 use App\Http\Controllers\Api\CartaTrucadaHasAgencia;
+use App\Http\Controllers\Api\EstatAgencies;
 use App\Http\Controllers\Api\UsuariController;
 use App\Http\Controllers\Api\EstatExpedientController;
-
+use App\Models\EstatAgencia;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,9 +37,9 @@ Route::apiResource('usuari', UsuariController::class);
 Route::get('expedients/{filter}', [ExpedientController::class, 'index']);
 Route::get('expedients-gestio/{filter}/{value?}/{dir?}', [ExpedientController::class, 'indexGestio']);
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
-Route::put('expedients-gestio/{id}', [ExpedientController::class, 'update']);
 
-Route::put('cartaHasAgencia/', [CartaTrucadaHasAgencia::class, 'update']);
+Route::apiResource('estatAgencies', EstatAgencies::class);
+Route::put('updateEstatAgencia/{cartaTrucadaId}/{agenciaId}', [EstatAgencies::class, 'updateState']);
 
 Route::apiResource('/estatExpedient', EstatExpedientController::class);
 
