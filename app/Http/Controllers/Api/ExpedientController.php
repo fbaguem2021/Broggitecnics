@@ -63,8 +63,11 @@ class ExpedientController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function expedients_carta(Request $request) {
+        $filtre = $request->query('municipi','');
+
         $query = DB::table('expedients')
             ->select('expedients.id','expedients.codi',
+                // DB::raw('COUNT(expedients.id) as expedients_count'),
                 DB::raw('CONCAT("[",GROUP_CONCAT(DISTINCT \'"\',interlocutors.id,\'"\'),"]") as interlocutors'),
                 DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
                 DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as tipus'),
@@ -76,6 +79,7 @@ class ExpedientController extends Controller
             ->leftJoin('interlocutors', 'cartes_trucades.interlocutors_id', '=', 'interlocutors.id')
             // ->where('expedients.id','>=',0)
             ->groupBy('expedients.id','expedients.codi')
+            ->havingRaw('localitzacions like CONCAT("%", ? , "%") ',[$filtre])
             ->orderBy('expedients.id');
 
         return response()->json($query->get());

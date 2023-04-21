@@ -17,6 +17,25 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <tr class="row">
+                        <td class="col-2 centered">
+                            <input type="checkbox"
+                                class="form-check-input"
+                                :checked="true"
+                                disabled>
+                        </td>
+                        <td id="tooltip_loc" class="col-4 align-middle">{{ 'default' }}</td>
+                        <td class="col-4">{{ 'default' }}</td>
+                        <td class="col-2 centered">
+                            <button
+                                class="btn btn-exp btn-outline-secondary col-9 text-center">
+                                <i v-if="true" class="bi bi-check-all"></i>
+                                <span v-else>Vincular</span>
+                                <!-- <i v-if="isSelected(e.id)" class="bi bi-check-circle"></i>
+                                <i v-else class="bi bi-x-circle"></i> -->
+                            </button>
+                        </td>
+                    </tr>
                     <tr class="row" v-for="e in expedients" :key="e.id">
                         <td class="col-2 centered">
                             <input type="checkbox"
@@ -43,6 +62,7 @@
     </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
     // emits: ['expedient_vinculat'],
     props: {
@@ -50,6 +70,7 @@ export default {
     },
     data() {
         return {
+            tooltip: {},
             expedient_selected: 0,
             expedients: [],
         }
@@ -58,6 +79,13 @@ export default {
         this.getExpedients()
     },
     methods: {
+        createTooltip(id, localitzacions) {
+            const element = document.querySelector(`#expediente-${id}`)
+            this.tooltip = new bootstrap.Tooltip(element, {"title":`Localizaciones: ${localitzacions}`})
+        },
+        deleteTooltip() {
+            this.tooltip = {}
+        }
         getStyles() {
             const tab = document.querySelector('#tabla-expedients');
             let styles;
@@ -69,14 +97,24 @@ export default {
         },
         getExpedients() {
             const self = this
-            axios.get('expedients/cartaTrucada')
+            // const url = 'expedients/cartaTrucada'
+            const url = 'expedients-carta-trucada'
+            // axios.get('expedients/cartaTrucada')
+            axios.get(url)
             .then(response => {
                 return response.data
             })
             .then(data => {
+                // self.expedients = data.sort((a,b) => {
+                //     if ( a.localitzacions.toLowerCase().includes(tipus.toLowerCase()) ) {
+                //         return -1
+                //     }
+                //     if ( b.localitzacions.toLowerCase().includes(tipus.toLowerCase()) ) {
+                //         return 1
+                //     }
+                //     return 0
+                // })
                 self.expedients = data
-                // self.expedient_selected = data[0].codi
-                // console.log(data);
             })
         },
         seleccionarExpedient(selected_id) {
