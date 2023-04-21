@@ -17,7 +17,7 @@
                             aria-label="Filtro">
                             <option value="all" >Tots</option>
                             <option v-for="filtre, index in filtres" :key="index"
-                                v-show=" filtre.id <= 4"
+                                v-show=" filtre.id <= 4 "
                                 :value="filtre.col">
                                 {{ filtre.label }}
                             </option>
@@ -60,6 +60,7 @@
                     <expedients-table 
                         ref="expedientsTable" 
                         :estats="estats" 
+                        :estatsIsLoaded="estatsIsLoaded"
                         :filtres="filtres" 
                         @change-tab="switchTab" 
                         @refresh-legend="selectEstats"
@@ -73,7 +74,23 @@
                     ></show-expedient>
                 </div>
             </div>
+            <div style="position: absolute;bottom: -60px;right: 0px;width: 100%;display: flex;justify-content: flex-end;">
+                <div style="margin-right: 40px;">
+                    <button style="margin-right:10px" @click="selectAll">SELECCIONAR TOTS</button>
+                    <button @click="deselectAll">DESSELECCIONAR TOTS</button>
+                </div>
+                <select v-model="selectedEstatUpdate" style="margin-right:10px">
+                        <option v-for="(estat, index) in estats" :key="index"
+                            style="background-color: white;"
+                            :value="estat.id"
+                            :selected="estat.id == 1">
+                            {{estat.estat}}
+                        </option>
+                    </select>
+                <button @click="updateSelectedExp">MODIFICAR</button>
+            </div>
         </div>
+
     </div>
 
 </template>
@@ -92,10 +109,20 @@ export default {
     showExpedient,
     messageApp
   },
+  watch: {
+    'filterBySelected.col'(newVal, oldVal) {
+      if (newVal === 'all') {
+        this.searchBarSubmit();
+        this.filterBySelected.input = ''
+      }
+    }
+  },
   data () {
     return {
       expedients: [],
       estats: [],
+      selectedEstatUpdate: 1,
+      estatsIsLoaded: false,
       filtres: [
         {
             id: 1,
@@ -155,13 +182,22 @@ export default {
       this.showExpedientCodi = '';
       this.allExpedientsTab.show();
     },
+    selectAll() {
+        this.$refs.expedientsTable.selectAll();
+    },
+    deselectAll() {
+        this.$refs.expedientsTable.deselectAll();
+    },
+    updateSelectedExp(){
+        this.$refs.expedientsTable.updateSelect(this.$refs.expedientsTable.selectedIds, this.selectedEstatUpdate);
+    },
     selectEstats () {
       const self = this;
       axios
         .get('estatExpedient')
         .then(response => {
           self.estats = response.data;
-          console.log(response);
+          self.estatsIsLoaded = true;
         })
         .catch((error) => { 
             this.showError(error)
@@ -176,7 +212,7 @@ export default {
         const col = this.filterBySelected.col
         let value = this.filterBySelected.col == 'all' ? '' : this.filterBySelected.input
         if(col === 'codi') { value = 'EXP-'+value}
-        console.log(value)
+        console.log("Searching in", `'${col}'`, "value:", value)
         this.$refs.expedientsTable.selectExpedientsBy(col, value)
     },
     showError(error) {
@@ -240,6 +276,7 @@ export default {
     border-radius: 0 5px 5px 0;
 }
 .table-container {
+    position: relative;
     height: 50%;
 }
 .table-container .nav-item {
@@ -251,16 +288,12 @@ export default {
     border: none
 }
 #tableSelector {
+    height: 50px;
     border-bottom: none;
 }
 
 #tabContent {
-    height: 100%;
-}
-
-#all-expedients-container {
-    position: relative;
-    padding: 0 8px
+    height: calc(100% - 50px);
 }
 
 #all-expedients-tab, #all-expedients-container {
@@ -273,6 +306,8 @@ export default {
 
 
 #all-expedients-container, #show-expedient-container{
+    position: relative;
+    padding: 0 8px;
     height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;

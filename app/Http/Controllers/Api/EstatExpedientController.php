@@ -69,6 +69,7 @@ class EstatExpedientController extends Controller
         $expedient->save();
 
         return response()->json(['message' => 'Expedient updated successfully'], 200);
+        
     }
 
     /**

@@ -2,6 +2,7 @@
     <table class="table table-hover text-center">
         <thead>
             <tr>
+                <th></th>
                 <th v-for="(filtre, index) in filtres" :key="index" 
                     :style = "{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }"
                     :width = " filtre.id === 2 ? '20%' : filtre.id === 3 ? '25%' : '10%' ">
@@ -18,8 +19,9 @@
                 <th width='5%'></th>
             </tr>
         </thead>
-        <tbody v-if="isLoaded">
-            <tr v-for="(exp, index) in expedients" :key="index">
+        <tbody v-if="isLoaded" ref="tableBody">
+            <tr v-for="(exp, index) in expedients" :key="index" :data-expid="exp.id" @click="handleRowClick(exp.id, $event)">
+                <td><input class="form-check-input" type="checkbox" v-model="exp.isChecked" @click.stop></td>
                 <td>{{exp.codi_expedient}}</td>
                 <td>
                   <div class="justify-center">
@@ -38,10 +40,10 @@
                 <td>{{exp.cartes_count}}</td>
                 <td>{{elapsedTime(exp.modificat)}}</td>
                 <td>{{createdAt(exp.creat)}}</td>
-                <td>
+                <td class="no-row-select">
                     <select
                     :class="'estat-'+exp.estat_expedient_id"
-                    @change="updateSelect(exp.id, $event.target.value)">
+                    @change="updateSelect([exp.id], $event.target.value)">
                         <option v-for="(estat, index) in estats" :key="index"
                             style="background-color: white;"
                             :value="estat.id"
@@ -50,7 +52,7 @@
                         </option>
                     </select>
                 </td>
-                <td>
+                <td class="no-row-select">
                     <!-- <i class="bi bi-folder"></i> -->
                     <span>
                       <i class="bi bi-folder2" @click="changeTab(exp.id, exp.codi_expedient)"></i>
@@ -71,12 +73,17 @@ import moment from 'moment';
 
 export default {
   emits: [
+    'change-tab',
     'refresh-legend',
     'table-error'
   ],
   props: {
     estats: {
       type: Array,
+      required: true
+    },
+    estatsIsLoaded: {
+      type: Boolean,
       required: true
     },
     filtres: {
@@ -87,16 +94,57 @@ export default {
   data () {
     return {
       expedients: [],
+      expedientsIsLoaded: false,
       orderByColumn: 'updated_at',
       orderDir: 'desc',
-      isLoaded: false
+    }
+  },
+  computed: {
+    isLoaded () {
+      const isLoaded = this.expedientsIsLoaded && this.estatsIsLoaded;
+      return isLoaded
+    },
+    selectedIds() {
+      const selectedIds = this.expedients.filter((exp) => exp.isChecked).map((exp) => exp.id)
+      return selectedIds;
     }
   },
   methods: {
+    handleRowClick(expId, event) {
+   /*    const selectEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] select`);
+      const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
+      console.log(selectEl)
+      if (!selectEl.contains(event.target)) {
+        checkboxEl.click();
+      } */
+      const avoidElements = Array.from(this.$refs.tableBody.querySelectorAll(`[data-expid="${expId}"] .no-row-select`));
+      const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
+
+      if (!avoidElements.some(el => el.contains(event.target))) {
+        checkboxEl.click();
+        console.log("Selected expedients ids", this.selectedIds)
+      }
+    },
+    selectAll() {
+      const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new Event('change'));
+      });
+      console.log("Selected expedients ids", this.selectedIds)
+    },
+    deselectAll() {
+      const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+        checkbox.dispatchEvent(new Event('change'));
+      });
+      console.log("Selected expedients ids", this.selectedIds)
+    },
     changeTab (expID, expCodi) {
-      console.log('CHANGE TAB CALLED');
-      console.log(expID);
-      console.log(expCodi);
+      console.log("\nShowing expedient with:")
+      console.log("Expedient ID:", expID);
+      console.log("Expedient CODI:", expCodi);
       this.$emit('change-tab', expID, expCodi)
     },
     orderBy (orderCol) {
@@ -108,21 +156,23 @@ export default {
       } else {
         this.orderDir = 'desc';
       }
-      console.log(this.orderDir)
+      console.log("Orderning by:", orderCol, this.orderDir)
       this.orderByColumn = orderCol;
-      const self = this;
-      this.submit(true)
+      this.submit(true, true)
     },
-    submit (keepOrder) {
-      this.isLoaded = false
+    submit (keepOrder, showReload) {
+      if(showReload) {
+        this.expedientsIsLoaded = false
+      }
       const self = this;
       if (keepOrder) {
         axios
           .get(`expedients-gestio/orderBy/${self.orderByColumn}/${self.orderDir}`)
           .then(response => {
-            console.log(response);
             self.expedients = response.data;
-            self.isLoaded = true;
+            if (showReload) {
+              self.expedientsIsLoaded = true;
+            }
           })
           .catch((error) => { 
             self.showError(error)
@@ -131,10 +181,8 @@ export default {
         axios
           .get('expedients-gestio/all')
           .then(response => {
-            console.log(response);
             self.expedients = response.data;
-            self.expedientsByEstat();
-            this.isLoaded = true;
+            this.expedientsIsLoaded = true;
           })
           .catch((error) => {
             self.showError(error)
@@ -142,31 +190,33 @@ export default {
       }
     },
     selectExpedientsBy(col, value) {
-      this.isLoaded = false
+      this.expedientsIsLoaded = false
       const self = this;
       axios
         .get(`expedients-gestio/${col}/${value}`)
         .then(response => {
-          console.log(response);
           self.expedients = response.data
-          this.isLoaded = true
+          this.expedientsIsLoaded = true
         })
         .catch((error) => { 
           self.showError(error)
         });
     },
-    updateSelect (expID, estatID) {
+    updateSelect (expIDs, estatID) {
+      console.log("Expedients to update:", expIDs, "To state id:", estatID)
       const self = this;
-      axios
-        .put(`estatExpedient/${expID}`, { estat_expedient_id: estatID })
-        .then(response => {
-          console.log(response);
-          this.$emit('refresh-legend')
-          self.submit(true);
-        })
-        .catch((error) => { 
-          self.showError(error)
-        });
+      const promises = expIDs.map(expID => {
+        return axios.put(`estatExpedient/${expID}`, { "estat_expedient_id": estatID });
+      });
+      Promise.all(promises)
+      .then(responses => {
+        this.$emit('refresh-legend');
+        self.submit(true, false);
+        console.log(responses);
+      })
+      .catch(error => {
+        self.showError(error);
+      });
     },
     elapsedTime (dateTime) {
       const now = moment();
@@ -207,7 +257,7 @@ export default {
   },
 
   mounted () {
-    this.submit(true)
+    this.submit(true, true)
   },
 }
 </script>
@@ -218,11 +268,14 @@ export default {
     }
     .spinner-container {
       position: absolute;
-      width: 100%; 
-      height: calc(100% - 60px); 
-      display: flex; 
-      justify-content:center; 
-      align-items:center; 
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .spinner-border {
       height: 60px;

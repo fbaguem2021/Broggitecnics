@@ -9,7 +9,7 @@
                 <th scope="col"></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-if="isLoaded">
                 <tr v-for="(carta, index) in expedient.cartes_trucada" :key="index">
                     <td>{{carta.codi_trucada}}</td>
                     <td>{{carta.localitzacio.municipi}}</td>
@@ -20,6 +20,11 @@
                     <td @click="showModal(carta)"><i class="bi bi-eye inspect-carta"></i></td>
                 </tr>
             </tbody>
+            <div v-else="isLoaded" class="spinner-container">
+              <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
           </table>
         </div>
     </div>
@@ -173,7 +178,7 @@ import axios from 'axios';
 import * as bootstrap from 'bootstrap';
 export default {
   emits: [
-    'showExpedient-error'
+    'show-expedient-error'
   ],
   data () {
     return {
@@ -189,7 +194,8 @@ export default {
       ],
       estatsAgencies: [],
       cartaModal: null,
-      collapse: null
+      collapse: null,
+      isLoaded: false
     }
   },
   methods: {
@@ -198,12 +204,13 @@ export default {
       this.$refs.collapseBtn.classList.toggle('expanded')
     },
     getExpedient (expID) {
+      this.isLoaded = false
       const self = this;
       axios
         .get(`expedient/${expID}`)
         .then(response => {
           self.expedient = response.data;
-          console.log(self.expedient);
+          self.isLoaded = true;
         })
         .catch((error) => { });
     },
@@ -212,7 +219,6 @@ export default {
       axios
         .get('estatAgencies/')
         .then(response => {
-          console.log(response)
           self.estatsAgencies = response.data;
         })
         .catch((error) => { });
@@ -237,12 +243,14 @@ export default {
       /* return string; */
     },
     showModal (carta) {
+      console.log("\nShowing carta with:")
+      console.log("carta id:", carta.id);
       this.cartaSelected = carta
       this.collapse.hide();
       this.cartaModal.show();
     },
     showError (error) {
-      this.$emit('showExpedient-error',)
+      this.$emit('show-expedient-errorr', error)
     }
   },
   mounted() {
@@ -253,7 +261,22 @@ export default {
 }
 </script>
 <style scoped>
-
+.spinner-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.spinner-border {
+  height: 60px;
+  width: 60px;
+  border-width: 6px;
+}
 #cartaModal .modal-dialog {
   max-width: 720px;
 }
@@ -261,7 +284,7 @@ export default {
   position: relative;
   overflow: visible !important;
 }
-#cartaModal .modal-body {
+#cartaModal .modal-content, #cartaModal .modal-body {
   min-height: 600px;
 }
 
