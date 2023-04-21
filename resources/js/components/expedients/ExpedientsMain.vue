@@ -65,6 +65,7 @@
                         @change-tab="switchTab" 
                         @refresh-legend="selectEstats"
                         @table-error="showError"
+                        @table-message="showMessage"
                         ></expedients-table>
                 </div>
                 <div class="tab-pane" id="show-expedient-container" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
@@ -79,7 +80,11 @@
                     <button style="margin-right:10px" @click="selectAll">SELECCIONAR TOTS</button>
                     <button @click="deselectAll">DESSELECCIONAR TOTS</button>
                 </div>
-                <select v-model="selectedEstatUpdate" style="margin-right:10px">
+                <select 
+                    v-model="selectedEstatUpdate" 
+                    style="margin-right:10px"
+                    :class="'estat-'+selectedEstatUpdate"
+                    >
                         <option v-for="(estat, index) in estats" :key="index"
                             style="background-color: white;"
                             :value="estat.id"
@@ -217,11 +222,13 @@ export default {
     },
     showError(error) {
         this.$refs.messageApp.createErrorAlert(error)
+    },
+    showMessage(message, type, data = null) {
+        this.$refs.messageApp.createMessageAlert(message, type)
     }
   },
   mounted () {
     this.selectEstats();
-    this.$refs.messageApp.createAlert("Hello world", "info", "HOOOW u dooooing booooooooooiiiiiiii")
     this.allExpedientsTab = new bootstrap.Tab(this.$refs.allExpedientsTab);
     this.expedientTab = new bootstrap.Tab(this.$refs.expedientTab);
   }
@@ -338,4 +345,8 @@ export default {
 #closeTab:hover {
     transform: scale(1.1);
 }
+.estat-5 option{
+      color: black;
+    }
+
 </style>

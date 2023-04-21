@@ -75,7 +75,8 @@ export default {
   emits: [
     'change-tab',
     'refresh-legend',
-    'table-error'
+    'table-error',
+    'table-message'
   ],
   props: {
     estats: {
@@ -211,6 +212,7 @@ export default {
       Promise.all(promises)
       .then(responses => {
         this.$emit('refresh-legend');
+        this.showMessage("Estat de l'expedient modificat correctament", "success")
         self.submit(true, false);
         console.log(responses);
       })
@@ -253,6 +255,9 @@ export default {
     },
     showError(error) {
       this.$emit('table-error', error)
+    },
+    showMessage(message, type) {
+      this.$emit('table-message', message, type)
     }
   },
 
@@ -296,7 +301,7 @@ export default {
       vertical-align: middle;
     }
     .theader-item-container.active {
-      background-color: #ffffff;
+      background-color: rgba(255, 255, 255, .6);
       border-radius: 4px;
       color: black;
       margin: -2px;

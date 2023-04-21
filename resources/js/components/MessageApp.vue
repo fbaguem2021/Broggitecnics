@@ -64,7 +64,7 @@ export default {
         }
     },
     methods: {
-        createAlert(message, type, data = null) {
+        createMessageAlert(message, type, data = null) {
             this.messageAlert.message = message
             this.messageAlert.type = type
             this.messageAlert.data = data
@@ -111,14 +111,14 @@ export default {
             setTimeout(()=>{
                 this.$refs.errorAlert.classList.add('show')      
             }, 100)
-            // setTimeout(()=>{this.closeAlert()}, 10000)
+            setTimeout(()=>{this.closeErrorAlert()}, 10000)
         },
         showMessageAlert () {
             this.messageAlert.display = true;
             setTimeout(()=>{
                 this.$refs.messageAlert.classList.add('show')      
             }, 100)
-            // setTimeout(()=>{this.closeAlert()}, 10000)
+            // setTimeout(()=>{this.closeMessageAlert()}, 10000)
         },
         closeErrorAlert () {
             this.$refs.errorAlert.classList.remove('show')
