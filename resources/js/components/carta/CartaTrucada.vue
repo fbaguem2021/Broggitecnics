@@ -1,13 +1,12 @@
 <template>
   <Transition name="fade">
-    <loader-splash v-if="!isLoaded"></loader-splash>
+    <loader-splash v-if="!cartaIsLoaded"></loader-splash>
   </Transition>
   <!-- Mostrar alertas success -->
   <div v-if="alertSuccess != ''" id="carta-alert" class="alert alert-info alert-dismissible fade show" role="alert">
     {{ alertSuccess }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" @click="restartAlert"></button>
   </div>
-
   <div id="card-wrapper">
     <div id="card-container">
       <div class="content">
@@ -19,7 +18,9 @@
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
                 @get-carta-incident="updateIncident"
-                @get-map-search-string="updateSearchString" >
+                @get-map-search-string="updateSearchString" 
+                @form-main-is-loaded="formMainIsLoaded"
+                >
               </form-main>
             <transition name="fade">
               <div v-show="notaIsExpaneded" class="blur-gradient"></div>
@@ -31,9 +32,12 @@
         </div>
         <div id="side">
           <div id="data">
-            <data-carta :codi-trucada="codiTrucada" :is-loaded="isLoaded"></data-carta>
+            <data-carta 
+              :codi-trucada="codiTrucada" 
+              :is-loaded="cartaIsLoaded"
+              @carta-durada="updateDurada"
+              ></data-carta>
           </div>
-
           <!-- MAPA -->
           <div id="map">
             <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" @agenciasSeleccionadas="agenciasSeleccionadas" />
@@ -84,7 +88,8 @@ export default {
   },
   data() {
     return {
-      isLoaded: false,
+      isCartaDataLoaded: false,
+      isFormMainLoaded: false,
       codiTrucada: '',
       codiNewExpedient: '',
       dataHoraTrucada: '',
@@ -103,22 +108,33 @@ export default {
       idAgenciasSeleccionadas: []
     }
   },
+  computed: {
+    cartaIsLoaded() {
+      const isLoaded = this.isCartaDataLoaded && this.isFormMainLoaded;
+      return isLoaded
+    },
+    cartaIsValid(){
+      const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
+      return isValid
+    }
+  },
   methods: {
     agenciasSeleccionadas(idAgencias){
       alert('funcion en carta')
       this.idAgenciasSeleccionadas = idAgencias
     },
-    getCartaData () {
+    async getCartaData () {
       const self = this;
-      axios
-          .get('cartaData')
-          .then(response => {
-              self.localitzacioData = response.data.localitzacio
-              self.incidentData = response.data.incident
-              self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
-              self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
-          })
-          .catch((error) => {})
+      await axios
+              .get('cartaData')
+              .then(response => {
+                  self.localitzacioData = response.data.localitzacio
+                  self.incidentData = response.data.incident
+                  self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
+                  self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
+              })
+              .catch((error) => {})
+      this.isCartaDataLoaded = true
     },
     getNewCodi (codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
@@ -145,7 +161,6 @@ export default {
       this.localitzacio = locString
     },
     updateInterlocutor(interlocutor) {
-      console.log(interlocutor)
       this.newInterlocutor = interlocutor.isNewInerlocutor
       this.saveInterlocutor = interlocutor.saveInterlocutor
       this.interlocutor = interlocutor
@@ -156,12 +171,17 @@ export default {
     updateNotaCoumna(nota) {
       this.notaCoumna = nota
     },
+    updateDurada(seconds) {
+      this.durada = seconds
+    },
     updateSearchString(mapString) {
       this.mapSearchString = mapString
     },
+    formMainIsLoaded(isLoaded) {
+      this.isFormMainLoaded = isLoaded
+    },
     insertCarta() {
-      const cartaIsValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
-      if (cartaIsValid){
+      if (this.cartaIsValid){
         console.log("Carta is valid")
       } else {
         console.log("Carta it's not valid")
@@ -180,7 +200,7 @@ export default {
   },
   mounted() {
     this.getCartaData()
-    setTimeout(()=>{ this.isLoaded = true}, 1000)
+    // setTimeout(()=>{ this.isLoaded = true}, 1000)
   },
 }
 </script>

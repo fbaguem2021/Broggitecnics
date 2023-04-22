@@ -23,7 +23,8 @@ class CartaTrucadaController extends Controller
         } else {
             $cookieValue = json_encode(['isManual' => false]);
         }
-        $cookieExpiration = 10; 
+        $cookieExpiration = 10;
+        // ($cookieName, $cookieValue, $cookieExpiration, null, null, false, false)
         return response(view('pages.carta'))
             ->cookie($cookieName, $cookieValue, $cookieExpiration, null, null, false, false);
     }

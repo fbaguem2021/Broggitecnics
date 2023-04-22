@@ -31,7 +31,9 @@
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" @keydown="handleTabKey($event)" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
             <interlocutor-form 
-                @get-interlocutor="emitInterlocutor"/>
+                @get-interlocutor="emitInterlocutor"
+                @interlocutor-is-loaded="formMainIsLoaded"
+            />
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
             <localitzacio-form :localitzacioData="localitzacioData" 
@@ -43,7 +45,7 @@
         <div class="tab-pane" @keydown="handleTabKey($event)" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
             <incident-form :incidentData="incidentData"
                 @get-incident="emitIncident"
-                />
+            />
         </div>
     </div>
 </template>
@@ -74,9 +76,11 @@ export default {
     'get-carta-location',
     'get-carta-incident',
     'get-map-search-string',
+    'form-main-is-loaded'
   ],
   data() {
     return {
+        interlocutorIsLoaded: true,
         interlocutorValid: false,
         localitzacioValid: false,
         incidentValid: false,
@@ -95,8 +99,6 @@ export default {
 
   },
   mounted() {
-    
-
     /**
      * Observer sends the location string to the map component to search it
      * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
@@ -182,6 +184,10 @@ export default {
         this.incidentValid = incident.isValid
         this.$emit('get-carta-incident', incident)
     },
+    formMainIsLoaded (interlocutorIsLoaded) {
+        this.interlocutorIsLoaded = interlocutorIsLoaded;
+        this.$emit('form-main-is-loaded', this.interlocutorIsLoaded)
+    }
     }
 }
 </script>

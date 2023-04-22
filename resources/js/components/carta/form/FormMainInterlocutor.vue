@@ -39,12 +39,16 @@
     </form>
 </template>
 <script>
+import axios from 'axios'
+
 export default {
     emits: [
         'get-interlocutor',
+        'interlocutor-is-loaded'
     ],
     data() {
         return {
+            isLoaded: false,
             isNewInterlocutor: true,
             saveInterlocutor: false,
             phone: '',
@@ -69,15 +73,32 @@ export default {
         }
     },
     methods: {
-        checkInterlocutor() {
-            const interlocutoCookie = this.getCookie('interlocutor_phone')
-            if (interlocutoCookie) {
-                console.log(interlocutoCookie)
+        /**
+         * Gets the cookie with the phone input data
+        
+         * If the phone number was typed at the menu, it checks if it exists in the db
+        
+         * If no phone number was typed it generates a random one
+         */
+        async getInterlocutorCookie () {
+            console.log("inside interlocutor cookie")
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
+            // await fetch('http://127.0.0.1:8001/api/cartaData')
+            const interlocutorCookie = this.getCookie('interlocutor_phone')
+            if ( interlocutorCookie.isManual && interlocutorCookie.phone ) {
+                await this.checkInterlocutor(interlocutorCookie.phone)
             } else {
-           
+                await this.generateNumber()
             }
-
+            this.interlocutorIsLoaded()
         },
+        /**
+         * Gets the cookie generated in the controller with the data:
+         
+         * isManual true | false -> indicates if the user checked the manual checkbox (true) or automated (false)
+         */
         getCookie(name) {
             const cookies = document.cookie.split(';');
             for (let i = 0; i < cookies.length; i++) {
@@ -89,20 +110,67 @@ export default {
                 }
             }
         },
-        removeValidationClasses(el) {
-            el.classList.remove('is-valid', 'is-invalid');
+        /**
+         * Checks in the database for interlocutor with same phone as user input
+         
+         * If it finds the interlocutor laods it to the component
+         * If not sets the phone the user inputed
+         */
+        async checkInterlocutor(phone) {
+            const self = this
+            axios.get(`interlocutorCheck/${phone}`)
+                    .then(response => {
+                        if (response.data.match) {
+                            self.loadInterlocutor(response.data.interlocutor)
+                        } else {
+                            self.phone = phone
+                        }
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                    })
         },
-        handleInput (el) {
-            this.validateInput(el)
-            this.updateCartaData()
+        /**
+         * Gets a random phone number
+         
+         * 5% chance to load an existing phone number and all the interlocutor data
+         */
+         async generateNumber () {
+            const self = this
+            axios.get( 'interlocutorGenerate' )
+                  .then(response => {
+                    console.log(response)
+                    if ( !response.data.match ) {
+                        self.phone = response.data.phone
+                    } else {
+                        self.loadInterlocutor( response.data.interlocutor )
+                    }
+                  })
+                  .catch( (error) => {
+                    console.log( error )
+                  })
         },
-        validateInput (el) {
-            if (el === this.$refs.nameInput || el === this.$refs.surnamesInput) {
-                this[el.id].isValid = el.value != '' ? true : false;
-                el.classList.toggle('is-valid', this[el.id].isValid)
-                el.classList.toggle('is-invalid', !this[el.id].isValid)
-            }
+        /**
+         * Loads all interlocutor data to the component and sets newinterlocutor = false
+         
+         * Calls handleInput to validate the data and update it to the main component -> FormMain -> CartaTrucada
+         */
+        loadInterlocutor (interlocutor) {
+            this.phone = interlocutor.telefon
+            this.name.input = interlocutor.nom
+            this.surnames.input = interlocutor.cognoms
+            this.record = interlocutor.antecedents
+            this.isNewInterlocutor = false
+            this.handleInput(this.$refs.nameInput)
+            this.handleInput(this.$refs.surnamesInput)
         },
+        interlocutorIsLoaded() {
+            this.isLoaded = true
+            this.$emit('interlocutor-is-loaded', this.isLoaded)
+        },
+        /**
+         * Updates the object that is sended to the father component with this component data values
+         */
         updateCartaData () {
            this.cartaInterlocutor = {
                 telefon: this.phone,
@@ -115,10 +183,32 @@ export default {
             };
             this.$emit('get-interlocutor', this.cartaInterlocutor)
         },
+        /**
+         * Removes all validation calsses when focusing an input to improve visability
+         */
+        removeValidationClasses(el) {
+            el.classList.remove('is-valid', 'is-invalid');
+        },
+        /**
+         * Validate the elements input and upadtes this component data to father
+         */
+        handleInput (el) {
+            this.validateInput(el)
+            this.updateCartaData()
+        },
+        /**
+         * Simple input validation that sets valid the input if is not empty
+         */
+        validateInput (el) {
+            if (el === this.$refs.nameInput || el === this.$refs.surnamesInput) {
+                this[el.id].isValid = this[el.id].input != '' ? true : false;
+                el.classList.toggle('is-valid', this[el.id].isValid)
+                el.classList.toggle('is-invalid', !this[el.id].isValid)
+            }
+        }
     },
     mounted() {
-        this.checkInterlocutor()
-        this.updateCartaData()
+        this.getInterlocutorCookie()
     },
 }
 </script>

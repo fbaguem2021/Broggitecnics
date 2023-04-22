@@ -44,4 +44,6 @@ Route::get('/llamadasChart', [ChartCallController::class, 'index']);
 
 Route::apiResource('/cartesTrucades', CartaTrucadaController::class);
 
-Route::apiResource('/cartaData', CartaData::class);
+Route::get('/cartaData', [CartaData::class, 'index']);
+Route::get('/interlocutorCheck/{number}', [CartaData::class, 'checkNumber']);
+Route::get('/interlocutorGenerate', [CartaData::class, 'generateNumber']);
