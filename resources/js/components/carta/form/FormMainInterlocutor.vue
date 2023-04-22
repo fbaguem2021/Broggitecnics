@@ -105,8 +105,6 @@ export default {
                 const cookie = cookies[i].trim();
                 if (cookie.startsWith(name)) {
                     return JSON.parse(decodeURIComponent(cookie.substring(name.length + 1)));
-                } else {
-                    return null
                 }
             }
         },
