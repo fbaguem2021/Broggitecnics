@@ -9,6 +9,9 @@ import operadors from './components/operadors/Main.vue'
 import carta from './components/carta/CartaTrucada.vue'
 import mapa from './components/carta/mapa/Mapa.vue'
 import mapaApp from './components/carta/mapa/MapApp.vue'
+// import chartLoc from './components/graficos/barChart.vue'
+import rankingLoc from './components/graficos/chartLocalizaciones.vue'
+import chartLlamadas from './components/graficos/chartLlamadas.vue'
 
 // createApp(agenciasPrimarias).mount('#agenciasPrimarias')
 // createApp(mapa).mount('#mapa')

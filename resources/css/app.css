@@ -1,9 +1,9 @@
 @font-face {
-    font-family: 'Ubuntu';
-    src: url('../fonts/Ubuntu-Regular.ttf');
+    font-family: Ubuntu;
+    src: url(../fonts/Ubuntu-Regular.ttf);
 }
 
-* {
+*{
     box-sizing: border-box;
     font-family: 'Ubuntu';
 }

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\CartaData;
 use App\Http\Controllers\Api\CartaTrucadaController;
+use App\Http\Controllers\Api\ChartController;
+use App\Http\Controllers\Api\ChartCallController;
 use App\Http\Controllers\Api\ExpedientController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +38,9 @@ Route::get('expedient/{id}', [ExpedientController::class, 'show']);
 Route::put('expedient/{id}', [ExpedientController::class, 'update']);
 
 Route::apiResource('/estatExpedient', EstatExpedientController::class);
+Route::get('/incidentesChart', [ChartController::class, 'index']);
+
+Route::get('/llamadasChart', [ChartCallController::class, 'index']);
 
 Route::apiResource('/cartesTrucades', CartaTrucadaController::class);
 

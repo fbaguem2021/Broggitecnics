@@ -45,3 +45,12 @@ Route::get('/expedients', [ExpedientsController::class, 'index']);
 Route::get('bootstrap', function () {
     return view('bootstrap');
 });
+
+// Ruta grafico localizacion
+Route::get('/chartLoc', function () {
+    return view('charts.chartIncidentsMunicipi');
+});
+//Ruta grafico llamadas
+Route::get('/chartLlamada', function () {
+    return view('charts.chartLlamadasTipoInci');
+});
