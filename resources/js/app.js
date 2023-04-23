@@ -19,3 +19,5 @@ import chartLlamadas from './components/graficos/chartLlamadas.vue'
 createApp(carta).mount('carta-app');
 createApp(expedients).mount('expedients-app');
 createApp(operadors).mount('operadors');
+createApp(rankingLoc).mount('#rankingLoc')
+createApp(chartLlamadas).mount('#chartLlamadas')

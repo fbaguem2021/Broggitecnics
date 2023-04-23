@@ -29,6 +29,30 @@ class CartaTrucadaController extends Controller
     public function store(Request $request)
     {
         $carta = new CartaTrucada();
+        $carta->codi_trucada = $request
+        $carta->data_hora_trucada = $request
+        $carta->durada = $request
+        $carta->interlocutors_id = $request
+        $carta->telefon = $request
+        $carta->nom = $request
+        $carta->cognoms = $request
+        $carta->nota_comuna = $request
+        $carta->tipus_localitzacions_id =$request
+        $carta->descripcio_localitzacio = $request
+        $carta->detall_localitzacio = $request
+        //text de altres referencies
+        $carta->altres_ref_localitzacio = $request
+        //id del municipio
+        $carta->municipis_id = $request
+        //id de la provincia
+        $carta->provincies_id = $request
+        //Id de los incidentes
+        $carta->incidents_id = $request
+        //Si ya existe un expediente se hace insert de la id, si no existe, PRIMERO SE HACE INSERT DEL EXPEDIENTE
+        $carta->expedients_id = $request
+        //ID user que crea la carta
+        $carta->usuaris_id = $request
+
 
     }
 
