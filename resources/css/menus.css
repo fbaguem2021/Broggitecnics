@@ -7,6 +7,7 @@
     position: relative;
     width: 90%;
     margin: 0 5%;
+    min-width: 680px;
 }
 
 .menu-bg {
@@ -23,8 +24,8 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
-    grid-column-gap: 2%;
-    grid-row-gap: 4%;
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
     height: 85%;
 }
 
@@ -38,33 +39,12 @@
 }
 
 .block-lt, .block-lb, .block-ltb {
+    padding: 30px;
     height: 100%;
     background-color: rgb(226, 170, 18, .14);
     border: 4px SOLID #e2aa12;
     border-radius: 10px;
 }
-
-.block-rt {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    grid-area: 1 / 3 / 2 / 4;
-    background-color: rgba(225, 18, 122, .14);
-    border: 4px SOLID #E1127A;
-    border-radius: 10px;
-}
-
-.block-rb {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    grid-area: 2 / 3 / 3 / 4;
-    background-color: rgba(18, 199, 226, .14);
-    border: 4px SOLID #12C7E2;
-    border-radius: 10px;
-    align-self: end;
-}
-
 .block-lt{
     grid-area: 1 / 1 / 2 / 2;
 }
@@ -74,8 +54,45 @@
 }
 
 .block-ltb{
+    display: flex;
+    flex-direction: column;
     grid-area: 1 / 1 / 3 / 3; 
 }
+
+.block-rt, .block-rb {
+    height: 100%;
+    padding: 30px;
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 10px;
+}
+
+.block-rt {
+    grid-area: 1 / 3 / 2 / 4;
+    background-color: rgba(225, 18, 122, .14);
+    border-color:#E1127A;
+    border-radius: 10px;
+}
+
+.block-rb {
+    grid-area: 2 / 3 / 3 / 4;
+    background-color: rgba(18, 199, 226, .14);
+    border-color:#12C7E2;
+}
+
+.block-rt .card, .block-rb .card {
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border: none !important;
+    background: none !important;
+}
+/* .block-rb .card {
+    background-color: rgba(18, 199, 226, 10%);
+}
+.block-rt .card{
+    background-color: rgb(225 18 122 / 10%);;
+} */
+
 
 #menu-admin .block-rt {
     grid-area: 1 / 2 / 2 / 2;
@@ -83,9 +100,26 @@
 #menu-admin .block-rb {
     grid-area: 2 / 2 / 2 / 2;
 }
-
-#info-app .card {
+#info-app, #operator-data {
+    height: 50%;
+    overflow-y: hidden;
+    transition: flex-grow .4s;
+}
+#info-app {
+    padding-bottom: 15px;
+    flex-grow: 1;
+}
+#operator-data {
+    display: flex;
+    column-gap: 30px;
+    padding-top: 15px;
+}
+#info-app .card , #operator-data .card {
+    overflow-y: hidden;
     height: 100%;
+}
+#operator-data .card {
+    flex-basis: 50%;
 }
 #operator-data .card-title{
     margin: 0;
@@ -127,14 +161,34 @@
     text-align: start;
 }
 
-#sandbox .btn, #trucada .btn {
+.block-rt .btn, .block-rb .btn {
     position: absolute;
     left: 50%;
     bottom: 10%;
     width: 80%;
     transform: translateX(-50%);
 }
-
+.info-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 60px;
+    font-size: 30px;
+}
+.icon-stack {
+    position: relative;
+}
+.icon-stack .bi-triangle {
+    font-size: 65px;
+    color: var(--danger)
+}
+.icon-stack .bi-hammer {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    font-size: 30px;
+    transform: translate(-45%, -30%);
+}
 
 @media (max-width: 992px) {
 
@@ -144,27 +198,20 @@
     }
 
     #info-app, #operator-data {
-        margin: 20px;
-        overflow-y: hidden;
+        flex-grow: 0;
+        height: 80px;
         cursor: pointer;
-        transition: height .4s;
     }
-    #info-app {
-        height: 20%;
+    
+    #info-app.expanded, #operator-data.expanded {
+        flex-grow: 1;
     }
 
-    #operator-data {
-        height: 16%;
-    }
     #operator-data .chart-container {
         opacity: 0;
         transition: all .2s linear;
         transition-delay: .2s;
      }
-
-    #info-app.expanded, #operator-data.expanded {
-        height: 60%;
-    }
 
     .block-lt {
         grid-area: 1 / 1 / 2 / 2;;
@@ -192,44 +239,6 @@
     }
 }
 
-@media (min-width: 991px) {
-    #info-app, #operator-data {
-        height: calc(50% - 40px);
-        margin: 20px;
-        overflow-y: hidden;
-        transition: height .4s;
-    }
-}
-
-@media (max-width: 768px) {
-    #sandbox .btn, #trucada .btn {
-        bottom: 2%;
-    }
-}
-
-@media (max-width: 540px) {
-    #sandbox .btn, #trucada .btn {
-        bottom: -22%;
-    }
-}
-
-.menu .card {
-    height: 100%;
-    border: 1px solid #000000;
-    box-shadow: 1px 1px 4px 1px rgba(226, 170, 18, .1);
-    border: none;
-    border-radius: 10px;
-    transition: height 0.5s ease-out;
-}
-
-#operator-data{
-    display: flex;
-    justify-content: space-between;
-}
-
-#operator-data .card {
-    flex-basis: calc(50% - 15px);
-}
 
 /* Switch - box around the slider */
 .switch {
