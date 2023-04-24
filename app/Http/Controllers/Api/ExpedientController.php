@@ -64,6 +64,9 @@ class ExpedientController extends Controller
      */
     public function expedients_carta(Request $request) {
         $filtre = $request->query('municipi','');
+        $municipi   = $request->query('municipi','');
+        $provincia  = $request->query('provincia','');
+        $comarca    = $request->query('comarca','');
 
         $query = DB::table('expedients')
             ->select('expedients.id','expedients.codi',
@@ -72,6 +75,9 @@ class ExpedientController extends Controller
                 DB::raw('CONCAT("[",GROUP_CONCAT(DISTINCT \'"\',interlocutors.id,\'"\'),"]") as interlocutors'),
                 DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
                 DB::raw('CONCAT(\'[\', GROUP_CONCAT(DISTINCT CONCAT(\'"\',provincies.nom,",",municipis.nom,",",comarques.nom,\'"\') SEPARATOR ",") , \']\') AS full_loc'),
+                DB::raw('GROUP_CONCAT(DISTINCT municipis.id  ) as municipis'),
+                DB::raw('GROUP_CONCAT(DISTINCT provincies.id ) as provincies'),
+                DB::raw('GROUP_CONCAT(DISTINCT comarques.id  ) as comarques'),
                 // DB::raw('CONCAT(\'[\', GROUP_CONCAT(DISTINCT CONCAT(\'["\', provincies.nom,",",municipis.nom,",",comarques.nom,\'"]\')) , \']\') AS full_loc'),
                 DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as tipus'),
                 DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
@@ -84,7 +90,10 @@ class ExpedientController extends Controller
             ->leftJoin('interlocutors', 'cartes_trucades.interlocutors_id', '=', 'interlocutors.id')
             // ->where('expedients.id','>=',0)
             ->groupBy('expedients.id','expedients.codi')
-            ->havingRaw('localitzacions like CONCAT("%", ? , "%") ',[$filtre])
+            // ->havingRaw('localitzacions like CONCAT("%", ? , "%") ',[$filtre])
+            // ->havingRaw('',[])
+            // ->havingRaw('',[])
+            // ->havingRaw('',[])
             ->orderBy('expedients.id');
 
         return response()->json($query->get());

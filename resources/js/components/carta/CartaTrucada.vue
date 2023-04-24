@@ -18,7 +18,7 @@
                 @get-carta-location="updateLoc"
                 @get-carta-interlocutor="updateInterlocutor"
                 @get-carta-incident="updateIncident"
-                @get-map-search-string="updateSearchString" 
+                @get-map-search-string="updateSearchString"
                 @form-main-is-loaded="formMainIsLoaded"
                 >
               </form-main>
@@ -32,8 +32,8 @@
         </div>
         <div id="side">
           <div id="data">
-            <data-carta 
-              :codi-trucada="codiTrucada" 
+            <data-carta
+              :codi-trucada="codiTrucada"
               :is-loaded="cartaIsLoaded"
               @carta-durada="updateDurada"
               ></data-carta>
@@ -43,7 +43,9 @@
             <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess" @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-                <form-expedients></form-expedients>
+                <form-expedients
+                    :localitzacio="localitzacio"
+                    :new-expedient-code="codiNewExpedient"></form-expedients>
             </div>
         </div>
         <div id="bg"></div>
@@ -196,7 +198,7 @@ export default {
     insertExpedient () {
       // Add rquest to insert Expedient
     },
-    
+
   },
   mounted() {
     this.getCartaData()

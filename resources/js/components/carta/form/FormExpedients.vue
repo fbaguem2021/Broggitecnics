@@ -68,7 +68,12 @@ import axios from 'axios';
 export default {
     // emits: ['expedient_vinculat'],
     props: {
-
+        localitzacio: {
+            type: Object
+        },
+        newExpedientCode: {
+            type: Number
+        }
     },
     data() {
         return {
@@ -80,6 +85,9 @@ export default {
     },
     mounted() {
         this.getExpedients()
+        axios('expedients-carta-trucada',{"text":"hola mundo"})
+            .then(response => { return response.data } )
+            .then(data => console.log('hola my mundo'))
     },
     methods: {
         getStyles() {
