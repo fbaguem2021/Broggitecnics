@@ -151,19 +151,19 @@ export default {
         },
         {
             id: 5,
+          label: 'Estat',
+          col: 'estat_expedients_id'
+        },
+        {
+            id: 6,
           label: 'Modificació',
           col: 'updated_at'
         },
         {
-            id: 6,
+            id: 7,
           label: 'Creació',
           col: 'created_at'
         },
-        {
-            id: 7,
-          label: 'Estat',
-          col: 'estat_expedients_id'
-        }
       ],
       selectedEstat: '',
       message: '',
@@ -210,6 +210,7 @@ export default {
     },
     selectByEstat(estatID){
         this.allExpedientsTab.show()
+        this.filterBySelected.col = "estat_expedients_id"
         this.$refs.expedientsTable.selectExpedientsBy('estat_expedients_id', estatID)
     },
     searchBarSubmit() {
