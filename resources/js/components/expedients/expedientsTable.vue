@@ -75,6 +75,7 @@ export default {
   emits: [
     'change-tab',
     'refresh-legend',
+    'is-expedients-selected',
     'table-error',
     'table-message'
   ],
@@ -108,11 +109,9 @@ export default {
     },
     selectedIds() {
       const selectedIds = this.expedients.filter((exp) => exp.isChecked).map((exp) => exp.id)
+      this.$emit('is-expedients-selected', selectedIds.length)
       return selectedIds;
     },
-    selectedExpedientsLength() {
-      return this.selectedIds.length;
-    }
   },
   methods: {
     toggleSelection() {

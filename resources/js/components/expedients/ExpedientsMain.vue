@@ -64,6 +64,7 @@
                         :filtres="filtres" 
                         @change-tab="switchTab" 
                         @refresh-legend="selectEstats"
+                        @is-expedients-selected="isExpedientsSelected"
                         @table-error="showError"
                         @table-message="showMessage"
                         ></expedients-table>
@@ -75,39 +76,42 @@
                     ></show-expedient>
                 </div>
             </div>
+            <div style="padding: 0 8px;">
             
             <table id="selection-controll" class="table">
                 <tbody>
                     <tr>
-                        <td width="85%">
-                            <a @click="selectAll">Seleccionar tots</a>
-                            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-                            <a @click="deselectAll">Desseleccionar tots</a>
-                        </td>
-                        <td width="10%">
-                            <div>
-                                <select 
-                                    v-model="selectedEstatUpdate" 
-                                    :class="'estat-'+selectedEstatUpdate">
-                                    <option v-for="(estat, index) in estats" :key="index"
-                                        style="background-color: white;"
-                                        :value="estat.id"
-                                        :selected="estat.id == 1">
-                                        {{estat.estat}}
-                                    </option>
-                                </select>
-                            </div>
-                        </td>
-                        <td width="5%">
-                            <div>
-                                <span @click="updateSelectedExp">
-                                    <i class="bi bi-cloud-upload"></i>
-                                </span>
-                            </div>
-                        </td>
+                            <td width="85%">
+                                <a @click="selectAll">Seleccionar tots</a>
+                                <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                                <a @click="deselectAll">Desseleccionar tots</a>
+                            </td>
+                            <td width="12%">
+                                <div v-show="showUpdateController">
+                                    <select 
+                                        v-model="selectedEstatUpdate" 
+                                        :class="'estat-'+selectedEstatUpdate">
+                                        <option v-for="(estat, index) in estats" :key="index"
+                                            style="background-color: white;"
+                                            :value="estat.id"
+                                            :selected="estat.id == 1">
+                                            {{estat.estat}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td width="4%">
+                                <div v-show="showUpdateController">
+                                    <span @click="updateSelectedExp">
+                                        <i class="bi bi-cloud-upload"></i>
+                                    </span>
+                                </div>
+                            </td>
+
                     </tr>
                 </tbody>
             </table>
+        </div>
         </div>
     </div>
 
@@ -140,6 +144,7 @@ export default {
       expedients: [],
       estats: [],
       selectedEstatUpdate: 1,
+      showUpdateController: false,
       estatsIsLoaded: false,
       filtres: [
         {
@@ -190,9 +195,7 @@ export default {
     }
   },
   computed: {
-    expedientsSelected() {    
-            return this.$refs.expedientsTable.selectedExpedientsLength;
-    }
+
   }, 
   methods: {
     switchTab (expID, expCodi) {
@@ -210,6 +213,10 @@ export default {
     },
     deselectAll() {
         this.$refs.expedientsTable.deselectAll();
+    },
+    isExpedientsSelected(isSelected) {
+        this.showUpdateController = isSelected
+        console.log("at last one selected", isSelected)
     },
     updateSelectedExp(){
         this.$refs.expedientsTable.updateSelect(this.$refs.expedientsTable.selectedIds, this.selectedEstatUpdate);
@@ -367,12 +374,11 @@ export default {
 
 #selection-controll {
     width: 100%;
+    height: 60px;
     margin-top: 20px;
+
 }
-#selection-controll tbody{
-    padding: 0 8px;
-    display: block;
-}
+
 #selection-controll tbody tr td {
     vertical-align: middle;
     border: none;
