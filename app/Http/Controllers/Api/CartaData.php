@@ -36,8 +36,8 @@ class CartaData extends Controller
                 'tipusIncident' => TipusIncident::all(),
                 'incidents' => Incident::orderBy('nom')->get()
             ],
-            'cartaLastCodi' => CartaTrucada::latest('id')->pluck('codi_trucada')->first() ? : 'TR230',
-            'expedientLatCodi' => Expedient::latest('id')->pluck('codi')->first() ? : 'EX230',
+            'cartaLastCodi' => CartaTrucada::latest('id')->pluck('codi_trucada')->first() ? : 'TR-0',
+            'expedientLatCodi' => Expedient::latest('id')->pluck('codi')->first() ? : 'EXP-0',
 
         ];
         return response()->json($data);

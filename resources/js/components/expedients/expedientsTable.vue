@@ -2,41 +2,69 @@
     <table class="table table-hover text-center">
         <thead>
             <tr>
-                <th scope="col" v-for="(filtre, index) in filtres" :key="index" :style="{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }">
+                <th><input class="form-check-input" type="checkbox" v-model="isAllSelected" @click="toggleSelection"></th>
+                <th v-for="(filtre, index) in filtres" :key="index" 
+                    :style = "{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }"
+                    :width = " filtre.id === 2 ? '20%' : filtre.id === 3 ? '25%' : '10%' ">
+                  <div class="theader-item-container" 
+                    :class = " orderByColumn === filtre.col ? 'active' : '' "
+                    v-on =" filtre.label != 'Incidents' && filtre.label != 'Localització' ? { click: () => orderBy(filtre.col) } : {}">
                     {{filtre.label}}
                     <span
-                        :class="orderByColumn === filtre.col && orderDir === 'desc' ? 'triangle rotate' : 'triangle'"
-                        @click="orderBy(filtre.col)">
+                      v-if = " filtre.label != 'Incidents' && filtre.label != 'Localització' "
+                      :class=" orderByColumn === filtre.col && orderDir === 'desc' ? 'triangle' : 'triangle rotate' ">
                     </span>
+                  </div>
                 </th>
+                <th width='5%'></th>
             </tr>
         </thead>
-        <tbody>
-            <tr v-for="(exp, index) in expedients" :key="index">
+        <tbody v-if="isLoaded" ref="tableBody">
+            <tr v-for="(exp, index) in expedients" :key="index" :data-expid="exp.id" @click="handleRowClick(exp.id, $event)">
+                <td><input class="form-check-input" type="checkbox" v-model="exp.isChecked" @click.stop></td>
                 <td>{{exp.codi_expedient}}</td>
-                <td>loc</td>
-                <td>ins</td>
+                <td>
+                  <div class="justify-center">
+                    <div style="text-align: start; width: 60%">
+                      {{exp.localitzacions}}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="justify-center">
+                    <div style="text-align: start;  ">
+                      {{exp.incidents}}
+                    </div>
+                  </div>
+                </td>
                 <td>{{exp.cartes_count}}</td>
                 <td>{{elapsedTime(exp.modificat)}}</td>
-                <td>{{elapsedTime(exp.creat)}}</td>
-                <td>
+                <td>{{createdAt(exp.creat)}}</td>
+                <td class="no-row-select">
                     <select
                     :class="'estat-'+exp.estat_expedient_id"
-                    @change="updateSelect(exp.id, $event.target.value)">
+                    @change="updateSelect([exp.id], $event.target.value)">
                         <option v-for="(estat, index) in estats" :key="index"
+                            style="background-color: white;"
                             :value="estat.id"
-                            :class="'state-'+estat.id"
-                            :selected="estat.id === exp.estat_expedient_id">
+                            :selected="estat.id == exp.estat_expedient_id">
                             {{estat.estat}}
                         </option>
                     </select>
                 </td>
-                <td>
+                <td class="no-row-select">
                     <!-- <i class="bi bi-folder"></i> -->
-                    <i class="bi bi-folder2" @click="changeTab(exp.id, exp.codi_expedient)"></i>
+                    <span>
+                      <i class="bi bi-folder2" @click="changeTab(exp.id, exp.codi_expedient)"></i>
+                    </span>
                 </td>
             </tr>
         </tbody>
+        <div v-else="isLoaded" class="spinner-container">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
     </table>
 </template>
 <script>
@@ -44,9 +72,19 @@ import axios from 'axios'
 import moment from 'moment';
 
 export default {
+  emits: [
+    'change-tab',
+    'refresh-legend',
+    'table-error',
+    'table-message'
+  ],
   props: {
     estats: {
       type: Array,
+      required: true
+    },
+    estatsIsLoaded: {
+      type: Boolean,
       required: true
     },
     filtres: {
@@ -57,84 +95,152 @@ export default {
   data () {
     return {
       expedients: [],
+      expedientsIsLoaded: false,
       orderByColumn: 'updated_at',
-      orderDir: 'desc'
+      orderDir: 'desc',
+      isAllSelected: false
+    }
+  },
+  computed: {
+    isLoaded () {
+      const isLoaded = this.expedientsIsLoaded && this.estatsIsLoaded;
+      return isLoaded
+    },
+    selectedIds() {
+      const selectedIds = this.expedients.filter((exp) => exp.isChecked).map((exp) => exp.id)
+      return selectedIds;
+    },
+    selectedExpedientsLength() {
+      return this.selectedIds.length;
     }
   },
   methods: {
+    toggleSelection() {
+      if (this.isAllSelected) {
+        this.isAllSelected = false;
+        this.deselectAll();
+      } else {
+        this.isAllSelected = true;
+        this.selectAll();
+      }
+    },
+    handleRowClick(expId, event) {
+   /*    const selectEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] select`);
+      const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
+      console.log(selectEl)
+      if (!selectEl.contains(event.target)) {
+        checkboxEl.click();
+      } */
+      const avoidElements = Array.from(this.$refs.tableBody.querySelectorAll(`[data-expid="${expId}"] .no-row-select`));
+      const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
+
+      if (!avoidElements.some(el => el.contains(event.target))) {
+        checkboxEl.click();
+        console.log("Selected expedients ids", this.selectedIds)
+      }
+    },
+    selectAll() {
+      const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = true;
+        checkbox.dispatchEvent(new Event('change'));
+      });
+      console.log("Selected expedients ids", this.selectedIds)
+    },
+    deselectAll() {
+      const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = false;
+        checkbox.dispatchEvent(new Event('change'));
+      });
+      console.log("Selected expedients ids", this.selectedIds)
+    },
     changeTab (expID, expCodi) {
-      console.log('CHANGE TAB CALLED');
-      console.log(expID);
-      console.log(expCodi);
+      console.log("\nShowing expedient with:")
+      console.log("Expedient ID:", expID);
+      console.log("Expedient CODI:", expCodi);
       this.$emit('change-tab', expID, expCodi)
     },
-    selectExpedientsByEstat (estatID) {
-      const self = this;
-      axios
-        .get(`expedients/estat_expedients_id/${estatID}`)
-        .then(response => {
-          self.expedients = response.data.data
-        })
-        .catch((error) => { });
-    },
     orderBy (orderCol) {
-      if (orderCol === this.orderByColumn && this.orderDir === 'desc') {
+      if (orderCol === 'estat_expedients_id') {
+        // Reversed for expedient estat
+        this.orderDir = this.orderDir === 'asc' ? 'desc' : 'asc';
+      } else if (orderCol === this.orderByColumn && this.orderDir === 'desc') {
         this.orderDir = 'asc';
       } else {
         this.orderDir = 'desc';
       }
+      console.log("Orderning by:", orderCol, this.orderDir)
       this.orderByColumn = orderCol;
-      console.log('ordering by: ' + this.orderByColumn);
-      console.log('direction: ' + this.orderDir);
-      const self = this;
-      axios
-        .get(`expedients/orderBy/${orderCol}/${self.orderDir}`)
-        .then(response => {
-          self.expedients = response.data.data;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.submit(true, true)
     },
-    submit (keepOrder) {
+    submit (keepOrder, showReload) {
+      if(showReload) {
+        this.expedientsIsLoaded = false
+      }
       const self = this;
       if (keepOrder) {
         axios
-          .get(`expedients/orderBy/${self.orderByColumn}/${self.orderDir}`)
+          .get(`expedients-gestio/orderBy/${self.orderByColumn}/${self.orderDir}`)
           .then(response => {
-            console.log(response);
-            self.expedients = response.data.data;
-            self.expedientsByEstat();
+            self.expedients = response.data;
+            if (showReload) {
+              self.expedientsIsLoaded = true;
+            }
           })
-          .catch((error) => { });
+          .catch((error) => { 
+            self.showError(error)
+          });
       } else {
         axios
-          .get('expedients/all')
+          .get('expedients-gestio/all')
           .then(response => {
-            console.log(response);
-            self.expedients = response.data.data;
-            self.expedientsByEstat();
+            self.expedients = response.data;
+            this.expedientsIsLoaded = true;
           })
-          .catch((error) => { });
+          .catch((error) => {
+            self.showError(error)
+           });
       }
     },
-    updateSelect (expID, estatID) {
+    selectExpedientsBy(col, value) {
+      this.expedientsIsLoaded = false
       const self = this;
       axios
-        .put(`expedient/${expID}`, { estat_expedient_id: estatID })
+        .get(`expedients-gestio/${col}/${value}`)
         .then(response => {
-          console.log(response);
-          self.submit(true);
+          self.expedients = response.data
+          this.expedientsIsLoaded = true
         })
-        .catch((error) => { });
+        .catch((error) => { 
+          self.showError(error)
+        });
+    },
+    updateSelect (expIDs, estatID) {
+      console.log("Expedients to update:", expIDs, "To state id:", estatID)
+      const self = this;
+      if (expIDs.length > 0) {
+        const promises = expIDs.map(expID => {
+        return axios.put(`estatExpedient/${expID}`, { "estat_expedient_id": estatID });
+        });
+        Promise.all(promises)
+        .then(responses => {
+          this.$emit('refresh-legend');
+          this.showMessage("Estat de l'expedient modificat correctament", "success")
+          self.submit(true, false);
+          console.log(responses);
+        })
+        .catch(error => {
+          self.showError(error);
+        });
+      } else {
+        this.showMessage("Selecciona un o més expedients per modifcar els seus estats", "warning")
+      }
+      
     },
     elapsedTime (dateTime) {
       const now = moment();
       const DATETIME = moment(dateTime);
-      console.log("now:");
-      console.log(now);
-      console.log("touched:");
-      console.log(DATETIME);
 
       const timePassed = {
         days: now.diff(DATETIME, 'days'),
@@ -142,38 +248,94 @@ export default {
         minutes: now.diff(DATETIME, 'minutes') % 60,
         seconds: now.diff(DATETIME, 'seconds') % 60
       };
-      console.log("timepassed");
-      console.log(timePassed);
+
       let timePassedString = '';
       if (timePassed.days > 0) {
         timePassedString = `${timePassed.days}d`;
       } else {
-        if (timePassed.hours > 0) {
+        if (timePassed.hours > 0 && timePassed.hours <= 6) {
           timePassedString = `${timePassed.hours}h `;
-        }
-        if (timePassed.minutes > 0) {
+        } else {
+          if (timePassed.minutes > 0) {
           timePassedString += `${timePassed.minutes}m`;
+          }
+          if (timePassed.minutes < 1) {
+            timePassedString = '<1m';
+          }
         }
-        if (timePassed.minutes < 1) {
-          timePassedString = '< 1m';
-        }
+        
       }
       return timePassedString;
+    },
+    createdAt(dateTime) {
+      const formattedDateTime = moment(dateTime).format('DD-MM-YY');
+      return formattedDateTime;
+    },
+    showError(error) {
+      this.$emit('table-error', error)
+    },
+    showMessage(message, type) {
+      this.$emit('table-message', message, type)
     }
   },
+
   mounted () {
-    this.submit(true)
-  }
+    this.submit(true, true)
+  },
 }
 </script>
 
 <style scoped>
-
+    .table {
+      border-collapse: collapse;
+    }
+    .spinner-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .spinner-border {
+      height: 60px;
+      width: 60px;
+      border-width: 6px;
+    }
     .table tbody tr td:first-child {
       text-align: end;
       padding-right: 10px;
     }
-
+    thead {
+      height: 58px;
+      position: sticky;
+      top: 0;
+      background-color: #e6e4e4;
+    }
+    th {
+      vertical-align: middle;
+    }
+    .theader-item-container.active {
+      background-color: rgba(255, 255, 255, .6);
+      border-radius: 4px;
+      color: black;
+      margin: -2px;
+      border: 2px solid black;
+    }
+    .theader-item-container:hover {
+      cursor: pointer;
+    }
+    .justify-end {
+      display: flex;
+      justify-content: end;
+    }
+    .justify-center {
+      display: flex;
+      justify-content: center;
+    }
     .triangle {
       display: inline-flex;
       align-items: center;
@@ -185,35 +347,26 @@ export default {
       margin-left: 6px;
       transform: rotate(0deg);
     }
-
-    .triangle:hover {
-      cursor: pointer;
-    }
-
     .triangle.rotate {
       transform: rotate(180deg);
     }
-
-    .bi-folder {
-      font-size: 25px;
-    }
-
     .bi-folder2::before {
       font-size: 25px;
       transform: scale(1);
+      display: inline;
     }
-
     .bi-folder2:hover::before {
       content: "\F3D8";
       cursor: pointer;
       transform: scale(1.08);
     }
-
     .bi-folder:hover::before {
       content: "\F3D5";
       cursor: pointer;
     }
-
+    .estat-5 option{
+      color: black;
+    }
     select {
       border-radius: 4px;
       padding: 2px 0 2px 2px;

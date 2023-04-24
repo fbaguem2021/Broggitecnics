@@ -13,32 +13,39 @@
 </template>
 <script>
 export default {
-  props: {
-    estats: {
-      type: Array,
-      required: true
-    }
-  },
-  data () {
-    return {
-
-    }
-  },
-  mounted () {
-
-  },
-  methods: {
-    estatsUppercase () {
-      const upperCaseStatus = this.estats.map(estat => ({
-        ...estat,
-        estat: estat.estat.toUpperCase()
-      }))
-      return upperCaseStatus;
+    emits: [
+        'selectByEstat',
+        'legend-error'
+    ],
+    props: {
+        estats: {
+            type: Array,
+            required: true
+        }
     },
-    sendData (estatID) {
-      this.$emit('estat', estatID);
+    data () {
+        return {
+
+        }
+    },
+    mounted () {
+
+    },
+    methods: {
+        estatsUppercase () {
+            const upperCaseStatus = this.estats.map(estat => ({
+            ...estat,
+            estat: estat.estat.toUpperCase()
+            }))
+            return upperCaseStatus;
+        },
+        sendData (estatID) {
+            this.$emit('selectByEstat', estatID);
+        },
+        showError(error) {
+            this.$emit('leg end-error', error)
+        }
     }
-  }
 }
 
 </script>
@@ -49,6 +56,11 @@ export default {
     margin: 0 10px;
     border-radius: 4px;
     box-shadow: 0 0 10px 4px rgb(0 0 0 / 7%);
+    transform: scale(1);
+    transition: transform .1s ease-in-out;
+}
+.block:hover {
+    transform: scale(1.02);
 }
 
 .block-container {
@@ -110,4 +122,5 @@ export default {
 .estat-5 {
     background-color: #8924D9;
     color: white;
-}</style>
+}
+</style>

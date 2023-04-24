@@ -44,7 +44,8 @@ import axios from 'axios'
 export default {
     emits: [
         'get-interlocutor',
-        'interlocutor-is-loaded'
+        'interlocutor-is-loaded',
+        'interlocutor-error'
     ],
     data() {
         return {
@@ -203,6 +204,9 @@ export default {
                 el.classList.toggle('is-valid', this[el.id].isValid)
                 el.classList.toggle('is-invalid', !this[el.id].isValid)
             }
+        },
+        showError (error) {
+            this.$emit('interlocutor-error', error)
         }
     },
     mounted() {

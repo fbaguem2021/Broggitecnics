@@ -1,7 +1,13 @@
 <template>
+
+  <!-- Message app that displays an absolute alert at the top -->
+  <message-app ref="messageApp"></message-app>
+
+  <!-- Splash loading animation -->
   <Transition name="fade">
     <loader-splash v-if="!cartaIsLoaded"></loader-splash>
   </Transition>
+
   <!-- Mostrar alertas success -->
   <div v-if="alertSuccess != ''" id="carta-alert" class="alert alert-info alert-dismissible fade show" role="alert">
     {{ alertSuccess }}
@@ -10,25 +16,40 @@
   <div id="card-wrapper">
     <div id="card-container">
       <div class="content">
+        <!-- Carta left block -->
         <div id="form">
+          <!-- Form main Interlocutor, Localitzacio and Incident -->
           <div id="form-main" ref="formMain" class="expanded">
-            <form-main :localitzacio-data="localitzacioData" :incident-data="incidentData" @get-carta-location="updateLoc"
-              @get-carta-interlocutor="updateInterlocutor" @get-carta-incident="updateIncident"
-              @get-map-search-string="updateSearchString" @form-main-is-loaded="formMainIsLoaded">
-            </form-main>
-            <transition name="fade">
+            <form-main 
+                :localitzacio-data="localitzacioData" 
+                :incident-data="incidentData"
+                @get-carta-location="updateLoc"
+                @get-carta-interlocutor="updateInterlocutor"
+                @get-carta-incident="updateIncident"
+                @get-map-search-string="updateSearchString"
+                @form-main-error="showError"
+                >
+              </form-main>
+            <!-- Bottom main form blur gradient to indicate that there is content overflowing in the form main block when nota is expanded -->
+            <Transition name="fade">
               <div v-show="notaIsExpaneded" class="blur-gradient"></div>
-            </transition>
+            </Transition>
           </div>
+          <!-- Form nota comuna -->
           <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
-            <form-nota @get-notaComuna="updateNotaCoumna"></form-nota>
+            <form-nota 
+              @get-notaComuna="updateNotaCoumna"
+              
+              ></form-nota>
           </div>
         </div>
+
+        <!-- Carta right block -->
         <div id="side">
           <div id="data">
             <data-carta :codi-trucada="codiTrucada" :is-loaded="cartaIsLoaded" @carta-durada="updateDurada"></data-carta>
           </div>
-          <!-- MAPA -->
+          <!-- mapa -->
           <div id="map">
             <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess"
               @agenciasSeleccionadas="agenciasSeleccionadas" />
@@ -67,6 +88,7 @@ import FormNota from './form/FormNota.vue';
 import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
+import MessageApp from '../MessageApp.vue';
 export default {
   emits: ['agenciasSeleccionadas'],
   components: {
@@ -75,7 +97,8 @@ export default {
     FormExpedients,
     MapApp,
     DataCarta,
-    LoaderSplash
+    LoaderSplash,
+    MessageApp
   },
   data() {
     return {
