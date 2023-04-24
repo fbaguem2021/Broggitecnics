@@ -75,27 +75,40 @@
                     ></show-expedient>
                 </div>
             </div>
-            <div style="position: absolute;bottom: -60px;right: 0px;width: 100%;display: flex;justify-content: flex-end;">
-                <div style="margin-right: 40px;">
-                    <button style="margin-right:10px" @click="selectAll">SELECCIONAR TOTS</button>
-                    <button @click="deselectAll">DESSELECCIONAR TOTS</button>
-                </div>
-                <select 
-                    v-model="selectedEstatUpdate" 
-                    style="margin-right:10px"
-                    :class="'estat-'+selectedEstatUpdate"
-                    >
-                        <option v-for="(estat, index) in estats" :key="index"
-                            style="background-color: white;"
-                            :value="estat.id"
-                            :selected="estat.id == 1">
-                            {{estat.estat}}
-                        </option>
-                    </select>
-                <button @click="updateSelectedExp">MODIFICAR</button>
-            </div>
+            
+            <table id="selection-controll" class="table">
+                <tbody>
+                    <tr>
+                        <td width="85%">
+                            <a @click="selectAll">Seleccionar tots</a>
+                            <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+                            <a @click="deselectAll">Desseleccionar tots</a>
+                        </td>
+                        <td width="10%">
+                            <div v-if="expedientsSelected > 0">
+                                <select 
+                                    v-model="selectedEstatUpdate" 
+                                    :class="'estat-'+selectedEstatUpdate">
+                                    <option v-for="(estat, index) in estats" :key="index"
+                                        style="background-color: white;"
+                                        :value="estat.id"
+                                        :selected="estat.id == 1">
+                                        {{estat.estat}}
+                                    </option>
+                                </select>
+                            </div>
+                        </td>
+                        <td width="5%">
+                            <div v-if="expedientsSelected > 0">
+                                <span @click="updateSelectedExp">
+                                    <i class="bi bi-cloud-upload"></i>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
     </div>
 
 </template>
@@ -127,6 +140,7 @@ export default {
       expedients: [],
       estats: [],
       selectedEstatUpdate: 1,
+      expedientsSelected: 0,
       estatsIsLoaded: false,
       filtres: [
         {
@@ -151,19 +165,19 @@ export default {
         },
         {
             id: 5,
-          label: 'Estat',
-          col: 'estat_expedients_id'
-        },
-        {
-            id: 6,
           label: 'Modificació',
           col: 'updated_at'
         },
         {
-            id: 7,
+            id: 6,
           label: 'Creació',
           col: 'created_at'
         },
+        {
+            id: 7,
+          label: 'Estat',
+          col: 'estat_expedients_id'
+        }
       ],
       selectedEstat: '',
       message: '',
@@ -176,6 +190,12 @@ export default {
       showExpedientCodi: ''
     }
   },
+  computed: {
+    expedientsSelected() {    
+        const length = this.$refs.expedientsTable.selectedExpedientsLength;
+        return length
+    }
+  }, 
   methods: {
     switchTab (expID, expCodi) {
       this.showExpedientID = expID;
@@ -210,7 +230,7 @@ export default {
     },
     selectByEstat(estatID){
         this.allExpedientsTab.show()
-        this.filterBySelected.col = "estat_expedients_id"
+        this.filterBySelected.label = "Estat"
         this.$refs.expedientsTable.selectExpedientsBy('estat_expedients_id', estatID)
     },
     searchBarSubmit() {
@@ -345,6 +365,50 @@ export default {
 }
 #closeTab:hover {
     transform: scale(1.1);
+}
+
+#selection-controll {
+    width: 100%;
+    margin-top: 20px;
+}
+#selection-controll tbody{
+    padding: 0 8px;
+    display: block;
+}
+#selection-controll tbody tr td {
+    vertical-align: middle;
+    border: none;
+}
+#selection-controll tbody tr > td:first-child {
+    text-align: end;
+}
+#selection-controll tbody tr > td:first-child a{
+    text-decoration: underline; 
+    color: var(--success); 
+    cursor: pointer;
+}
+#selection-controll tbody tr > td:first-child a:hover{
+    color: hsl(240, 90%, 40%);; 
+}
+#selection-controll tbody tr > td:not(:first-child) {
+    text-align: center;
+}
+#selection-controll tbody tr > td:last-child {
+    font-size: 25px;
+    transform: scale(1);
+    transform-origin: center;
+    transition: transform .1s linear;
+}
+#selection-controll tbody tr > td:last-child:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+}
+#selection-controll .buttons-container {
+    margin-right: 40px;
+}
+select {
+    border-radius: 4px;
+    padding: 2px 0 2px 2px;
 }
 .estat-5 option{
       color: black;

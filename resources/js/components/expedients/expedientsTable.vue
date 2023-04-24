@@ -2,7 +2,7 @@
     <table class="table table-hover text-center">
         <thead>
             <tr>
-                <th></th>
+                <th><input class="form-check-input" type="checkbox" v-model="isAllSelected" @click="toggleSelection"></th>
                 <th v-for="(filtre, index) in filtres" :key="index" 
                     :style = "{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }"
                     :width = " filtre.id === 2 ? '20%' : filtre.id === 3 ? '25%' : '10%' ">
@@ -98,6 +98,7 @@ export default {
       expedientsIsLoaded: false,
       orderByColumn: 'updated_at',
       orderDir: 'desc',
+      isAllSelected: false
     }
   },
   computed: {
@@ -108,9 +109,21 @@ export default {
     selectedIds() {
       const selectedIds = this.expedients.filter((exp) => exp.isChecked).map((exp) => exp.id)
       return selectedIds;
+    },
+    selectedExpedientsLength() {
+      return this.selectedIds.length;
     }
   },
   methods: {
+    toggleSelection() {
+      if (this.isAllSelected) {
+        this.isAllSelected = false;
+        this.deselectAll();
+      } else {
+        this.isAllSelected = true;
+        this.selectAll();
+      }
+    },
     handleRowClick(expId, event) {
    /*    const selectEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] select`);
       const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
@@ -206,19 +219,24 @@ export default {
     updateSelect (expIDs, estatID) {
       console.log("Expedients to update:", expIDs, "To state id:", estatID)
       const self = this;
-      const promises = expIDs.map(expID => {
+      if (expIDs.length > 0) {
+        const promises = expIDs.map(expID => {
         return axios.put(`estatExpedient/${expID}`, { "estat_expedient_id": estatID });
-      });
-      Promise.all(promises)
-      .then(responses => {
-        this.$emit('refresh-legend');
-        this.showMessage("Estat de l'expedient modificat correctament", "success")
-        self.submit(true, false);
-        console.log(responses);
-      })
-      .catch(error => {
-        self.showError(error);
-      });
+        });
+        Promise.all(promises)
+        .then(responses => {
+          this.$emit('refresh-legend');
+          this.showMessage("Estat de l'expedient modificat correctament", "success")
+          self.submit(true, false);
+          console.log(responses);
+        })
+        .catch(error => {
+          self.showError(error);
+        });
+      } else {
+        this.showMessage("Selecciona un o més expedients per modifcar els seus estats", "warning")
+      }
+      
     },
     elapsedTime (dateTime) {
       const now = moment();
