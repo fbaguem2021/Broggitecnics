@@ -97,30 +97,4 @@ export default {
     font-weight: bold;
     margin-left: 14px;
 }
-
-/* PROCES */
-.estat-1 {
-    background-color: #24DB4A;
-}
-
-/* SOLICITAT */
-.estat-2 {
-    background-color: #E9E241;
-}
-
-/* ACCEPTAT */
-.estat-3 {
-    background-color: #889D35;
-}
-
-/* TANCAT */
-.estat-4 {
-    background-color: #47B2FF;
-}
-
-/* IMMOBILITZAT */
-.estat-5 {
-    background-color: #8924D9;
-    color: white;
-}
 </style>
