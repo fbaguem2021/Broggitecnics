@@ -24,8 +24,8 @@
                                 :checked="true"
                                 disabled>
                         </td>
-                        <td id="tooltip_loc" class="col-4 align-middle">{{ 'default' }}</td>
-                        <td class="col-4">{{ 'default' }}</td>
+                        <td id="tooltip_loc" class="col-4 align-middle" ref="test" :numbero="20">default</td>
+                        <td class="col-4">default</td>
                         <td class="col-2 centered">
                             <button
                                 class="btn btn-exp btn-outline-secondary col-9 text-center">
@@ -36,14 +36,15 @@
                             </button>
                         </td>
                     </tr>
-                    <tr class="row" v-for="e in expedients" :key="e.id">
+                    <tr class="row" v-for="(e, index) in expedients" :key="e.id">
                         <td class="col-2 centered">
                             <input type="checkbox"
                                 class="form-check-input"
                                 :checked="checkInterlocutor()"
                                 disabled>
                         </td>
-                        <td class="col-4 align-middle">{{ getLoc(e.localitzacions) }}</td>
+                        <td class="col-4 align-middle"
+                            :ref="'locs'">{{ getLoc(e.localitzacions) }}</td>
                         <td class="col-4">{{ getTipus(e.tipus) }}</td>
                         <td class="col-2 centered">
                             <button @click="seleccionarExpedient(e.id)"
@@ -62,6 +63,7 @@
     </div>
 </template>
 <script>
+import * as bootstrap from 'bootstrap';
 import axios from 'axios';
 export default {
     // emits: ['expedient_vinculat'],
@@ -73,19 +75,13 @@ export default {
             tooltip: {},
             expedient_selected: 0,
             expedients: [],
+            tooltips: [],
         }
     },
     mounted() {
         this.getExpedients()
     },
     methods: {
-        createTooltip(id, localitzacions) {
-            const element = document.querySelector(`#expediente-${id}`)
-            this.tooltip = new bootstrap.Tooltip(element, {"title":`Localizaciones: ${localitzacions}`})
-        },
-        deleteTooltip() {
-            this.tooltip = {}
-        }
         getStyles() {
             const tab = document.querySelector('#tabla-expedients');
             let styles;
@@ -115,6 +111,43 @@ export default {
                 //     return 0
                 // })
                 self.expedients = data
+                console.log('data',data);
+                setTimeout(() => {
+                    console.log('test',self.$refs.test)
+                    this.initTooltips(data,self)
+                }, 1000);
+            })
+        },
+        initTooltips(data, self) {
+            console.log('tool',self.$refs.locs)
+            self.$refs.locs.forEach( (element, index) => {
+                // const full_loc = JSON.parse(data[index].full_loc).join('\n')
+                const full_loc = JSON.parse(data[index].full_loc).join('<br>')
+                self.tooltips.push(
+                    // new bootstrap.Tooltip(element, {"title": `Localizaciones: ${data[index].localitzacions}`})
+                    new bootstrap.Tooltip(element, {
+                        "title": full_loc,
+                        "html":true,
+                        "template": /*html*/ `
+                        <div class="tooltip" name="holamundo" role="tooltip">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner custom-tooltip"></div>
+                        </div>
+                        `
+                    })
+                )
+            })
+            // self.tooltips[0].show()
+            // for ( const [index, element] of self.$refs.locs) {
+                // self.tooltips.push(
+                //     new bootstrap.Tooltip(element, {"title": `Localizaciones: ${data[index].localitzacions}`})
+                // )
+            // }
+        },
+        createTooltip(id, localitzacions) {
+            const element = document.querySelector(`#expediente-${id}`)
+            this.tooltip = new bootstrap.Tooltip(element, {
+                "title":`Localizaciones: ${localitzacions}`,
             })
         },
         seleccionarExpedient(selected_id) {
@@ -153,12 +186,16 @@ export default {
         hasTrucades(e) {
             return e.cartes_count > 0
         },
+        holamundo() {
+            return this.$refs.test.numbero
+        },
         // logged_user() {
         //     return window.Usuario
         // }
         test() {
-            return this.getStyles()
-        }
+            // return this.getStyles()
+            return 'adieu'
+        },
     },
 }
 </script>
@@ -189,7 +226,7 @@ export default {
         position: sticky;
         top: 0;
         background-color: white;
-        z-index: 1000;
+        z-index: 10;
     }
     .centered {
         display: flex;
