@@ -85,7 +85,7 @@
                             <a @click="deselectAll">Desseleccionar tots</a>
                         </td>
                         <td width="10%">
-                            <div v-if="expedientsSelected > 0">
+                            <div>
                                 <select 
                                     v-model="selectedEstatUpdate" 
                                     :class="'estat-'+selectedEstatUpdate">
@@ -99,7 +99,7 @@
                             </div>
                         </td>
                         <td width="5%">
-                            <div v-if="expedientsSelected > 0">
+                            <div>
                                 <span @click="updateSelectedExp">
                                     <i class="bi bi-cloud-upload"></i>
                                 </span>
@@ -140,7 +140,6 @@ export default {
       expedients: [],
       estats: [],
       selectedEstatUpdate: 1,
-      expedientsSelected: 0,
       estatsIsLoaded: false,
       filtres: [
         {
@@ -192,8 +191,7 @@ export default {
   },
   computed: {
     expedientsSelected() {    
-        const length = this.$refs.expedientsTable.selectedExpedientsLength;
-        return length
+            return this.$refs.expedientsTable.selectedExpedientsLength;
     }
   }, 
   methods: {
@@ -410,8 +408,33 @@ select {
     border-radius: 4px;
     padding: 2px 0 2px 2px;
 }
-.estat-5 option{
-      color: black;
+</style>
+<style>
+    .estat-1 {
+        background-color: #24DB4A;
     }
 
+    /* SOLICITAT */
+    .estat-2 {
+        background-color: #E9E241;
+    }
+
+    /* ACCEPTAT */
+    .estat-3 {
+        background-color: #889D35;
+    }
+
+    /* TANCAT */
+    .estat-4 {
+        background-color: #47B2FF;
+    }
+
+    /* IMMOBILITZAT */
+    .estat-5 {
+        background-color: #8924D9;
+        color: white;
+    }
+    .estat-5 option{
+        color: black;
+    }
 </style>

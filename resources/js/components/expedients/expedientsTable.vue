@@ -364,9 +364,6 @@ export default {
       content: "\F3D5";
       cursor: pointer;
     }
-    .estat-5 option{
-      color: black;
-    }
     select {
       border-radius: 4px;
       padding: 2px 0 2px 2px;
