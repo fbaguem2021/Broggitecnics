@@ -24,7 +24,7 @@ class UsuariController extends Controller
         $queryid = $request->query('id', 4);
 
         $tipo = Usuari::find($queryid)->tipus_usuaris_id;
-        $usuaris = Usuari::where('tipus_usuaris_id', $tipo)->orderBy('id', 'asc')->paginate(5);
+        $usuaris = Usuari::where('tipus_usuaris_id', '<=', $tipo)->orderBy('id', 'asc')->paginate(5);
         // $usuaris = Usuari::orderBy('id', 'asc')->paginate(5);
         return UsuariResource::collection($usuaris);
     }
@@ -36,8 +36,10 @@ class UsuariController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function buscar(Request $request) {
-        $params = new stdClass();
+        $queryid = $request->query('id', 4);
+        $tipo = Usuari::find($queryid)->tipus_usuaris_id;
 
+        $params = new stdClass();
         foreach (['username','nom','cognoms'] as $filtro) {
             $query_filtro = $request->query($filtro, false);
             if ( $query_filtro == true && $query_filtro != '' ) {
@@ -46,7 +48,9 @@ class UsuariController extends Controller
             }
         }
 
-        $usr = Usuari::where($params->filtro, 'like', $params->valor)->orderBy('id', 'asc')->paginate(5);
+        $usr = Usuari::where('tipus_usuaris_id', '<=', $tipo)
+                     ->where($params->filtro, 'like', $params->valor)
+                     ->orderBy('id', 'asc')->paginate(5);
         return UsuariResource::collection($usr);
     }
 
@@ -127,8 +131,8 @@ class UsuariController extends Controller
         $usuari->tipus_usuaris_id = $data['tipus_usuaris_id'];
 
         try {
-            // $usuari->save();
-            $usr->save();
+            $usuari->save();
+            // $usr->save();
             // $response = (new UsuariResource($usr))
             //             ->response()
             //             ->setStatusCode(201);
