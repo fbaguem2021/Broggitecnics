@@ -27,6 +27,7 @@
                 @get-carta-interlocutor="updateInterlocutor"
                 @get-carta-incident="updateIncident"
                 @get-map-search-string="updateSearchString"
+                @form-main-is-loaded="formMainIsLoaded"
                 @form-main-error="showError">
               </form-main>
             <!-- Bottom main form blur gradient to indicate that there is content overflowing in the form main block when nota is expanded -->
@@ -54,7 +55,7 @@
               @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-            <form-expedients></form-expedients>
+            <!-- <form-expedients></form-expedients> -->
           </div>
         </div>
         <div id="bg"></div>
@@ -93,7 +94,7 @@ export default {
   components: {
     FormMain,
     FormNota,
-    FormExpedients,
+    // FormExpedients,
     MapApp,
     DataCarta,
     LoaderSplash,
@@ -124,7 +125,7 @@ export default {
   computed: {
     cartaIsLoaded() {
       const isLoaded = this.isCartaDataLoaded && this.isFormMainLoaded;
-      return true
+      return isLoaded
     },
     cartaIsValid() {
       const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
@@ -145,11 +146,12 @@ export default {
           self.incidentData = response.data.incident
           self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
           self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
+          self.isCartaDataLoaded = true
         })
         .catch((error) => { 
           self.showError(error)
         })
-      this.isCartaDataLoaded = true
+      
     },
     getNewCodi(codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;

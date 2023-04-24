@@ -85,10 +85,7 @@ export default {
          */
         async getInterlocutorCookie () {
             console.log("inside interlocutor cookie")
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
+
             const interlocutorCookie = this.getCookie('interlocutor_phone')
             if ( interlocutorCookie.isManual && interlocutorCookie.phone ) {
                 await this.checkInterlocutor(interlocutorCookie.phone)
