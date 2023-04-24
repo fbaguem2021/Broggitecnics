@@ -52,6 +52,9 @@
 .block-lb {
     grid-area: 2 / 1 / 2 / 2;
 }
+.block-lb .card-text {
+    margin-bottom: 4px;
+}
 
 .block-ltb{
     display: flex;
@@ -172,8 +175,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 60px;
-    font-size: 30px;
+    font-size: 20px;
 }
 .icon-stack {
     position: relative;
