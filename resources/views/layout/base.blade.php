@@ -64,8 +64,8 @@
                             {{Auth::user()->username}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{route('logout')}}"><i class="fa fa-sign-out" aria-hidden="true">
-                            </i>Tancar sessió</a>
+                            <a class="dropdown-item" href="{{route('logout')}}">
+                                <i class="bi bi-box-arrow-right"></i>Tancar sessió</a>
                         </div>
                     </div>
                 @else

@@ -52,6 +52,7 @@ export default {
             isLoaded: false,
             isNewInterlocutor: true,
             saveInterlocutor: false,
+            id: null,
             phone: '',
             name: {
                 input: '',
@@ -63,6 +64,7 @@ export default {
             },
             record: '',
             cartaInterlocutor: {
+                id: null,
                 telefon: '',
                 antecedents: '',
                 nom: '',
@@ -155,6 +157,7 @@ export default {
          * Calls handleInput to validate the data and update it to the main component -> FormMain -> CartaTrucada
          */
         loadInterlocutor (interlocutor) {
+            this.id = interlocutor.id
             this.phone = interlocutor.telefon
             this.name.input = interlocutor.nom
             this.surnames.input = interlocutor.cognoms
@@ -172,6 +175,7 @@ export default {
          */
         updateCartaData () {
            this.cartaInterlocutor = {
+                id: this.id,
                 telefon: this.phone,
                 antecedents: this.record,
                 nom: this.name.input,

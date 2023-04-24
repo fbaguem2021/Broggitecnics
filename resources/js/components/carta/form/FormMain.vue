@@ -80,7 +80,7 @@ export default {
     'get-carta-incident',
     'get-map-search-string',
     'form-main-is-loaded',
-    'formMain-error'
+    'form-main-error'
   ],
   data() {
     return {

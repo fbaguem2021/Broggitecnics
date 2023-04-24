@@ -16,7 +16,10 @@
       <div class="row">        
         <div class="col-3" ref="provincia">
             <div class="form-floating mb-3">
-              <input v-model="provincia.input" @input="handleInput($event.target, provincies)" type="text" class="form-control" id="provincia" placeholder="provincia" list="provinciesList" autocomplete="off" ref="provinciaInput">
+              <input v-model="provincia.input" 
+                @input="handleInput($event.target, provincies)" 
+                :class="isCat ? 'is-invalid' : '' "
+                type="text" class="form-control" id="provincia" placeholder="provincia" list="provinciesList" autocomplete="off" ref="provinciaInput">
               <label for="provincia">Provincia</label>
               <datalist v-if="provincies && isCat" id="provinciesList">
                 <option v-for="(prov, index) in filteredList(provincies, provincia.input) " :key="index" :value="prov.nom"></option>
@@ -26,7 +29,8 @@
         <transition name="fade" @before-enter="adjustColumnSizes" @after-leave="adjustColumnSizes">
           <div v-show="isCat" class="col-4">
             <div class="form-floating mb-3">
-              <input v-model="comarca.input" @input="handleInput($event.target, comarques)" type="text" class="form-control" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off" ref="comarcaInput">
+              <input v-model="comarca.input" 
+                @input="handleInput($event.target, comarques)" type="text" class="form-control is-invalid" id="comarca" placeholder="comarca" list="comarquesList" autocomplete="off" ref="comarcaInput">
               <label for="comarca">Comarca</label>
               <datalist v-if="comarques" id="comarquesList">
                 <option v-for="(com, index) in filteredList(comarques, comarca.input)" :key="index" :value="com.nom"></option>
@@ -36,7 +40,10 @@
         </transition>
         <div class="col-4" ref="municipi">
             <div class="form-floating mb-3">
-              <input v-model="municipi.input" @input="handleInput($event.target, municipis)" type="text" class="form-control" id="municipi" placeholder="municipi" list="muncipisList" autocomplete="off" ref="municipiInput">
+              <input v-model="municipi.input" 
+                @input="handleInput($event.target, municipis)" 
+                :class="isCat ? 'is-invalid' : '' "
+                type="text" class="form-control" id="municipi" placeholder="municipi" list="muncipisList" autocomplete="off" ref="municipiInput">
               <label for="municipi">Municipi<span v-show="!isCat" style="opacity: 0.5; font-size: 15px;"> - opcional</span></label>
               <datalist v-if="municipis && isCat" id="muncipisList">
                 <option v-for="(mun, index) in filteredList(municipis, municipi.input)" :key="index" :value="mun.nom"></option>
@@ -264,9 +271,10 @@ export default {
           if (el.value === '') {
             this.descripcioLocalitzacio = ''
           }
-        el.classList.toggle('is-invalid', !this.tipusLoc.isValid)
+        
         !this.tipusLoc.isValid ? this.tipusVia.input = '' : null;
         }
+        el.classList.toggle('is-invalid', !this[el.id].isValid)
         el.classList.toggle('is-valid', this[el.id].isValid)
       }
     },
@@ -279,7 +287,11 @@ export default {
         descripcioLoc: this.descripcioLocalitzacio,
         detallsLoc: this.detallsLocalitzacio,
         altresRefs:this.altresReferencies,
-        isValid: this.tipusLoc.isValid,
+        isValid: this.isCat ? this.tipusLoc.isValid && 
+                              this.provincia.isValid && 
+                              this.comarca.isValid && 
+                              this.municipi.isValid 
+                            : this.tipusLoc.isValid,
       };
       this.$emit('get-localitzacio', this.cartaLocation)
       this.emitMapSearchString()

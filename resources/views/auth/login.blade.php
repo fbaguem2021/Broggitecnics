@@ -5,14 +5,6 @@
 @endsection
 
 @section('content')
-
-  @if (Session::has("error"))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ Session::get("error") }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  @endif
-
   <div class="login-container">  
       <div class='card' id="login">
         <a id="close-btn" href="{{url('/')}}">
@@ -32,16 +24,12 @@
                   {{-- <label for="password1" class="form-label">Contrasenya</label> --}}
                   <input type="password" class="form-control" id="password1" name="password1" placeholder="Contrasenya">
                 </div>
-
-                {{-- SPAN --}}
-                {{-- <div style="height: 20px">
+                <div style="height: 20px">
                   @if (Session::has("error"))
                     <span class="badge text-bg-danger">{{ Session::get("error") }}</span>
                     </div>
                   @endif   
-                </div> --}}
-
-
+                </div>
                 <button type="submit" id="submit-btn" class="btn btn-outline-primary mt-4">Aceptar</button>
               </form>
 

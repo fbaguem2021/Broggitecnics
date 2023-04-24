@@ -27,8 +27,7 @@
                 @get-carta-interlocutor="updateInterlocutor"
                 @get-carta-incident="updateIncident"
                 @get-map-search-string="updateSearchString"
-                @form-main-error="showError"
-                >
+                @form-main-error="showError">
               </form-main>
             <!-- Bottom main form blur gradient to indicate that there is content overflowing in the form main block when nota is expanded -->
             <Transition name="fade">
@@ -125,7 +124,7 @@ export default {
   computed: {
     cartaIsLoaded() {
       const isLoaded = this.isCartaDataLoaded && this.isFormMainLoaded;
-      return isLoaded
+      return true
     },
     cartaIsValid() {
       const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
@@ -147,14 +146,16 @@ export default {
           self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
           self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
         })
-        .catch((error) => { })
+        .catch((error) => { 
+          self.showError(error)
+        })
       this.isCartaDataLoaded = true
     },
     getNewCodi(codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
       let prefix = codi.replace(/\d+/, "");
       return prefix + numberPart.toString();
-    },
+   },
     añadirAlerta(alert) {
       this.alertSuccess = alert
     },
@@ -268,7 +269,9 @@ export default {
     insertExpedient() {
       // Add rquest to insert Expedient
     },
-
+    showError(error) {
+        this.$refs.messageApp.createErrorAlert(error)
+    }
   },
   mounted() {
     this.getCartaData()
