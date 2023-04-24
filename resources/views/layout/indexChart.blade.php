@@ -1,5 +1,5 @@
 @extends('layout.base')
-
+@section('page-title', "Gràfics")
 @section('style')
     @vite('resources/css/landing.css')    
 @endsection

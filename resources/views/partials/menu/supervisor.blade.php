@@ -43,7 +43,7 @@
         <div class="card">
             <div class="card-body px-4">
                 <h3 class="card-title fw-bold text-center">Gestió d'expedients</h3>
-                <button class="btn btn-secondary" style="width: 200px">Accedir</button>
+                <a class="btn btn-secondary" style="width: 200px" href="{{route('expedients')}}">Accedir</a>
             </div>
         </div>
     </div>

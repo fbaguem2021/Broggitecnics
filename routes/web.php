@@ -37,9 +37,9 @@ Route::get('/carta', [CartaTrucadaController::class, 'index'])->name('carta');
 
 Route::get('/operadors', function () {
     return view('operadors');
-});
+})->name('operadors');
 
-Route::get('/expedients', [ExpedientsController::class, 'index']);
+Route::get('/expedients', [ExpedientsController::class, 'index'])->name('expedients');
 
 
 Route::get('bootstrap', function () {
@@ -49,7 +49,7 @@ Route::get('bootstrap', function () {
 // Ruta grafico localizacion
 Route::get('/chartLoc', function () {
     return view('charts.chartIncidentsMunicipi');
-});
+})->name('graphs');
 //Ruta grafico llamadas
 Route::get('/chartLlamada', function () {
     return view('charts.chartLlamadasTipoInci');

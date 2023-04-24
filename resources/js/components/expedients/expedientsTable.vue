@@ -317,6 +317,16 @@ export default {
     th {
       vertical-align: middle;
     }
+/*     .table-hover > tbody > tr:hover > * {
+      background-color: #e2ab12;
+      background-color: #e2127a;
+      background-color: #12c7e2;
+    } */
+    /* 
+        --primary: hsl(44, 85%, 48%, 0.3);
+    --secondary: hsl(330, 85%, 48%, 0.3);
+    --tertiary: hsl(188, 85%, 48%, 0.3);
+    */
     .theader-item-container.active {
       background-color: rgba(255, 255, 255, .6);
       border-radius: 4px;

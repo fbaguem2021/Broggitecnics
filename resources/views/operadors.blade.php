@@ -1,4 +1,5 @@
 @extends('layout.base')
+@section('page-title', "Gestió d'usuaris")
 @section('title', 'Operadors')
 @section('links')
     @vite(['resources/css/app.css', 'resources/scss/app.scss', 'resources/js/app.js'])

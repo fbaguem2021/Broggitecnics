@@ -199,6 +199,7 @@ export default {
     },
     insertCarta() {
       if (this.cartaIsValid) {
+        this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
         console.log("Carta is valid")
 
         /* ID INTERLOCUTOR
@@ -260,6 +261,7 @@ export default {
 
       } else {
         console.log("Carta it's not valid")
+        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense validar", "warning")
       }
     },
     insertInterlocutor() {

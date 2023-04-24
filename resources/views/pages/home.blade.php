@@ -1,5 +1,5 @@
 @extends('layout.base')
-
+@section('page-title', "Home")
 @section('style')
     @vite('resources/css/menus.css')
 @endsection

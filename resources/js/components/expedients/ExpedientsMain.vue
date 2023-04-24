@@ -13,7 +13,7 @@
                 <div class="input-group p-0 g-0">
                     <div class="col-4 p-0">
                         <select v-model="filterBySelected.col" name="filtro"
-                            class="form-select"
+                            class="form-select ps-3"
                             aria-label="Filtro">
                             <option value="all" >Tots</option>
                             <option v-for="filtre, index in filtres" :key="index"
@@ -86,26 +86,24 @@
                                 <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
                                 <a @click="deselectAll">Desseleccionar tots</a>
                             </td>
-                            <td width="12%">
-                                <div v-show="showUpdateController">
-                                    <select 
-                                        v-model="selectedEstatUpdate" 
-                                        :class="'estat-'+selectedEstatUpdate">
-                                        <option v-for="(estat, index) in estats" :key="index"
-                                            style="background-color: white;"
-                                            :value="estat.id"
-                                            :selected="estat.id == 1">
-                                            {{estat.estat}}
-                                        </option>
-                                    </select>
-                                </div>
+                            <td width="10%">
+                                <select 
+                                    v-model="selectedEstatUpdate" 
+                                    :class="'estat-'+selectedEstatUpdate"
+                                    :disabled="!showUpdateController">
+                                    <option v-for="(estat, index) in estats" :key="index"
+                                        style="background-color: white;"
+                                        :value="estat.id"
+                                        :selected="estat.id == 1">
+                                        {{estat.estat}}
+                                    </option>
+                                </select>
                             </td>
-                            <td width="4%">
-                                <div v-show="showUpdateController">
-                                    <span @click="updateSelectedExp">
-                                        <i class="bi bi-cloud-upload"></i>
-                                    </span>
-                                </div>
+                            <td width="5%">
+                                <span @click="updateSelectedExp">
+                                    <i class="bi bi-cloud-upload"
+                                      :class="!showUpdateController ? 'disabled' : '' "></i>
+                                </span>
                             </td>
 
                     </tr>
@@ -219,6 +217,7 @@ export default {
         console.log("at last one selected", isSelected)
     },
     updateSelectedExp(){
+        this.filterBySelected.col = "all"
         this.$refs.expedientsTable.updateSelect(this.$refs.expedientsTable.selectedIds, this.selectedEstatUpdate);
     },
     selectEstats () {
@@ -235,7 +234,7 @@ export default {
     },
     selectByEstat(estatID){
         this.allExpedientsTab.show()
-        this.filterBySelected.label = "Estat"
+        this.filterBySelected.col = "estat_expedients_id"
         this.$refs.expedientsTable.selectExpedientsBy('estat_expedients_id', estatID)
     },
     searchBarSubmit() {
@@ -413,6 +412,19 @@ export default {
 select {
     border-radius: 4px;
     padding: 2px 0 2px 2px;
+}
+select:disabled{
+    background-color: #e9ecef;
+}
+.bi-cloud-upload {
+    color: black;
+
+}
+.bi-cloud-upload::before{
+    transform: translateY(3px);
+}
+.bi-cloud-upload.disabled {
+    color: rgba(0, 0, 0, .5)
 }
 </style>
 <style>
