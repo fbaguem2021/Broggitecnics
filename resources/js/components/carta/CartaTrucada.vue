@@ -255,7 +255,6 @@ export default {
     },
 
     async insertCarta() {
-
       let me = this
       await axios.post('/cartesTrucades', {
         data: {
@@ -275,7 +274,6 @@ export default {
           provincies_id: me.localitzacio.provincia,
           incidents_id: me.incident.incident,
           usuaris_id: me.userId,
-          // Y si seleccionas un expediente, se guarda en la misma variable?
           expedients_id: me.expedient.id,
         }
       })
@@ -302,7 +300,7 @@ export default {
 
       } else {
         console.log("Carta it's not valid")
-        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense validar", "warning")
+        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning")
       }
     },
 

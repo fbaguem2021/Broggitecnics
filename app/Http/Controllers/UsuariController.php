@@ -17,7 +17,7 @@ class UsuariController extends Controller
         // $usuario->username='jnirella';
         // $usuario->contrasenya=\bcrypt('123456');
         // $usuario->nom='Jose';
-        // $usuario->cognoms="Nirella Munoz";
+        // $usuario->cognoms="Nirella";
         // $usuario->tipus_usuaris_id=1;
         // $usuario->save();
         return view('auth.login');
@@ -31,7 +31,7 @@ class UsuariController extends Controller
 
         if ($user != null && Hash::check($pass, $user->contrasenya)) {
             Auth::login($user);
-            $response = redirect('/home')->cookie('username', $username, 60*24*7, null, null, false, false);
+            $response = redirect('/home')->cookie('username', $username, 60*24*365, null, null, false, false);
         } else {
             $request->session()->flash('error', 'Usuari o contrasenya incorrectes');
             $response = redirect('/login')->withInput();
@@ -63,8 +63,6 @@ class UsuariController extends Controller
         $usuario->username = strtolower($first_character.$first_cognom);
         $usuario->contrasenya=\bcrypt($request->input('pass'));       
         $usuario->tipus_usuaris_id=1;
-        
-        
         try {
             $usuario->save();
             $response = redirect('/login')->withInput(['userName'=> strtolower($first_character.$first_cognom)]);
