@@ -284,7 +284,7 @@ export default {
           this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
         })
         .catch(error => {
-          this.$refs.messageApp.createErrorAlert(error)
+          this.$refs.messageApp.createErrorAlert("Hi ha agut un error amb la base de dades: "+error, "danger")
         });
     },
 
