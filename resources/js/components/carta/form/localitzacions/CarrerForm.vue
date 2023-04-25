@@ -6,6 +6,7 @@
           <input v-model="name" type="text" class="form-control" id="nomCarrer" placeholder="Nom del carrer" autocomplete="off">
           <label for="nomCarrer">Nom</label>
         </div>
+      <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="What is the name of the street?"></i>
       </div>
     </div>
     <div class="row">
@@ -37,8 +38,14 @@
   </form>
 </template>
 <script>
+import * as bootstrap from 'bootstrap';
 export default {
   emits: ["update-description"],
+  props: {
+    showHelp: {
+      type: Boolean
+    }
+  },
   data() {
     return {
       name: '',
@@ -53,6 +60,10 @@ export default {
       const streetArray = [this.name, this.number, this.stairway, this.floor, this.door].filter(Boolean);
       this.$emit('update-description', streetArray.join(' '))
     }
+  },
+  mounted() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
   }
 }
 </script>

@@ -51,8 +51,8 @@
           </div>
           <!-- mapa -->
           <div id="map">
-            <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess"
-              @agenciasSeleccionadas="agenciasSeleccionadas" />
+            <!-- <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess"
+              @agenciasSeleccionadas="agenciasSeleccionadas" /> -->
           </div>
           <div id="expedients" style="position: relative;">
             <!-- <form-expedients></form-expedients> -->
@@ -85,9 +85,9 @@
 import LoaderSplash from './LoaderSplash.vue'
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
-import FormExpedients from './form/FormExpedients.vue';
+// import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
-import MapApp from './mapa/MapApp.vue';
+// import MapApp from './mapa/MapApp.vue';
 import MessageApp from '../MessageApp.vue';
 export default {
   emits: ['agenciasSeleccionadas'],
@@ -95,7 +95,7 @@ export default {
     FormMain,
     FormNota,
     // FormExpedients,
-    MapApp,
+    // MapApp,
     DataCarta,
     LoaderSplash,
     MessageApp
@@ -129,7 +129,7 @@ export default {
   computed: {
     cartaIsLoaded() {
       const isLoaded = this.isCartaDataLoaded && this.isFormMainLoaded;
-      return isLoaded
+      return true
     },
     cartaIsValid() {
       const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
@@ -487,5 +487,21 @@ export default {
 
 #mapa-app {
   height: 100%;
+}
+</style>
+<style>
+/* Tooltips */
+i.bi-chat-left-dots {
+  position: absolute;
+  right: -8px;
+  top: -20%;
+  z-index: 10;
+}
+.tooltip .tooltip-inner {
+  text-align: start !important;
+  padding: 10px 12px;
+}
+#form-main .row div[class^="col"] {
+  position: relative;
 }
 </style>
