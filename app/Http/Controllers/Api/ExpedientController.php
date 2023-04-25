@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Expedient;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Utilitat;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\QueryException;
 use App\Http\Resources\ExpedientResource;
 
 class ExpedientController extends Controller
@@ -128,7 +130,20 @@ class ExpedientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->input('data');
+        $expedient = new Expedient();
+        $expedient->codi = $data['codi'];
+        $expedient->estat_expedients_id = $data['estat_id'];
+
+        try {
+            $expedient->save();
+            $idExp = $expedient->id; 
+            $response = \response()->json(["idExpedient"=>$idExp], 201);;
+        } catch (QueryException $ex) {
+            $mensaje = Utilitat::errorMessage($ex);
+            $response = \response()->json(["error" => $mensaje], 400);
+        }
+        return $response;  
     }
 
     /**

@@ -1,5 +1,4 @@
 <template>
-
   <!-- Message app that displays an absolute alert at the top -->
   <message-app ref="messageApp"></message-app>
 
@@ -20,16 +19,11 @@
         <div id="form">
           <!-- Form main Interlocutor, Localitzacio and Incident -->
           <div id="form-main" ref="formMain" class="expanded">
-            <form-main 
-                :localitzacio-data="localitzacioData" 
-                :incident-data="incidentData"
-                @get-carta-location="updateLoc"
-                @get-carta-interlocutor="updateInterlocutor"
-                @get-carta-incident="updateIncident"
-                @get-map-search-string="updateSearchString"
-                @form-main-is-loaded="formMainIsLoaded"
-                @form-main-error="showError">
-              </form-main>
+            <form-main :localitzacio-data="localitzacioData" :incident-data="incidentData" @get-carta-location="updateLoc"
+              @get-carta-interlocutor="updateInterlocutor" @get-carta-incident="updateIncident"
+              @get-map-search-string="updateSearchString" @form-main-is-loaded="formMainIsLoaded"
+              @form-main-error="showError">
+            </form-main>
             <!-- Bottom main form blur gradient to indicate that there is content overflowing in the form main block when nota is expanded -->
             <Transition name="fade">
               <div v-show="notaIsExpaneded" class="blur-gradient"></div>
@@ -37,10 +31,7 @@
           </div>
           <!-- Form nota comuna -->
           <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
-            <form-nota 
-              @get-notaComuna="updateNotaCoumna"
-              
-              ></form-nota>
+            <form-nota @get-notaComuna="updateNotaCoumna"></form-nota>
           </div>
         </div>
 
@@ -62,7 +53,7 @@
       </div>
       <div class="buttons">
         <button id="cancel">Cancelar</button>
-        <button id="submit" @click="insertCarta">Finalitzar</button>
+        <button id="submit" @click="insertFinal()">Finalitzar</button>
       </div>
     </div>
   </div>
@@ -106,10 +97,10 @@ export default {
       isFormMainLoaded: false,
       codiTrucada: '',
       codiNewExpedient: '',
-      //expedient: objeto que contiene {id, codi, estat_id (siempre abierto)}
-      expedient: {},
+      //expedient: objeto que contiene {id, codi, estat_id}
+      expedient: { id: null, codi: null, estat_id: null },
       isNewExpedient: true,
-      dataHoraTrucada: '',
+      dataHoraTrucada: null,
       durada: 0,
       interlocutor: {},
       localitzacio: {},
@@ -143,7 +134,7 @@ export default {
     },
     async getCartaData() {
       const self = this;
-      
+
       await axios
         .get('cartaData')
         .then(response => {
@@ -153,30 +144,30 @@ export default {
           self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
           self.isCartaDataLoaded = true
         })
-        .catch((error) => { 
+        .catch((error) => {
           self.showError(error)
         })
         .catch((error) => { })
 
-        let username = this.getCookie('username')
-        // obtener ID usuario:
-        await axios
-        .get(`usuari-buscar?username=`+username)
+      let username = this.getCookie('username')
+      // obtener ID usuario:
+      await axios
+        .get(`usuari-buscar-id?username=` + username)
         .then(response => {
-          self.userId=response.data.data[0].id;
-          console.log (response.data)
-          console.log ( response.data.data[0].id)
+          self.userId = response.data.data[0].id;
+          console.log(response.data)
+          console.log(response.data.data[0].id)
         })
         .catch((error) => { 'error al obtenir el usuari' });
       this.isCartaDataLoaded = true
-      
+
 
     },
     getNewCodi(codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
       let prefix = codi.replace(/\d+/, "");
       return prefix + numberPart.toString();
-   },
+    },
     añadirAlerta(alert) {
       this.alertSuccess = alert
     },
@@ -226,91 +217,105 @@ export default {
       }
     },
 
-    insertCarta() {
+    async insertNewInterlocutor() {
+      let me = this
+      await axios.post('/postInterlocutor', {
+        data: {
+          telefon: me.interlocutor.telefon,
+          antecedents: me.interlocutor.antecedents,
+          nom: me.interlocutor.nom,
+          cognoms: me.interlocutor.cognom
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          me.interlocutor.id = response.data.idInterlocutor
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    async insertExpedient() {
+      let me = this
+      await axios.post('/expedient', {
+        data: {
+          codi: me.expedient.codi,
+          estat_id: me.expedient.estat_id,
+        }
+      })
+        .then(response => {
+          console.log('EXPEDIENT GUARDAT')
+          console.log(response.data);
+          me.expedient.id = response.data.idExpedient
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    async insertCarta() {
+      let me = this
+      await axios.post('/cartesTrucades', {
+        data: {
+          codi_trucada: me.codiTrucada,
+          data_hora_trucada: me.dataHoraTrucada,
+          durada: me.durada,
+          interlocutors_id: me.interlocutor.id,
+          telefon: me.interlocutor.telefon,
+          nom: me.interlocutor.nom,
+          cognoms: me.interlocutor.cognom,
+          nota_comuna: me.notaCoumna.input,
+          tipus_localitzacions_id: me.localitzacio.tipusLoc,
+          descripcio_localitzacio: me.localitzacio.descripcioLoc,
+          detall_localitzacio: me.localitzacio.detallsLoc,
+          altres_ref_localitzacio: me.localitzacio.altresRefs,
+          municipis_id: me.localitzacio.municipi,
+          provincies_id: me.localitzacio.provincia,
+          incidents_id: me.incident.incident,
+          usuaris_id: me.userId,
+          expedients_id: me.expedient.id,
+        }
+      })
+        .then(response => {
+          console.log(response.data);
+          this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
+        })
+        .catch(error => {
+          this.$refs.messageApp.createErrorAlert("Hi ha agut un error amb la base de dades: "+error, "danger")
+        });
+    },
+
+    async insertFinal() {
       if (this.cartaIsValid) {
-        this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
-        console.log("Carta is valid")
-        
-
-        /* ID INTERLOCUTOR
-        Antes del store de la carta, si se quiere guardar el interlocutor y no estaba en la bdd antes, primero se hace el store del interlocutor y luego el de la 
-        carta de llamada obteniendo el id del interlocutor según su teléfono.
-        En caso que ya esté guardado en la base de datos, se obtiene su id mediante el teléfono
-        */
-
-        /* EXPEDIENTE
-        Antes del store de la carta, para guardar el EXPEDIENTE: si ya existe el expediente, simplemente se le pasa el numero de expediente para obtener su ID.
-        En caso que se cree un expediente nuevo, antes de guardar la carta se guarda el expediente y se obtiene su ID para guardarlo en la carta
-        */
-
-
-        const data = {
-          codi_trucada: this.codiTrucada,
-          data_hora_trucada: this.dataHoraTrucada,
-          durada: this.durada,          
-         
-          telefon: this.interlocutor.telefon,
-          nom: this.interlocutor.nom,
-          cognoms: this.interlocutor.cognom,
-
-          nota_comuna: this.notaCoumna,
-
-          tipus_localitzacions_id: this.localitzacio.tipusLoc,
-          descripcio_localitzacio: this.localitzacio.descripcioLoc,
-          detall_localitzacio: this.localitzacio.detallsLoc,
-          altres_ref_localitzacio: this.localitzacio.altresRefs,
-          municipis_id: this.localitzacio.municipi,
-          provincies_id: this.localitzacio.provincia,
-          incidents_id: this.incidents_id,
-          usuaris_id: this.usuari_id,
-
-        // Y si seleccionas un expediente, se guarda en la misma variable?
-          expedients_id: this.codiNewExpedient,
-
-          //Falta sacar la id del interlocutor:
-          /*
-            1: Obtener la Id del interlocutor si este ya existe y guardarlo en una variable del componente ESPERAR A GUILLEM PARA QUE LO GUARDE EN EL OBJ interlocutor
-            2: Si está seteada la variable del componente (!=null), interlocutors_id será el valor de la variable del componente
-            3: Si la variable del componente es null y no se decide guardar el interlocutor, la id del interlocutor para guardar el a bdd sera null o N/A   
-            4: Si la variable del componente es null y se decide guardar el interlocutor:
-                1- Se hace el inser del interlocutor antes que se setee la data de la carta
-                2- Se hace select del id del interlocutor y se guarda en la variable del data "interlocutors_id" 
-          */
-          interlocutors_id: this.interlocutors_id,
-
-          
-        };
-
-        axios.post('CartaTrucadaController', data)
-          .then(response => {
-            console.log(response.data);
-          })
-          .catch(error => {
-            console.log(error);
-          });
+        if (this.interlocutor.saveInterlocutor) {
+          await this.insertNewInterlocutor()
+        }
+        if (this.isNewExpedient) {
+          this.expedient.codi = this.codiNewExpedient
+          this.expedient.estat_id = 1
+          await this.insertExpedient()
+        }
+        await this.insertCarta();
 
       } else {
         console.log("Carta it's not valid")
-        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense validar", "warning")
+        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning")
       }
     },
-    insertInterlocutor() {
 
-    },
     insertAgenciaHasEstat() {
       //insert agencias has estat
     },
-    insertExpedient() {
-      // Add rquest to insert Expedient
-    },
+
     showError(error) {
-        this.$refs.messageApp.createErrorAlert(error)
+      this.$refs.messageApp.createErrorAlert(error)
     }
   },
   mounted() {
-
     this.getCartaData()
-
+    let inputDate = new Date().toISOString();
+    this.dataHoraTrucada = inputDate.replace("T", " ").slice(0, -5);
     // setTimeout(()=>{ this.isLoaded = true}, 1000)
   },
 }

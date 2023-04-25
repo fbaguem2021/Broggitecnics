@@ -33,12 +33,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 /* USUARIS */
 Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.buscar');
+Route::get('usuari-buscar-id', [UsuariController::class, 'buscarId'])->name('usuari.buscar.id');
 Route::apiResource('usuari', UsuariController::class);
 
 /* EXPEDIENTS */
 Route::get('expedients/{filter}', [ExpedientController::class, 'index']);
 Route::get('expedients-gestio/{filter}/{value?}/{dir?}', [ExpedientController::class, 'indexGestio']);
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
+Route::post('/expedient', [ExpedientController::class, 'store']);
 Route::apiResource('/estatExpedient', EstatExpedientController::class);
 
 /* AGENCIES */
@@ -48,10 +50,12 @@ Route::put('updateEstatAgencia/{cartaTrucadaId}/{agenciaId}', [EstatAgencies::cl
 
 /* GRÀFICS */
 Route::get('/incidentesChart', [ChartController::class, 'index']);
+
 Route::get('/llamadasChart', [ChartCallController::class, 'index']);
 
 /* CARTES TRUCADA */
 Route::apiResource('/cartesTrucades', CartaTrucadaController::class);
+
 Route::get('/cartaData', [CartaData::class, 'index']);
 
 /* INTERLOCUTORS */
