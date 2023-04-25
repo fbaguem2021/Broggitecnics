@@ -86,8 +86,17 @@ export default {
     },
     watch: {
         localitzacio(newData, oldData) {
-            if (newData.provincia != undefined && newData.provincia != '') {
+            const checkProvincia = newData.provincia != undefined && newData.provincia != ''
+            const checkComarca   = newData.comarca   != undefined && newData.comarca   != ''
+            const checkMunicipi  = newData.municipi  != undefined && newData.municipi  != ''
+            const checkValues    = newData.provincia != oldData.provincia && newData.comarca != oldData.comarca && newData.municipi != oldData.municipi
 
+            if (checkProvincia && checkComarca && checkMunicipi) {
+                const params = `${newData.provincia}/${newData.comarca}/${newData.municipi}`
+                // console.log('dentro',params);
+                this.getExpedients(params)
+            } else {
+                // console.log('fuera');
             }
         }
     },
@@ -125,9 +134,11 @@ export default {
                 // })
                 self.expedients = data
                 // console.log('data',data);
-                setTimeout(() => {
-                    this.initTooltips(data,self)
-                }, 1000);
+                if (data.length > 0) {
+                    setTimeout(() => {
+                        this.initTooltips(data,self)
+                    }, 1000);
+                }
             })
         },
         initTooltips(data, self) {
