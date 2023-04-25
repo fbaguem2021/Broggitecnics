@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Expedient;
+use App\Models\Comarca;
+use App\Models\Municipi;
+use App\Models\Provincia;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Utilitat;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ExpedientResource;
+use GuzzleHttp\Handler\Proxy;
 
 class ExpedientController extends Controller
 {
@@ -60,24 +65,43 @@ class ExpedientController extends Controller
      * Devuelve un json con la información de los expedientes para la carta de llamada
      *
      * @param  \Illuminate\Http\Request $request
+     * @param  mixed $provincia
+     * @param  mixed $comarca
+     * @param  mixed $municipi
      * @return \Illuminate\Http\JsonResponse
      */
-    public function expedients_carta(Request $request) {
-        $filtre = $request->query('municipi','');
-        $municipi   = $request->query('municipi','');
-        $provincia  = $request->query('provincia','');
-        $comarca    = $request->query('comarca','');
+    public function expedients_carta(Request $request, mixed $provincia='', mixed $comarca='', mixed $municipi='') {
 
-        $query = DB::table('expedients')
+        // $filtre = $request->query('municipi','');
+
+        if ($provincia != '') {
+            $provincia = Provincia::find($provincia)->nom;
+        }
+        if ($municipi != '') {
+            $municipi = Municipi::find($municipi)->nom;
+        }
+        if ($comarca != '') {
+            $comarca = Comarca::find($comarca)->nom;
+        }
+
+        // $municipi  = Utilitat::getValueFromModel([Municipi::class, intval($request->query('municipi',  -1))],'nom','');
+        // $provincia = Utilitat::getValueFromModel([Provincia::class, intval($request->query('provincia',  -1))],'nom','');
+        // $comarca   = Utilitat::getValueFromModel([Comarca::class, intval($request->query('provincia',  -1))],'nom','');
+
+        // $municipi   = \App\Models\Municipi::find(intval($request->query('municipi',  -1)))->nom  ?: '';
+        // $provincia  = \App\Models\Provincia::find(intval($request->query('provincia', -1)))->nom ?: '';
+        // $comarca    = \App\Models\Comarca::find(intval($request->query('comarca',   -1)))->nom   ?: '';
+
+            $query = DB::table('expedients')
             ->select('expedients.id','expedients.codi',
 
                 // DB::raw('COUNT(expedients.id) as expedients_count'),
                 DB::raw('CONCAT("[",GROUP_CONCAT(DISTINCT \'"\',interlocutors.id,\'"\'),"]") as interlocutors'),
                 DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
                 DB::raw('CONCAT(\'[\', GROUP_CONCAT(DISTINCT CONCAT(\'"\',provincies.nom,",",municipis.nom,",",comarques.nom,\'"\') SEPARATOR ",") , \']\') AS full_loc'),
-                DB::raw('GROUP_CONCAT(DISTINCT municipis.id  ) as municipis'),
-                DB::raw('GROUP_CONCAT(DISTINCT provincies.id ) as provincies'),
-                DB::raw('GROUP_CONCAT(DISTINCT comarques.id  ) as comarques'),
+                DB::raw('GROUP_CONCAT(DISTINCT municipis.nom  ) as municipis'),
+                DB::raw('GROUP_CONCAT(DISTINCT provincies.nom ) as provincies'),
+                DB::raw('GROUP_CONCAT(DISTINCT comarques.nom  ) as comarques'),
                 // DB::raw('CONCAT(\'[\', GROUP_CONCAT(DISTINCT CONCAT(\'["\', provincies.nom,",",municipis.nom,",",comarques.nom,\'"]\')) , \']\') AS full_loc'),
                 DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as tipus'),
                 DB::raw('COUNT(cartes_trucades.id) as cartes_count'))
@@ -91,12 +115,15 @@ class ExpedientController extends Controller
             // ->where('expedients.id','>=',0)
             ->groupBy('expedients.id','expedients.codi')
             // ->havingRaw('localitzacions like CONCAT("%", ? , "%") ',[$filtre])
-            // ->havingRaw('',[])
-            // ->havingRaw('',[])
-            // ->havingRaw('',[])
+            ->havingRaw('provincies LIKE CONCAT("%", ? , "%")',[$provincia])
+            ->havingRaw('municipis LIKE CONCAT("%", ? , "%")',[$municipi])
+            ->havingRaw('comarques LIKE CONCAT("%", ? , "%")',[$comarca])
             ->orderBy('expedients.id');
 
-        return response()->json($query->get());
+        $res = $query->get();
+
+        // return response()->json($query->get());
+        return response()->json($res);
     }
 
 

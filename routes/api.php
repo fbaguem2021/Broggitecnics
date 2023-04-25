@@ -31,7 +31,8 @@ Route::apiResource('agencies', AgenciaController::class);
 Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.buscar');
 Route::apiResource('usuari', UsuariController::class);
 
-Route::get('expedients-carta-trucada', [ExpedientController::class, 'expedients_carta']);
+// Route::get('expedients-carta-trucada', [ExpedientController::class, 'expedients_carta']);
+Route::get('expedients-carta-trucada/{provincia?}/{comarca?}/{municipi?}', [ExpedientController::class, 'expedients_carta']);
 Route::get('expedients/{filter}/{value?}/{dir?}', [ExpedientController::class, 'index']);
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
 Route::put('expedient/{id}', [ExpedientController::class, 'update']);

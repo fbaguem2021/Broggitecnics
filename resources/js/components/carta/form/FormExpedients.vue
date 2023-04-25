@@ -5,9 +5,8 @@
             <table class="table" id="tabla-expedients">
                 <thead>
                     <tr class="row bg-white">
-                        <th scope="col" class="col-2 text-center"
-                            :style="test">Trucada Previa</th>
-                        <th scope="col" class="col-4 th-loc">Localització</th>
+                        <th scope="col" class="col-2 text-center">Trucada Previa</th>
+                        <th scope="col" class="col-4 th-loc">Provincies</th>
                         <th scope="col" class="col-4 th-typ">Incidents</th>
                         <th scope="col" class="col-2 th-exp">
                             <button class="col-12 btn btn-sm btn-tertiary text-white text-center">
@@ -17,7 +16,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="row">
+                    <!-- <tr class="row">
                         <td class="col-2 centered">
                             <input type="checkbox"
                                 class="form-check-input"
@@ -31,11 +30,9 @@
                                 class="btn btn-exp btn-outline-secondary col-9 text-center">
                                 <i v-if="true" class="bi bi-check-all"></i>
                                 <span v-else>Vincular</span>
-                                <!-- <i v-if="isSelected(e.id)" class="bi bi-check-circle"></i>
-                                <i v-else class="bi bi-x-circle"></i> -->
                             </button>
                         </td>
-                    </tr>
+                    </tr> -->
                     <tr class="row" v-for="(e, index) in expedients" :key="e.id">
                         <td class="col-2 centered">
                             <input type="checkbox"
@@ -65,14 +62,15 @@
 <script>
 import * as bootstrap from 'bootstrap';
 import axios from 'axios';
+
 export default {
-    // emits: ['expedient_vinculat'],
     props: {
         localitzacio: {
-            type: Object
+            type: Object,
+            required: true,
         },
         newExpedientCode: {
-            type: Number
+            type: String
         }
     },
     data() {
@@ -85,9 +83,13 @@ export default {
     },
     mounted() {
         this.getExpedients()
-        axios('expedients-carta-trucada',{"text":"hola mundo"})
-            .then(response => { return response.data } )
-            .then(data => console.log('hola my mundo'))
+    },
+    watch: {
+        localitzacio(newData, oldData) {
+            if (newData.provincia != undefined && newData.provincia != '') {
+
+            }
+        }
     },
     methods: {
         getStyles() {
@@ -99,10 +101,13 @@ export default {
             }
             return styles;
         },
-        getExpedients() {
+        getExpedients(params='') {
             const self = this
             // const url = 'expedients/cartaTrucada'
-            const url = 'expedients-carta-trucada'
+            this.num++
+            console.log(params);
+            // const url = 'expedients-carta-trucada'
+            const url = `expedients-carta-trucada/${params}`
             // axios.get('expedients/cartaTrucada')
             axios.get(url)
             .then(response => {
@@ -119,15 +124,13 @@ export default {
                 //     return 0
                 // })
                 self.expedients = data
-                console.log('data',data);
+                // console.log('data',data);
                 setTimeout(() => {
-                    console.log('test',self.$refs.test)
                     this.initTooltips(data,self)
                 }, 1000);
             })
         },
         initTooltips(data, self) {
-            console.log('tool',self.$refs.locs)
             self.$refs.locs.forEach( (element, index) => {
                 // const full_loc = JSON.parse(data[index].full_loc).join('\n')
                 const full_loc = JSON.parse(data[index].full_loc).join('<br>')
@@ -159,7 +162,7 @@ export default {
             })
         },
         seleccionarExpedient(selected_id) {
-            console.log('expedient_selected: ',this.expedient_selected, ', selected_id: ',selected_id);
+            // console.log('expedient_selected: ',this.expedient_selected, ', selected_id: ',selected_id);
             if ( this.expedient_selected != selected_id ) {
                 this.expedient_selected = selected_id
             } else {
@@ -194,25 +197,12 @@ export default {
         hasTrucades(e) {
             return e.cartes_count > 0
         },
-        holamundo() {
-            return this.$refs.test.numbero
-        },
-        // logged_user() {
-        //     return window.Usuario
-        // }
-        test() {
-            // return this.getStyles()
-            return 'adieu'
-        },
     },
 }
 </script>
 <style scoped>
     .table-container {
         width: 100%;
-        height: 100%;
-    }
-    .table-container > div > table {
         height: 100%;
     }
     table {
