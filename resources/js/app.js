@@ -19,6 +19,7 @@ import chartLlamadas from './components/graficos/chartLlamadas.vue'
 // createApp(agenciasPrimarias).mount('#agenciasPrimarias')
 // createApp(mapa).mount('#mapa')
 // createApp(mapaApp).mount('#mapaApp')
+createApp(carta).mount('carta-app');
 createApp(expedients).mount('expedients-app');
 createApp(operadors).mount('operadors');
 createApp(rankingLoc).mount('#rankingLoc')

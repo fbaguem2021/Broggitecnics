@@ -160,6 +160,10 @@
     text-align: start;
 }
 
+#phone-selector {
+    transform: translateX(20%);
+}
+
 .block-lt .btn, .block-rt .btn, .block-rb .btn {
     position: absolute;
     left: 50%;
