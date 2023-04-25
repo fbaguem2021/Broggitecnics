@@ -68,7 +68,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{route('logout')}}">
-                                <i class="bi bi-box-arrow-right"></i>Tancar sessió</a>
+                                <i class="bi bi-box-arrow-right me-1"></i>Tancar sessió</a>
                         </div>
                     </div>
                 @else

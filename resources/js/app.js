@@ -15,15 +15,11 @@ import chartLlamadas from './components/graficos/chartLlamadas.vue'
 
 
 
-import VueCookies from 'vue-cookies'
-
-
-
 
 // createApp(agenciasPrimarias).mount('#agenciasPrimarias')
 // createApp(mapa).mount('#mapa')
 // createApp(mapaApp).mount('#mapaApp')
-createApp(carta).use(VueCookies).mount('carta-app');
+createApp(carta).mount('carta-app');
 createApp(expedients).mount('expedients-app');
 createApp(operadors).mount('operadors');
 createApp(rankingLoc).mount('#rankingLoc')
