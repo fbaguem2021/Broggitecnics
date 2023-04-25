@@ -67,6 +67,10 @@ import FormNota from './form/FormNota.vue';
 import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
+
+import CryptoJS from 'crypto-js';
+
+
 export default {
   emits: ['agenciasSeleccionadas'],
   components: {
@@ -83,6 +87,9 @@ export default {
       isFormMainLoaded: false,
       codiTrucada: '',
       codiNewExpedient: '',
+      //expedient: objeto que contiene {id, codi, estat_id (siempre abierto)}
+      expedient: {},
+      isNewExpedient: true,
       dataHoraTrucada: '',
       durada: 0,
       interlocutor: {},
@@ -96,7 +103,8 @@ export default {
       alertSuccess: "",
       localitzacioData: {},
       incidentData: {},
-      idAgenciasSeleccionadas: []
+      idAgenciasSeleccionadas: [],
+      userId: 0,
     }
   },
   computed: {
@@ -116,6 +124,7 @@ export default {
     },
     async getCartaData() {
       const self = this;
+      
       await axios
         .get('cartaData')
         .then(response => {
@@ -123,9 +132,23 @@ export default {
           self.incidentData = response.data.incident
           self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
           self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
+          
         })
         .catch((error) => { })
+
+        let username = this.getCookie('username')
+        // obtener ID usuario:
+        await axios
+        .get(`usuari-buscar?username=`+username)
+        .then(response => {
+          self.userId=response.data.data[0].id;
+          console.log (response.data)
+          console.log ( response.data.data[0].id)
+        })
+        .catch((error) => { 'error al obtenir el usuari' });
       this.isCartaDataLoaded = true
+      
+
     },
     getNewCodi(codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
@@ -171,9 +194,21 @@ export default {
     formMainIsLoaded(isLoaded) {
       this.isFormMainLoaded = isLoaded
     },
+    getCookie(name) {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.startsWith(name)) {
+          return decodeURIComponent(cookie.substring(name.length + 1));
+        }
+      }
+    },
+
     insertCarta() {
       if (this.cartaIsValid) {
+
         console.log("Carta is valid")
+        
 
         /* ID INTERLOCUTOR
         Antes del store de la carta, si se quiere guardar el interlocutor y no estaba en la bdd antes, primero se hace el store del interlocutor y luego el de la 
@@ -186,51 +221,51 @@ export default {
         En caso que se cree un expediente nuevo, antes de guardar la carta se guarda el expediente y se obtiene su ID para guardarlo en la carta
         */
 
-        /*ID USUARI
-        Hay que obtener la id del usuario, haciendo un select del id segun el nombre de usuario?
-        
-        */
 
+        const data = {
+          codi_trucada: this.codiTrucada,
+          data_hora_trucada: this.dataHoraTrucada,
+          durada: this.durada,          
+         
+          telefon: this.interlocutor.telefon,
+          nom: this.interlocutor.nom,
+          cognoms: this.interlocutor.cognom,
 
-        
+          nota_comuna: this.notaCoumna,
 
-        // const data = {
-        //   codi_trucada: this.codiTrucada,
-        //   data_hora_trucada: this.dataHoraTrucada,
-        //   durada: this.durada,
-
-        //   //Falta sacar la id del interlocutor:
-        //   interlocutors_id: this.interlocutors_id,
-        //  
-        //   telefon: this.interlocutor.telefon,
-        //   nom: this.interlocutor.nom,
-        //   cognoms: this.interlocutor.cognom,
-
-        //   nota_comuna: this.notaCoumna,
-
-        //   tipus_localitzacions_id: this.localitzacio.tipusLoc,
-        //   descripcio_localitzacio: this.localitzacio.descripcioLoc,
-        //   detall_localitzacio: this.localitzacio.detallsLoc,
-        //   altres_ref_localitzacio: this.localitzacio.altresRefs,
-        //   municipis_id: this.localitzacio.municipi,
-        //   provincies_id: this.localitzacio.provincia,
-        //   incidents_id: this.incidents_id,
-
+          tipus_localitzacions_id: this.localitzacio.tipusLoc,
+          descripcio_localitzacio: this.localitzacio.descripcioLoc,
+          detall_localitzacio: this.localitzacio.detallsLoc,
+          altres_ref_localitzacio: this.localitzacio.altresRefs,
+          municipis_id: this.localitzacio.municipi,
+          provincies_id: this.localitzacio.provincia,
+          incidents_id: this.incidents_id,
+          usuaris_id: this.usuari_id,
 
         // Y si seleccionas un expediente, se guarda en la misma variable?
-        //   expedients_id: this.codiNewExpedient,
+          expedients_id: this.codiNewExpedient,
 
-        // // Falta sacar la id del usuari
-        //   usuaris_id: this.usuaris_id
-        // };
+          //Falta sacar la id del interlocutor:
+          /*
+            1: Obtener la Id del interlocutor si este ya existe y guardarlo en una variable del componente ESPERAR A GUILLEM PARA QUE LO GUARDE EN EL OBJ interlocutor
+            2: Si está seteada la variable del componente (!=null), interlocutors_id será el valor de la variable del componente
+            3: Si la variable del componente es null y no se decide guardar el interlocutor, la id del interlocutor para guardar el a bdd sera null o N/A   
+            4: Si la variable del componente es null y se decide guardar el interlocutor:
+                1- Se hace el inser del interlocutor antes que se setee la data de la carta
+                2- Se hace select del id del interlocutor y se guarda en la variable del data "interlocutors_id" 
+          */
+          interlocutors_id: this.interlocutors_id,
 
-        // axios.post('CartaTrucadaController', data)
-        //   .then(response => {
-        //     console.log(response.data);
-        //   })
-        //   .catch(error => {
-        //     console.log(error);
-        //   });
+          
+        };
+
+        axios.post('CartaTrucadaController', data)
+          .then(response => {
+            console.log(response.data);
+          })
+          .catch(error => {
+            console.log(error);
+          });
 
       } else {
         console.log("Carta it's not valid")
@@ -248,7 +283,9 @@ export default {
 
   },
   mounted() {
+
     this.getCartaData()
+
     // setTimeout(()=>{ this.isLoaded = true}, 1000)
   },
 }
@@ -425,4 +462,5 @@ export default {
 
 #mapa-app {
   height: 100%;
-}</style>
+}
+</style>

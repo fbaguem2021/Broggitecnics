@@ -31,7 +31,7 @@ class UsuariController extends Controller
 
         if ($user != null && Hash::check($pass, $user->contrasenya)) {
             Auth::login($user);
-            $response = redirect('/home');
+            $response = redirect('/home')->cookie('username', $username, 60*24*7, null, null, false, false);
         } else {
             $request->session()->flash('error', 'Usuari o contrasenya incorrectes');
             $response = redirect('/login')->withInput();
