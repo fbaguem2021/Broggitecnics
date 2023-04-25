@@ -31,25 +31,29 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('agencies', AgenciaController::class);
-
+/* USUARIS */
 Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.buscar');
 Route::apiResource('usuari', UsuariController::class);
 
+/* EXPEDIENTS */
 Route::get('expedients/{filter}', [ExpedientController::class, 'index']);
 Route::get('expedients-gestio/{filter}/{value?}/{dir?}', [ExpedientController::class, 'indexGestio']);
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
+Route::apiResource('/estatExpedient', EstatExpedientController::class);
 
+/* AGENCIES */
+Route::apiResource('agencies', AgenciaController::class);
 Route::apiResource('estatAgencies', EstatAgencies::class);
 Route::put('updateEstatAgencia/{cartaTrucadaId}/{agenciaId}', [EstatAgencies::class, 'updateState']);
 
-Route::apiResource('/estatExpedient', EstatExpedientController::class);
+/* GRÀFICS */
 Route::get('/incidentesChart', [ChartController::class, 'index']);
-
 Route::get('/llamadasChart', [ChartCallController::class, 'index']);
 
+/* CARTES TRUCADA */
 Route::apiResource('/cartesTrucades', CartaTrucadaController::class);
-
 Route::get('/cartaData', [CartaData::class, 'index']);
+
+/* INTERLOCUTORS */
 Route::get('/interlocutorCheck/{number}', [CartaData::class, 'checkNumber']);
 Route::get('/interlocutorGenerate', [CartaData::class, 'generateNumber']);

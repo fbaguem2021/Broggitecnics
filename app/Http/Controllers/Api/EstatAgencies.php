@@ -31,7 +31,20 @@ class EstatAgencies extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->json()->all();
+
+        $cartaHasAgencia = new CartaTrucadaHasAgencies();
+        $cartaHasAgencia->cartes_trucades_id = $data['cartaTrucada_id'];
+        $cartaHasAgencia->agencies_id = $data['agencia_id'];
+        $cartaHasAgencia->estat_agencies_id = 1;
+
+        try {
+            $cartaHasAgencia->save();
+            $response = ["message" => "succesfully added", "item" => $cartaHasAgencia];
+        } catch (QueryException $e) {
+            $response = ["message" => "error", "errorData" => $e];
+        }
+        return response()->json($response);
     }
 
     /**
