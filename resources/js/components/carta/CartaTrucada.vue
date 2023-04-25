@@ -238,7 +238,7 @@ export default {
 
     async insertExpedient() {
       let me = this
-      await axios.post('/expedient', {
+      await axios.post('/estatExpedient', {
         data: {
           codi: me.expedient.codi,
           estat_id: me.expedient.estat_id,
