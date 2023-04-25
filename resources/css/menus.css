@@ -162,7 +162,7 @@
 .block-lt .btn, .block-rt .btn, .block-rb .btn {
     position: absolute;
     left: 50%;
-    bottom: 6%;
+    bottom: -10px;
     width: 80%;
     transform: translateX(-50%);
 }
@@ -197,7 +197,19 @@
     font-size: 30px; */
 }
 
-
+.ordered-list div {
+    display: flex;
+    flex-direction: column;
+}
+@media screen and (max-width: 1440px) and (max-height: 810px) {
+    .ordered-list{
+        display: flex;
+        list-style: decimal;
+    }
+    .ordered-list div:last-child {
+        margin-left: 40px
+    }
+  }
 ul:before{
     content:attr(aria-label);
     font-size:110%;
