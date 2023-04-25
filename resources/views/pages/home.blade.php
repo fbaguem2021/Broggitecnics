@@ -1,5 +1,5 @@
 @extends('layout.base')
-
+@section('page-title', "Home")
 @section('style')
     @vite('resources/css/menus.css')
 @endsection
@@ -42,7 +42,7 @@
 
 @section('scripts')
     @vite('resources/js/scripts/menu.js')
-    @if (Auth::user()->rol->id === 1)
+    @if (Auth::user()->rol->id <= 2)
         @vite('resources/js/scripts/menuOperador.js')
     @endif
 @endsection

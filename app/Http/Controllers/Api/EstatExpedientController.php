@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Expedient;
 use Illuminate\Http\Request;
 use App\Models\EstatExpedient;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Ramsey\Uuid\Type\Integer;
 
 class EstatExpedientController extends Controller
 {
@@ -55,9 +57,19 @@ class EstatExpedientController extends Controller
      * @param  \App\Models\EstatExpedient  $estatExpedient
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, EstatExpedient $estatExpedient)
+    public function update($id, Request $request)
     {
-        //
+        $expedient = Expedient::find($id);
+
+        if (!$expedient) {
+            return response()->json(['message' => 'Expedient not found'], 404);
+        }
+
+        $expedient->estat_expedients_id = $request->input('estat_expedient_id');
+        $expedient->save();
+
+        return response()->json(['message' => 'Expedient updated successfully'], 200);
+        
     }
 
     /**

@@ -113,6 +113,7 @@
             </div>
         </div>
         <div role="alert"
+            :style="{ 'z-index': alert.show ? 'auto' : '-1' }"
             class="alert alert-primary alert-dismissible fade col-4 mx-auto floating border"
             :class="{ show: alert.show, 'alert-tertiary': !alert.error, 'alert-danger': alert.error }">
             {{ alert.message }}
@@ -169,12 +170,12 @@ export default {
         getUrl() {
             const self = this;
             let url;
+            let id = window.Usuario.id;
             if (self.buscador.filtrado == '') {
-                let id = window.Usuario.id;
                 url = `/usuari?id=${id}&page=${this.pageinfo.current_page}`
                 // console.log(`/usuari?page=${this.current_page}`);
             } else {
-                url = `/usuari-buscar${this.query}`;
+                url = `/usuari-buscar?id=${id}${this.query}`;
                 // console.log(`normal: /usuari-buscar?${self.filtrado}=${self.buscado}?page=${page}`);
                 // console.log(`query:  /usuari-buscar${this.query}`);
             }
@@ -284,7 +285,7 @@ export default {
             return this.buscador.filtrado != '';
         },
         query() {
-            return `?${this.buscador.filtrado}=${this.buscador.buscado}&page=${this.pageinfo.current_page}`;
+            return `&${this.buscador.filtrado}=${this.buscador.buscado}&page=${this.pageinfo.current_page}`;
         },
     },
     components: {
@@ -329,9 +330,9 @@ input[disabled] {
 
 }
 .floating {
-    z-index: 1000;
+    z-index: auto;
     position: fixed;
-    top: 10%;
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
 }

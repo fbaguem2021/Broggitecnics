@@ -1,7 +1,13 @@
 <template>
+
+  <!-- Message app that displays an absolute alert at the top -->
+  <message-app ref="messageApp"></message-app>
+
+  <!-- Splash loading animation -->
   <Transition name="fade">
     <loader-splash v-if="!cartaIsLoaded"></loader-splash>
   </Transition>
+
   <!-- Mostrar alertas success -->
   <div v-if="alertSuccess != ''" id="carta-alert" class="alert alert-info alert-dismissible fade show" role="alert">
     {{ alertSuccess }}
@@ -10,31 +16,46 @@
   <div id="card-wrapper">
     <div id="card-container">
       <div class="content">
+        <!-- Carta left block -->
         <div id="form">
+          <!-- Form main Interlocutor, Localitzacio and Incident -->
           <div id="form-main" ref="formMain" class="expanded">
-            <form-main :localitzacio-data="localitzacioData" :incident-data="incidentData" @get-carta-location="updateLoc"
-              @get-carta-interlocutor="updateInterlocutor" @get-carta-incident="updateIncident"
-              @get-map-search-string="updateSearchString" @form-main-is-loaded="formMainIsLoaded">
-            </form-main>
-            <transition name="fade">
+            <form-main 
+                :localitzacio-data="localitzacioData" 
+                :incident-data="incidentData"
+                @get-carta-location="updateLoc"
+                @get-carta-interlocutor="updateInterlocutor"
+                @get-carta-incident="updateIncident"
+                @get-map-search-string="updateSearchString"
+                @form-main-is-loaded="formMainIsLoaded"
+                @form-main-error="showError">
+              </form-main>
+            <!-- Bottom main form blur gradient to indicate that there is content overflowing in the form main block when nota is expanded -->
+            <Transition name="fade">
               <div v-show="notaIsExpaneded" class="blur-gradient"></div>
-            </transition>
+            </Transition>
           </div>
+          <!-- Form nota comuna -->
           <div id="form-nota" @focusin="expandCompress" @focusout="expandCompress" ref="formNota">
-            <form-nota @get-notaComuna="updateNotaCoumna"></form-nota>
+            <form-nota 
+              @get-notaComuna="updateNotaCoumna"
+              
+              ></form-nota>
           </div>
         </div>
+
+        <!-- Carta right block -->
         <div id="side">
           <div id="data">
             <data-carta :codi-trucada="codiTrucada" :is-loaded="cartaIsLoaded" @carta-durada="updateDurada"></data-carta>
           </div>
-          <!-- MAPA -->
+          <!-- mapa -->
           <div id="map">
             <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess"
               @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-            <form-expedients></form-expedients>
+            <!-- <form-expedients></form-expedients> -->
           </div>
         </div>
         <div id="bg"></div>
@@ -67,19 +88,17 @@ import FormNota from './form/FormNota.vue';
 import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
-
-import CryptoJS from 'crypto-js';
-
-
+import MessageApp from '../MessageApp.vue';
 export default {
   emits: ['agenciasSeleccionadas'],
   components: {
     FormMain,
     FormNota,
-    FormExpedients,
+    // FormExpedients,
     MapApp,
     DataCarta,
-    LoaderSplash
+    LoaderSplash,
+    MessageApp
   },
   data() {
     return {
@@ -132,7 +151,10 @@ export default {
           self.incidentData = response.data.incident
           self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
           self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
-          
+          self.isCartaDataLoaded = true
+        })
+        .catch((error) => { 
+          self.showError(error)
         })
         .catch((error) => { })
 
@@ -154,7 +176,7 @@ export default {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
       let prefix = codi.replace(/\d+/, "");
       return prefix + numberPart.toString();
-    },
+   },
     añadirAlerta(alert) {
       this.alertSuccess = alert
     },
@@ -206,7 +228,7 @@ export default {
 
     insertCarta() {
       if (this.cartaIsValid) {
-
+        this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
         console.log("Carta is valid")
         
 
@@ -269,6 +291,7 @@ export default {
 
       } else {
         console.log("Carta it's not valid")
+        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense validar", "warning")
       }
     },
     insertInterlocutor() {
@@ -280,7 +303,9 @@ export default {
     insertExpedient() {
       // Add rquest to insert Expedient
     },
-
+    showError(error) {
+        this.$refs.messageApp.createErrorAlert(error)
+    }
   },
   mounted() {
 

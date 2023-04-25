@@ -37,6 +37,7 @@
 export default {
   emits: [
     'get-incident',
+    'incident-error'
   ],
   props: {
     incidentData: {
@@ -164,6 +165,9 @@ export default {
         'max-height':  `${Math.max(height, minHeight)+40}px`
       };
     },
+    showError (error) {
+      this.$emit('incident-error', error)
+    }
   },
   mounted() {
     this.updateCartaData()

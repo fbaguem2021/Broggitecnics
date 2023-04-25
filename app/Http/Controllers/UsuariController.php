@@ -46,7 +46,7 @@ class UsuariController extends Controller
     }
 
     public function showRegistre(){
-        return view('layout.newUser');
+        return view('auth.newUser');
     }
 
     public function store(Request $request){

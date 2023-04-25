@@ -44,13 +44,15 @@ import axios from 'axios'
 export default {
     emits: [
         'get-interlocutor',
-        'interlocutor-is-loaded'
+        'interlocutor-is-loaded',
+        'interlocutor-error'
     ],
     data() {
         return {
             isLoaded: false,
             isNewInterlocutor: true,
             saveInterlocutor: false,
+            id: null,
             phone: '',
             name: {
                 input: '',
@@ -62,6 +64,7 @@ export default {
             },
             record: '',
             cartaInterlocutor: {
+                id: null,
                 telefon: '',
                 antecedents: '',
                 nom: '',
@@ -82,10 +85,7 @@ export default {
          */
         async getInterlocutorCookie () {
             console.log("inside interlocutor cookie")
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
-            // await fetch('http://127.0.0.1:8001/api/cartaData')
+
             const interlocutorCookie = this.getCookie('interlocutor_phone')
             if ( interlocutorCookie.isManual && interlocutorCookie.phone ) {
                 await this.checkInterlocutor(interlocutorCookie.phone)
@@ -154,6 +154,7 @@ export default {
          * Calls handleInput to validate the data and update it to the main component -> FormMain -> CartaTrucada
          */
         loadInterlocutor (interlocutor) {
+            this.id = interlocutor.id
             this.phone = interlocutor.telefon
             this.name.input = interlocutor.nom
             this.surnames.input = interlocutor.cognoms
@@ -171,6 +172,7 @@ export default {
          */
         updateCartaData () {
            this.cartaInterlocutor = {
+                id: this.id,
                 telefon: this.phone,
                 antecedents: this.record,
                 nom: this.name.input,
@@ -203,6 +205,9 @@ export default {
                 el.classList.toggle('is-valid', this[el.id].isValid)
                 el.classList.toggle('is-invalid', !this[el.id].isValid)
             }
+        },
+        showError (error) {
+            this.$emit('interlocutor-error', error)
         }
     },
     mounted() {

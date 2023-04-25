@@ -18,7 +18,7 @@
 <body>
     <div id="header">
         <div class="header-inner">
-            <a href="{{url('/')}}" id="logo" alt="Brogi112 - home">
+            <a href="{{route('home')}}" id="logo" alt="Brogi112 - home">
                 <svg x="0px" y="0px" viewBox="0 0 50 50" fill="none">
                     <g clip-path="url(#clip0_177_786)">
                         <path
@@ -47,6 +47,9 @@
                     </defs>
                 </svg>
             </a>
+            <div class="page-titel" style="position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); color: white">
+                <h3 style="margin: 0">@yield('page-title')</h3>
+            </div>
             {{-- @if (Auth::check())
                 <a id="login-btn" href="{{route('logout')}}">
                     <button> {{Auth::user()->nom}} {{ Auth::user()->cognoms}}</button>
@@ -64,8 +67,8 @@
                             {{Auth::user()->username}}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{route('logout')}}"><i class="fa fa-sign-out" aria-hidden="true">
-                            </i>Tancar sessió</a>
+                            <a class="dropdown-item" href="{{route('logout')}}">
+                                <i class="bi bi-box-arrow-right"></i>Tancar sessió</a>
                         </div>
                     </div>
                 @else
