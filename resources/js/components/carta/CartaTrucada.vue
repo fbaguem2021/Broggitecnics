@@ -42,11 +42,11 @@
           </div>
           <!-- mapa -->
           <div id="map">
-            <!-- <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess"
-              @agenciasSeleccionadas="agenciasSeleccionadas" /> -->
+            <MapApp id="mapa-app" :arraySearch="mapSearchString" @changeAlert="añadirAlerta" :alertCerrada="alertSuccess"
+              @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-            <!-- <form-expedients></form-expedients> -->
+            <form-expedients></form-expedients>
           </div>
         </div>
         <div id="bg"></div>
@@ -76,17 +76,17 @@
 import LoaderSplash from './LoaderSplash.vue'
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
-// import FormExpedients from './form/FormExpedients.vue';
+import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
-// import MapApp from './mapa/MapApp.vue';
+import MapApp from './mapa/MapApp.vue';
 import MessageApp from '../MessageApp.vue';
 export default {
   emits: ['agenciasSeleccionadas'],
   components: {
     FormMain,
     FormNota,
-    // FormExpedients,
-    // MapApp,
+    FormExpedients,
+    MapApp,
     DataCarta,
     LoaderSplash,
     MessageApp
@@ -120,7 +120,7 @@ export default {
   computed: {
     cartaIsLoaded() {
       const isLoaded = this.isCartaDataLoaded && this.isFormMainLoaded;
-      return true
+      return isLoaded
     },
     cartaIsValid() {
       const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
@@ -160,8 +160,6 @@ export default {
         })
         .catch((error) => { 'error al obtenir el usuari' });
       this.isCartaDataLoaded = true
-
-
     },
     getNewCodi(codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
@@ -282,10 +280,10 @@ export default {
           this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
         })
         .catch(error => {
-          this.$refs.messageApp.createErrorAlert("Hi ha agut un error amb la base de dades: "+error, "danger")
+          this.$refs.messageApp.createErrorAlert(error)
         });
     },
-
+ 
     async insertFinal() {
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
