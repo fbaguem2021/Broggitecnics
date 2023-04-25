@@ -381,7 +381,7 @@ export default {
         this.tipusLoc.id = ''
         this.tipusLoc.isValid = false
       } else {
-        this.tipusLoc.id = 60 // if !isCat set tipus localitzacio id to 60 = Provincia
+        this.tipusLoc.id = 5 // if !isCat set tipus localitzacio id to 5 = Provincia
         this.tipusLoc.isValid = true
       }
       
