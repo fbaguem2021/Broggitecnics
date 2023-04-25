@@ -36,7 +36,7 @@ class UsuariController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function buscar(Request $request) {
-        $queryid = $request->query('id', 4);
+        $queryid = $request->query('id');
         $tipo = Usuari::find($queryid)->tipus_usuaris_id;
 
         $params = new stdClass();
@@ -54,6 +54,20 @@ class UsuariController extends Controller
         return UsuariResource::collection($usr);
     }
 
+    public function buscarId(Request $request) {
+        $params = new stdClass();
+
+        foreach (['username','nom','cognoms'] as $filtro) {
+            $query_filtro = $request->query($filtro, false);
+            if ( $query_filtro == true && $query_filtro != '' ) {
+                $params->filtro = $filtro;
+                $params->valor = $request->query($filtro)."%";
+            }
+        }
+
+        $usr = Usuari::where($params->filtro, 'like', $params->valor)->orderBy('id', 'asc')->paginate(5);
+        return UsuariResource::collection($usr);
+    }
     /**
      * Store a newly created resource in storage.
      *
