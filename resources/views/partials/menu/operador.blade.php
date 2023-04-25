@@ -4,8 +4,8 @@
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title fw-bold mb-3">Info app, funcionament</h3>
-                    <p class="card-text intro mb-1">BROGGI 112 és una aplicació destinada a l'aprenentatge de gestió de trucades d'emergencia per el cicle formatiu de Emergències Sanitàries.</p>
-                    <p class="m">Els teus objectius com a Operador són:</p>
+                    <p class="card-text intro">BROGGI 112 és una aplicació destinada a l'aprenentatge de gestió de trucades d'emergencia per el cicle formatiu de Emergències Sanitàries.</p>
+                    <p class="list-title mb-1">Els teus objectius com a Operador són:</p>
                     <ol class="ordered-list"> 
                         <div>
                             <li>Recepció de la trucada</li>
@@ -25,7 +25,11 @@
                 <div class="card-body">
                     <h3 class="card-title fw-bold text-center">Trucades rebudes</h3>
                     <div class="chart-container">
-                        <canvas id="callTypeChart"></canvas>
+                        <div class="icon-stack">
+                            <i class="bi bi-triangle"></i>
+                            <i class="bi bi-hammer"></i>
+                        </div>
+                        <span class="ms-4">En construcció...</span> 
                     </div>
                 </div>
             </div>
@@ -34,14 +38,13 @@
                 <div class="card-body">
                     <h3 class="card-title fw-bold text-center">Temps mitjana trucada</h3>
                     <div class="chart-container">
-                  
-                            <canvas id="avCallChart"></canvas>
-                            <span style="
-                                position: absolute;
-                                bottom: 0;
-                                left: 50%;
-                                transform: translateX(-50%);
-                            ">130s</span>
+                        <canvas id="avCallChart"></canvas>
+                        <span style="
+                            position: absolute;
+                            bottom: 0;
+                            left: 50%;
+                            transform: translateX(-50%);
+                        ">130s</span>
                        
                     </div>
                 </div>

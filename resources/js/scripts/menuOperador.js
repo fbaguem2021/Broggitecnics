@@ -1,5 +1,5 @@
 import Chart from 'chart.js/auto';
-const callTypeIncidents = document.getElementById('callTypeChart').getContext('2d');
+// const callTypeIncidents = document.getElementById('callTypeChart').getContext('2d');
 const avCallDuration = document.getElementById("avCallChart").getContext("2d");
 
 var avCallData = {
