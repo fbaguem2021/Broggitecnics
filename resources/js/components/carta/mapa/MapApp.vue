@@ -42,13 +42,10 @@
         agenciasSeleccionadas: {
             deep: true,
             handler: function (newVal, oldVal) {
-                alert('agencia seleccionada');
                 let arrayIds=[]
                 newVal.forEach(element => {
                   arrayIds.push(element[0])
                 });
-                console.log('arrayIds')
-                console.log(arrayIds)
                 this.$emit("agenciasSeleccionadas", arrayIds);
             }
         }
