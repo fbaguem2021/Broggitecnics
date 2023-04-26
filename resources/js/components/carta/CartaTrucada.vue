@@ -46,9 +46,9 @@
               @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-                <form-expedients
+                <!-- <form-expedients
                     :localitzacio="localitzacio"
-                    :new-expedient-code="codiNewExpedient"></form-expedients>
+                    :new-expedient-code="codiNewExpedient"></form-expedients> -->
             </div>
         </div>
         <div id="bg"></div>
@@ -97,7 +97,7 @@
 import LoaderSplash from './LoaderSplash.vue'
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
-import FormExpedients from './form/FormExpedients.vue';
+// import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 import MessageApp from '../MessageApp.vue';
@@ -108,7 +108,7 @@ export default {
   components: {
     FormMain,
     FormNota,
-    FormExpedients,
+    // FormExpedients,
     MapApp,
     DataCarta,
     LoaderSplash,
@@ -182,8 +182,6 @@ export default {
         .get(`usuari-buscar-id?username=` + username)
         .then(response => {
           self.userId = response.data.data[0].id;
-          console.log(response.data)
-          console.log(response.data.data[0].id)
         })
         .catch((error) => { 'error al obtenir el usuari' });
       this.isCartaDataLoaded = true
@@ -337,8 +335,8 @@ export default {
         if(!this.error) {
           this.$refs.messageApp.createMessageAlert("La carta de trucada s'ha guardat correctament", "success", "Redirecionant al menu...")
           setTimeout(()=>{
-            /* const redirectHome = "/Broggitecnics/public/home";
-            window.location.href = redirectHome; */
+            const redirectHome = "/Broggitecnics/public/home";
+            window.location.href = redirectHome;
             // window.location.href = "/home";
           }, 4000)
         } 
@@ -360,9 +358,7 @@ export default {
         console.log(invalidParts)
         this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning", invalidParts)
       }
-
     },
-
     async insertAgenciaHasEstat() {
       const self = this
       const promises = this.idAgenciasSeleccionadas.map(agenciaId => {
@@ -392,10 +388,6 @@ export default {
     showError(error) {
       this.$refs.messageApp.createErrorAlert(error)
     },
-    insertExpedient () {
-      // Add rquest to insert Expedient
-    },
-
   },
   mounted() {
     this.getCartaData()

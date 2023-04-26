@@ -128,12 +128,6 @@ export default {
       }
     },
     handleRowClick(expId, event) {
-   /*    const selectEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] select`);
-      const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
-      console.log(selectEl)
-      if (!selectEl.contains(event.target)) {
-        checkboxEl.click();
-      } */
       const avoidElements = Array.from(this.$refs.tableBody.querySelectorAll(`[data-expid="${expId}"] .no-row-select`));
       const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
 
@@ -187,9 +181,9 @@ export default {
           .get(`expedients-gestio/orderBy/${self.orderByColumn}/${self.orderDir}`)
           .then(response => {
             self.expedients = response.data;
-            if (showReload) {
+        
               self.expedientsIsLoaded = true;
-            }
+            
           })
           .catch((error) => { 
             self.showError(error)
@@ -208,7 +202,7 @@ export default {
     },
     selectExpedientsBy(col, value) {
       this.lastSelect.col = col
-      this.lastSelect.value =
+      this.lastSelect.value = value
       this.expedientsIsLoaded = false
       const self = this;
       axios
@@ -222,7 +216,6 @@ export default {
         });
     },
     updateSelect (expIDs, estatID) {
-      console.log("Expedients to update:", expIDs, "To state id:", estatID)
       const self = this;
       if (expIDs.length > 0) {
         const promises = expIDs.map(expID => {
@@ -234,11 +227,10 @@ export default {
           this.$emit('refresh-legend');
           this.showMessage("Estat de l'expedient modificat correctament", "success")
           if (this.lastSelect.col == 'all' || this.lastSelect.col == '') {
-            self.submit(true, false);
+            self.submit(true, true);
           } else {
             self.selectExpedientsBy(this.lastSelect.col, this.lastSelect.value)
           }
-        
           console.log(responses);
         })
         .catch(error => {

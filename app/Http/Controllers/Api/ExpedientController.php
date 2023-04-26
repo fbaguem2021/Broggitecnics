@@ -75,11 +75,13 @@ class ExpedientController extends Controller
                         break;
                     case 'loc':
                         $value = strtolower($value);
-                        $query->havingRaw(" LOWER(GROUP_CONCAT(DISTINCT provincies.nom)) LIKE '%$value%' ");
+                        $query->havingRaw(" LOWER(GROUP_CONCAT(DISTINCT provincies.nom)) LIKE '%$value%' ")
+                               ->orderByDesc('updated_at');
                         break;
                     case 'inc':
                         $value = strtolower($value);
-                        $query->havingRaw(" LOWER(GROUP_CONCAT(DISTINCT tipus_incidents.nom)) LIKE '%$value%' ");
+                        $query->havingRaw(" LOWER(GROUP_CONCAT(DISTINCT tipus_incidents.nom)) LIKE '%$value%' ")
+                               ->orderByDesc('updated_at');
                         break;
                     case 'cartes_count':
                         $value = strtolower($value);

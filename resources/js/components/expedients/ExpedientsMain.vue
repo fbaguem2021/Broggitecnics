@@ -214,7 +214,7 @@ export default {
     },
     isExpedientsSelected(isSelected) {
         this.showUpdateController = isSelected
-        console.log("at last one selected", isSelected)
+        console.log("at least one selected", isSelected)
     },
     updateSelectedExp(){
         this.filterBySelected.col = "all"
@@ -227,7 +227,6 @@ export default {
         .then(response => {
           self.estats = response.data;
           self.estatsIsLoaded = true;
-          console.log(response)
         })
         .catch((error) => { 
             this.showError(error)
