@@ -66,6 +66,7 @@ class ExpedientController extends Controller
             if ($filter) {
                 switch ($filter) {
                     case 'all':
+                        $query->orderByDesc('updated_at');
                         break;
                     case 'estat_expedients_id':
                         $query->where('expedients.estat_expedients_id', '=', $value);

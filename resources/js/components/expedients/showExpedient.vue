@@ -233,17 +233,13 @@ export default {
         });
     },
     updateAgenciaState(cartaTrucadaId, agenciaId, newEstatValue) {
+      console.log("CARTA ID", cartaTrucadaId, "AGENCIA ID", agenciaId, "NEW ESTAT", newEstatValue)
       this.isCartaLoaded = false
       const self = this
       axios.put(`updateEstatAgencia/${cartaTrucadaId}/${agenciaId}`, {new_estat_agencies_id: newEstatValue})
           .then(response => {
-            console.log(response)
-            console.log("Carta before update:", this.cartaSelected)
-            if (!response.data.error) {
               self.cartaSelected = response.data.updatedCarta
               self.isCartaLoaded = true
-              console.log("Carta after update:", this.cartaSelected)
-            }
           })
           .catch((error)=>{
             self.showError(error)

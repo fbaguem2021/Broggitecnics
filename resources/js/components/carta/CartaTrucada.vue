@@ -4,7 +4,7 @@
 
   <!-- Splash loading animation -->
   <Transition name="fade">
-    <loader-splash v-if="!cartaIsLoaded"></loader-splash>
+    <loader-splash v-if="!isLoaded"></loader-splash>
   </Transition>
 
   <!-- Mostrar alertas success -->
@@ -46,9 +46,9 @@
               @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-                <!-- <form-expedients
+                <form-expedients
                     :localitzacio="localitzacio"
-                    :new-expedient-code="codiNewExpedient"></form-expedients> -->
+                    :new-expedient-code="codiNewExpedient"></form-expedients>
             </div>
         </div>
         <div id="bg"></div>
@@ -97,7 +97,7 @@
 import LoaderSplash from './LoaderSplash.vue'
 import FormMain from './form/FormMain.vue';
 import FormNota from './form/FormNota.vue';
-// import FormExpedients from './form/FormExpedients.vue';
+import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 import MessageApp from '../MessageApp.vue';
@@ -108,7 +108,7 @@ export default {
   components: {
     FormMain,
     FormNota,
-    // FormExpedients,
+    FormExpedients,
     MapApp,
     DataCarta,
     LoaderSplash,
@@ -116,6 +116,7 @@ export default {
   },
   data() {
     return {
+      isLoaded: false,
       cartaId: null,
       isCartaDataLoaded: false,
       isFormMainLoaded: false,
@@ -158,7 +159,6 @@ export default {
   },
   methods: {
     agenciasSeleccionadas(idAgencias) {
-      alert('funcion en carta')
       this.idAgenciasSeleccionadas = idAgencias
     },
     async getCartaData() {
@@ -394,7 +394,7 @@ export default {
     let inputDate = new Date().toISOString();
     this.dataHoraTrucada = inputDate.replace("T", " ").slice(0, -5);
     this.cancelCallModal = new bootstrap.Modal(this.$refs.exampleModalCenter)
-    // setTimeout(()=>{ this.isLoaded = true}, 1000)
+    setTimeout(()=>{ this.isLoaded = true}, 4500)
   },
 }
 </script>

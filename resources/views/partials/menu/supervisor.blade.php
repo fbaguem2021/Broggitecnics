@@ -4,9 +4,17 @@
             <div class="card">
                 <div class="card-body">
                     <h3 class="card-title fw-bold mb-3">Info app, funcionament</h3>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel porttitor
-                        nibh, a scelerisque nisl. Suspendisse potenti. Praesent tempus at neque sit amet dapibus. Nulla
-                        vehicula egestas bibendum.</p>
+                    <div class="card-text ps-3">
+                        <p class="card-text intro">BROGGI 112 és una aplicació destinada a l'aprenentatge de gestió de trucades d'emergencia per el cicle formatiu de Emergències Sanitàries.</p>
+                        <p class="list-title mb-1">Els teus objectius com a Supervisor són:</p>
+                        <ol class="ordered-list"> 
+                            <div>
+                                <li>Realitzar cartes de trucades</li>
+                                <li>Administrar expedients</li>
+                                <li>Administrar operadors</li>
+                            </div>
+                        </ol>
+                    </div>
                 </div>
             </div>
         </div>
