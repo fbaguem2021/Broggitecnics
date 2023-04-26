@@ -5,9 +5,8 @@
             <table class="table" id="tabla-expedients">
                 <thead>
                     <tr class="row bg-white">
-                        <th scope="col" class="col-2 text-center"
-                            :style="test">Trucada Previa</th>
-                        <th scope="col" class="col-4 th-loc">Localització</th>
+                        <th scope="col" class="col-2 text-center">Trucada Previa</th>
+                        <th scope="col" class="col-4 th-loc">Provincies</th>
                         <th scope="col" class="col-4 th-typ">Incidents</th>
                         <th scope="col" class="col-2 th-exp">
                             <button class="col-12 btn btn-sm btn-tertiary text-white text-center">
@@ -17,14 +16,32 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="row" v-for="e in expedients" :key="e.id">
+                    <!-- <tr class="row">
+                        <td class="col-2 centered">
+                            <input type="checkbox"
+                                class="form-check-input"
+                                :checked="true"
+                                disabled>
+                        </td>
+                        <td id="tooltip_loc" class="col-4 align-middle" ref="test" :numbero="20">default</td>
+                        <td class="col-4">default</td>
+                        <td class="col-2 centered">
+                            <button
+                                class="btn btn-exp btn-outline-secondary col-9 text-center">
+                                <i v-if="true" class="bi bi-check-all"></i>
+                                <span v-else>Vincular</span>
+                            </button>
+                        </td>
+                    </tr> -->
+                    <tr class="row" v-for="(e, index) in expedients" :key="e.id">
                         <td class="col-2 centered">
                             <input type="checkbox"
                                 class="form-check-input"
                                 :checked="checkInterlocutor()"
                                 disabled>
                         </td>
-                        <td class="col-4 align-middle">{{ getLoc(e.localitzacions) }}</td>
+                        <td class="col-4 align-middle"
+                            :ref="'locs'">{{ getLoc(e.localitzacions) }}</td>
                         <td class="col-4">{{ getTipus(e.tipus) }}</td>
                         <td class="col-2 centered">
                             <button @click="seleccionarExpedient(e.id)"
@@ -43,19 +60,45 @@
     </div>
 </template>
 <script>
-export default {
-    // emits: ['expedient_vinculat'],
-    props: {
+import * as bootstrap from 'bootstrap';
+import axios from 'axios';
 
+export default {
+    props: {
+        localitzacio: {
+            type: Object,
+            required: true,
+        },
+        newExpedientCode: {
+            type: String
+        }
     },
     data() {
         return {
+            tooltip: {},
             expedient_selected: 0,
             expedients: [],
+            tooltips: [],
         }
     },
     mounted() {
         this.getExpedients()
+    },
+    watch: {
+        localitzacio(newData, oldData) {
+            const checkProvincia = newData.provincia != undefined && newData.provincia != ''
+            const checkComarca   = newData.comarca   != undefined && newData.comarca   != ''
+            const checkMunicipi  = newData.municipi  != undefined && newData.municipi  != ''
+            const checkValues    = newData.provincia != oldData.provincia && newData.comarca != oldData.comarca && newData.municipi != oldData.municipi
+
+            if (checkProvincia && checkComarca && checkMunicipi) {
+                const params = `${newData.provincia}/${newData.comarca}/${newData.municipi}`
+                // console.log('dentro',params);
+                this.getExpedients(params)
+            } else {
+                // console.log('fuera');
+            }
+        }
     },
     methods: {
         getStyles() {
@@ -67,20 +110,70 @@ export default {
             }
             return styles;
         },
-        getExpedients() {
+        getExpedients(params='') {
             const self = this
-            axios.get('expedients/cartaTrucada')
+            // const url = 'expedients/cartaTrucada'
+            this.num++
+            console.log(params);
+            // const url = 'expedients-carta-trucada'
+            const url = `expedients-carta-trucada/${params}`
+            // axios.get('expedients/cartaTrucada')
+            axios.get(url)
             .then(response => {
                 return response.data
             })
             .then(data => {
+                // self.expedients = data.sort((a,b) => {
+                //     if ( a.localitzacions.toLowerCase().includes(tipus.toLowerCase()) ) {
+                //         return -1
+                //     }
+                //     if ( b.localitzacions.toLowerCase().includes(tipus.toLowerCase()) ) {
+                //         return 1
+                //     }
+                //     return 0
+                // })
                 self.expedients = data
-                // self.expedient_selected = data[0].codi
-                // console.log(data);
+                // console.log('data',data);
+                if (data.length > 0) {
+                    setTimeout(() => {
+                        this.initTooltips(data,self)
+                    }, 1000);
+                }
+            })
+        },
+        initTooltips(data, self) {
+            self.$refs.locs.forEach( (element, index) => {
+                // const full_loc = JSON.parse(data[index].full_loc).join('\n')
+                const full_loc = JSON.parse(data[index].full_loc).join('<br>')
+                self.tooltips.push(
+                    // new bootstrap.Tooltip(element, {"title": `Localizaciones: ${data[index].localitzacions}`})
+                    new bootstrap.Tooltip(element, {
+                        "title": full_loc,
+                        "html":true,
+                        "template": /*html*/ `
+                        <div class="tooltip" name="holamundo" role="tooltip">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner custom-tooltip"></div>
+                        </div>
+                        `
+                    })
+                )
+            })
+            // self.tooltips[0].show()
+            // for ( const [index, element] of self.$refs.locs) {
+                // self.tooltips.push(
+                //     new bootstrap.Tooltip(element, {"title": `Localizaciones: ${data[index].localitzacions}`})
+                // )
+            // }
+        },
+        createTooltip(id, localitzacions) {
+            const element = document.querySelector(`#expediente-${id}`)
+            this.tooltip = new bootstrap.Tooltip(element, {
+                "title":`Localizaciones: ${localitzacions}`,
             })
         },
         seleccionarExpedient(selected_id) {
-            console.log('expedient_selected: ',this.expedient_selected, ', selected_id: ',selected_id);
+            // console.log('expedient_selected: ',this.expedient_selected, ', selected_id: ',selected_id);
             if ( this.expedient_selected != selected_id ) {
                 this.expedient_selected = selected_id
             } else {
@@ -115,21 +208,12 @@ export default {
         hasTrucades(e) {
             return e.cartes_count > 0
         },
-        // logged_user() {
-        //     return window.Usuario
-        // }
-        test() {
-            return this.getStyles()
-        }
     },
 }
 </script>
 <style scoped>
     .table-container {
         width: 100%;
-        height: 100%;
-    }
-    .table-container > div > table {
         height: 100%;
     }
     table {
@@ -151,7 +235,7 @@ export default {
         position: sticky;
         top: 0;
         background-color: white;
-        z-index: 1000;
+        z-index: 10;
     }
     .centered {
         display: flex;

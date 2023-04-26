@@ -46,8 +46,10 @@
               @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-            <form-expedients></form-expedients>
-          </div>
+                <form-expedients
+                    :localitzacio="localitzacio"
+                    :new-expedient-code="codiNewExpedient"></form-expedients>
+            </div>
         </div>
         <div id="bg"></div>
       </div>
@@ -292,7 +294,7 @@ export default {
           this.$refs.messageApp.createErrorAlert(error)
         });
     },
- 
+
     async insertFinal() {
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
@@ -352,7 +354,11 @@ export default {
 
     showError(error) {
       this.$refs.messageApp.createErrorAlert(error)
-    }
+    },
+    insertExpedient () {
+      // Add rquest to insert Expedient
+    },
+
   },
   mounted() {
     this.getCartaData()
