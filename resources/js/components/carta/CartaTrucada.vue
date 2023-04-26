@@ -80,6 +80,10 @@ import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 import MessageApp from '../MessageApp.vue';
+
+
+
+
 export default {
   emits: ['agenciasSeleccionadas'],
   components: {
@@ -278,6 +282,8 @@ export default {
         .then(response => {
           console.log(response.data);
           this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
+          const redirectHome = "/Broggitecnics/public/home";
+          window.location.href = redirectHome;
         })
         .catch(error => {
           this.$refs.messageApp.createErrorAlert(error)
@@ -285,6 +291,7 @@ export default {
     },
  
     async insertFinal() {
+
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
           await this.insertNewInterlocutor()
