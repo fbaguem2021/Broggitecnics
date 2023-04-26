@@ -36,10 +36,10 @@
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 2%;
     grid-row-gap: 4%;
-    height: 85%;
 }
 
 .block-lt, .block-lb, .block-ltb {
+    position: relative;
     padding: 30px;
     height: 100%;
     background-color: rgb(226, 170, 18, .14);
@@ -123,6 +123,9 @@
 #operator-data .card-title{
     margin: 0;
 }
+.menu-container .card-title i {
+    padding-left: 10px;
+}
 
 #operator-data .card-body {
     width: 100%;
@@ -171,7 +174,16 @@
     width: 80%;
     transform: translateX(-50%);
 }
+
+#operator-data .card-footer {
+    text-align: center;
+}
+
 .info-badge {
+    /* position: absolute;
+    left: 50%;
+    bottom: 1%;
+    transform: translateX(-50%); */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -181,27 +193,20 @@
     position: relative;
 }
 .icon-stack .bi-triangle {
-    font-size: 65px;
+    font-size: 55px;
     color: var(--danger)
 }
 .icon-stack .bi-hammer {
     position: absolute;
     left: 50%;
     top: 50%;
-    font-size: 30px;
+    font-size: 22px;
     transform: translate(-45%, -30%);
 }
 #menu-admin .block-lt i, #menu-admin .block-rt i, #menu-admin .block-rb i {
-    position: absolute;
-    left: 80%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 50px;
-
-    /* margin-left: 10px;
-    font-size: 30px; */
+    margin-left: 10px;
+    font-size: 30px;
 }
-
 .ordered-list div {
     display: flex;
     flex-direction: column;
@@ -209,6 +214,7 @@
 .ordered-list li {
     margin-bottom: 2px;
 }
+
 @media screen and (max-width: 992px), (max-height: 800px){
     .ordered-list{
         display: flex;

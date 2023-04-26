@@ -214,7 +214,7 @@ export default {
     },
     isExpedientsSelected(isSelected) {
         this.showUpdateController = isSelected
-        console.log("at last one selected", isSelected)
+        console.log("at least one selected", isSelected)
     },
     updateSelectedExp(){
         this.filterBySelected.col = "all"
@@ -227,7 +227,6 @@ export default {
         .then(response => {
           self.estats = response.data;
           self.estatsIsLoaded = true;
-          console.log(response)
         })
         .catch((error) => { 
             this.showError(error)
@@ -241,7 +240,7 @@ export default {
     searchBarSubmit() {
         this.allExpedientsTab.show()
         const col = this.filterBySelected.col
-        let value = this.filterBySelected.col == 'all' ? '' : this.filterBySelected.input
+        let value = this.filterBySelected.input
         if(col === 'codi') { value = 'EXP-'+value}
         console.log("Searching in", `'${col}'`, "value:", value)
         this.$refs.expedientsTable.selectExpedientsBy(col, value)
@@ -250,7 +249,7 @@ export default {
         this.$refs.messageApp.createErrorAlert(error)
     },
     showMessage(message, type, data = null) {
-        this.$refs.messageApp.createMessageAlert(message, type)
+        this.$refs.messageApp.createMessageAlert(message, type, data)
     }
   },
   mounted () {

@@ -1,5 +1,5 @@
 @extends('layout.base')
-@section('page-title', "Home")
+@section('page-title', "Home - " . Auth::user()->rol->nom)
 @section('style')
     @vite('resources/css/menus.css')
 @endsection

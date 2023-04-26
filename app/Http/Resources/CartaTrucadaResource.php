@@ -29,6 +29,7 @@ class CartaTrucadaResource extends JsonResource
                 'data' => $date,
                 'hora' => $time
             ],
+            'telefon' => $this->telefon,
             'durada' => $this->durada,
             'interlocutor' => $this->interlocutor ? [
                 'nom' => $this->interlocutor->nom ?? null,

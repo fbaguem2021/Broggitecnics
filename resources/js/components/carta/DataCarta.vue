@@ -55,7 +55,8 @@ export default {
                 const seconds = duration.seconds()
                 const formattedSeconds = (seconds < 10 ? '0' : '') + seconds //Add leading 0 if seconds are less than 10
                 self.timer = minutes + ':' + formattedSeconds
-                this.$emit('carta-durada', seconds)
+                this.elapsedSeconds = Math.floor(duration.asSeconds())
+                this.$emit('carta-durada', this.elapsedSeconds)
             }
             updateTime()
             setInterval(updateTime, 1000)
