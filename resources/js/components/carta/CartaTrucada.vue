@@ -54,11 +54,30 @@
         <div id="bg"></div>
       </div>
       <div class="buttons">
-        <button id="cancel">Cancelar</button>
+        <button id="cancel" @click="cancelCallModalShow">Cancelar</button>
         <button id="submit" @click="insertFinal()">Finalitzar</button>
       </div>
     </div>
   </div>
+  <div class="modal fade" ref="exampleModalCenter" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="cancellCallModalTitle">Cancel·lar trucada</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Estas segur/a que vols cancel·lar la trucada?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tornar a la trucada</button>
+        <button type="button" class="btn btn-success" @click="condirmCancelCall">Cance·lar trucada</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   <div id="stripes-1">
     <svg width="200" height="80" viewBox="0 0 200 80" fill="none">
       <path d="M0 0H200V20H0V0Z" fill="#E2AA12" />
@@ -82,9 +101,7 @@ import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 import MessageApp from '../MessageApp.vue';
-
-
-
+import * as bootstrap from 'bootstrap';
 
 export default {
   emits: ['agenciasSeleccionadas'],
@@ -105,7 +122,7 @@ export default {
       codiTrucada: '',
       codiNewExpedient: '',
       //expedient: objeto que contiene {id, codi, estat_id}
-      expedient: { id: null, codi: null, estat_id: null },
+      expedient: { id: 10, codi: null, estat_id: null },
       isNewExpedient: true,
       dataHoraTrucada: null,
       durada: 0,
@@ -125,6 +142,8 @@ export default {
       incidentData: {},
       idAgenciasSeleccionadas: [],
       userId: 0,
+      cancelCallModal: {},
+      error: false
     }
   },
   computed: {
@@ -239,6 +258,7 @@ export default {
         })
         .catch(error => {
           me.showError(error)
+          me.error = true
           console.log(error);
         });
     },
@@ -258,6 +278,7 @@ export default {
         })
         .catch(error => {
           me.showError(error)
+          me.error = true
           console.log(error);
         });
     },
@@ -287,15 +308,16 @@ export default {
       })
         .then(response => {
           console.log(response.data);
-          this.cartaId = response.data.carta_id
-          this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
+          me.cartaId = response.data.carta_id
         })
         .catch(error => {
-          this.$refs.messageApp.createErrorAlert(error)
+          me.error = true
+          me.showError(error)
         });
     },
 
     async insertFinal() {
+      this.error = false
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
           if (this.interlocutor.isNewInerlocutor) {
@@ -312,8 +334,14 @@ export default {
         if (this.idAgenciasSeleccionadas.length > 0) {
           await this.insertAgenciaHasEstat()
         }
-          /* const redirectHome = "/Broggitecnics/public/home";
-          window.location.href = redirectHome; */
+        if(!this.error) {
+          this.$refs.messageApp.createMessageAlert("La carta de trucada s'ha guardat correctament", "success", "Redirecionant al menu...")
+          setTimeout(()=>{
+            const redirectHome = "/Broggitecnics/public/home";
+            window.location.href = redirectHome;
+            // window.location.href = "/home";
+          }, 4000)
+        } 
       } else {
         console.log("Carta it's not valid")
         let invalidParts = []
@@ -332,6 +360,7 @@ export default {
         console.log(invalidParts)
         this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning", invalidParts)
       }
+
     },
 
     async insertAgenciaHasEstat() {
@@ -348,10 +377,18 @@ export default {
         console.log(responses);
       })
       .catch(error => {
+        self.error = true
         self.showError(error);
       });
     },
-
+    cancelCallModalShow() {
+      this.cancelCallModal.show()
+    },
+    condirmCancelCall() {
+        const redirectHome = "/Broggitecnics/public/home";
+        window.location.href = redirectHome
+        // window.location.href = "/home";
+    },
     showError(error) {
       this.$refs.messageApp.createErrorAlert(error)
     },
@@ -364,6 +401,7 @@ export default {
     this.getCartaData()
     let inputDate = new Date().toISOString();
     this.dataHoraTrucada = inputDate.replace("T", " ").slice(0, -5);
+    this.cancelCallModal = new bootstrap.Modal(this.$refs.exampleModalCenter)
     // setTimeout(()=>{ this.isLoaded = true}, 1000)
   },
 }
