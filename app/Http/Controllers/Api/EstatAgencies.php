@@ -43,10 +43,10 @@ class EstatAgencies extends Controller
             $response = ["message" => "succesfully added", "item" => $cartaHasAgencia];
             $code = 201;
         } catch (QueryException $e) {
-            $response = ["message" => "error", "errorData" => $e];
+            $response = $e;
             $code = 400;
         }
-        return response()->json([$response, $code]);
+        return response()->json($response, $code);
     }
 
     /**
@@ -79,11 +79,11 @@ class EstatAgencies extends Controller
            $response = ["isError" => false, "updatedCarta" => new CartaTrucadaResource(CartaTrucada::find($cartaTrucadaId))];
            $code = 200;
         } catch (QueryException $e) {
-            $response = ["isError" => true, "errorMssg" => $e];
+            $response = $e;
             $code = 400;
         }
 
-        return response()->json([$response, $code]);
+        return response()->json($response, $code);
     }
 
         /**

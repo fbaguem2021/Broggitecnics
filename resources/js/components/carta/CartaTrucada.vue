@@ -122,7 +122,7 @@ export default {
       codiTrucada: '',
       codiNewExpedient: '',
       //expedient: objeto que contiene {id, codi, estat_id}
-      expedient: { id: 10, codi: null, estat_id: null },
+      expedient: { id: null, codi: null, estat_id: null },
       isNewExpedient: true,
       dataHoraTrucada: null,
       durada: 0,
@@ -337,8 +337,8 @@ export default {
         if(!this.error) {
           this.$refs.messageApp.createMessageAlert("La carta de trucada s'ha guardat correctament", "success", "Redirecionant al menu...")
           setTimeout(()=>{
-            const redirectHome = "/Broggitecnics/public/home";
-            window.location.href = redirectHome;
+            /* const redirectHome = "/Broggitecnics/public/home";
+            window.location.href = redirectHome; */
             // window.location.href = "/home";
           }, 4000)
         } 

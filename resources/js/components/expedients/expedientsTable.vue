@@ -2,7 +2,7 @@
     <table class="table table-hover text-center">
         <thead>
             <tr>
-                <th><input class="form-check-input" type="checkbox" v-model="isAllSelected" @click="toggleSelection"></th>
+                <th></th>
                 <th v-for="(filtre, index) in filtres" :key="index" 
                     :style = "{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }"
                     :width = " filtre.id === 2 ? '20%' : filtre.id === 3 ? '25%' : '10%' ">
@@ -99,7 +99,11 @@ export default {
       expedientsIsLoaded: false,
       orderByColumn: 'updated_at',
       orderDir: 'desc',
-      isAllSelected: false
+      isAllSelected: false,
+      lastSelect: {
+        col: '',
+        value: ''
+      }
     }
   },
   computed: {
@@ -203,6 +207,8 @@ export default {
       }
     },
     selectExpedientsBy(col, value) {
+      this.lastSelect.col = col
+      this.lastSelect.value =
       this.expedientsIsLoaded = false
       const self = this;
       axios
@@ -224,9 +230,15 @@ export default {
         });
         Promise.all(promises)
         .then(responses => {
+          console.log("LAST SELECT", this.lastSelect)
           this.$emit('refresh-legend');
           this.showMessage("Estat de l'expedient modificat correctament", "success")
-          self.submit(true, false);
+          if (this.lastSelect.col == 'all' || this.lastSelect.col == '') {
+            self.submit(true, false);
+          } else {
+            self.selectExpedientsBy(this.lastSelect.col, this.lastSelect.value)
+          }
+        
           console.log(responses);
         })
         .catch(error => {

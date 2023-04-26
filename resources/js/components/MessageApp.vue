@@ -75,7 +75,7 @@ export default {
                 const status = error.response.status
                 switch (status) {
                     case 400:
-                        this.errorAlert.message = 'Petició incorrecta';
+                        this.errorAlert.message = 'Error 400 - El servidor no ha pogut interpretar la solicitud';
                         break;
                     case 401:
                         this.errorAlert.message = 'No autoritzat';

@@ -241,7 +241,7 @@ export default {
     searchBarSubmit() {
         this.allExpedientsTab.show()
         const col = this.filterBySelected.col
-        let value = this.filterBySelected.col == 'all' ? '' : this.filterBySelected.input
+        let value = this.filterBySelected.input
         if(col === 'codi') { value = 'EXP-'+value}
         console.log("Searching in", `'${col}'`, "value:", value)
         this.$refs.expedientsTable.selectExpedientsBy(col, value)

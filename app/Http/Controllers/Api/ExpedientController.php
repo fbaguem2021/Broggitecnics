@@ -83,7 +83,25 @@ class ExpedientController extends Controller
                         break;
                     case 'cartes_count':
                         $value = strtolower($value);
-                        $query->havingRaw(" LOWER(COUNT(cartes_trucades.id)) LIKE '%$value%' ");
+                        $operator = '';
+                        $number = '';
+                    
+                        if (substr($value, 0, 1) === '<' || substr($value, 0, 1) === '>') {
+                            $operator = substr($value, 0, 1);
+                            $value = substr($value, 1);
+                            if (substr($value, 0, 1) === '=') {
+                                $operator .= '=';
+                                $value = substr($value, 1);
+                            }
+                        }
+
+                        $number = (int) $value;
+                    
+                        if ($operator !== '') {
+                            $query->havingRaw("COUNT(cartes_trucades.id) $operator $number");
+                        } else {
+                            $query->havingRaw("LOWER(COUNT(cartes_trucades.id)) LIKE '%$value%'");
+                        }
                         break;
                     case 'orderBy':
                         $query->orderBy($value, $direction);
