@@ -133,7 +133,6 @@ export default {
   },
   methods: {
     agenciasSeleccionadas(idAgencias) {
-      alert('funcion en carta')
       this.idAgenciasSeleccionadas = idAgencias
     },
     async getCartaData() {
