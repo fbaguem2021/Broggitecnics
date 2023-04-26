@@ -7,10 +7,11 @@
         <i class="bi bi-exclamation-circle me-2"></i><span>Els camps amb aquest icona son obligatoris</span>
       </div>
       <div class="row align-items-center">
-        <div class="d-flex col-4 mb-2" id="isCat-conatiner">
+        <div class="col-1 d-flex mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>
           <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" @click="toggleIsCat($event)">
           <i class="bi bi-arrow-left" id="isCatFocus"></i>
+          <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Are you currently located in Catalonia?"></i>
         </div>
       </div>
       <div class="row">        
@@ -25,7 +26,9 @@
                 <option v-for="(prov, index) in filteredList(provincies, provincia.input) " :key="index" :value="prov.nom"></option>
               </datalist>
             </div>
+            <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="In which province are you currently located?"></i>
         </div>
+        
         <transition name="fade" @before-enter="adjustColumnSizes" @after-leave="adjustColumnSizes">
           <div v-show="isCat" class="col-4">
             <div class="form-floating mb-3">
@@ -36,6 +39,7 @@
                 <option v-for="(com, index) in filteredList(comarques, comarca.input)" :key="index" :value="com.nom"></option>
               </datalist>
             </div>
+            <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Which region are you currently in?"></i>
         </div>
         </transition>
         <div class="col-4" ref="municipi">
@@ -49,6 +53,7 @@
                 <option v-for="(mun, index) in filteredList(municipis, municipi.input)" :key="index" :value="mun.nom"></option>
               </datalist>
             </div>
+            <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Could you provide the name of your municipality or city?"></i>
         </div>
         <div class="col-1 pb-3 reset-row">
             <i class="bi bi-clipboard-x" @click="clearProvinciaComarcaMunicipi($event)" @keydown="clearProvinciaComarcaMunicipi($event)" tabindex="0"></i>
@@ -65,6 +70,8 @@
                 </datalist>
                 <label for="provincia">Tipus de localització</label>
               </div>
+            <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true" 
+              data-bs-title="<p>Could you please tell me the type of location you are currently at?</p><p>Opcions:</p><ul><li>'Street' (carrer)</li> <li>'Highway' (carretera)</li> <li>'Town or city' (entidat població)</li> <li>'Landmark or point of interest' (punt singular)</li></ul>"></i>
             </div>
             <div class="col-4">
               <div class="form-floating mb-3">
@@ -77,7 +84,7 @@
             </div>
           </div>
           <transition name="fade">
-            <component :is="currentLocComponent" @update-description="updateLocDescription"></component>
+            <component :is="currentLocComponent" :showHelp="showHelp" @update-description="updateLocDescription"></component>
           </transition>
         </div>
       </transition>
@@ -98,7 +105,10 @@ export default {
   props: {
     localitzacioData: {
       required: true
-    }
+    },
+    showHelp: {
+        type: Boolean
+    },
   },
   components: {
     CarrerForm,
@@ -427,7 +437,7 @@ export default {
   #invalid-legend {
     position: absolute;
     right: 0;
-    top: 0;
+    top: -10px;
   }
   #invalid-legend span {
     font-size: 14px;

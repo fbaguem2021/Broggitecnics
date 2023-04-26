@@ -27,17 +27,26 @@
                 </div>
             </button>
         </li>
+        <div id="showHelpSwitch-container">
+            <div class="form-check form-switch form-check-reverse m-0">
+                <label class="form-check-label" for="showHelpSwitch"><i class="bi bi-badge-cc"></i></label>
+                <input v-model="showHelp" id="showHelpSwitch" class="form-check-input" type="checkbox" role="switch">
+            </div>
+        </div>
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" @keydown="handleTabKey($event)" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
             <interlocutor-form 
+                :showHelp=showHelp
                 @get-interlocutor="emitInterlocutor"
                 @interlocutor-error="showError"
                 @interlocutor-is-loaded="formMainIsLoaded"
             />
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
-            <localitzacio-form :localitzacioData="localitzacioData" 
+            <localitzacio-form 
+                :localitzacioData="localitzacioData" 
+                :showHelp=showHelp
                 @get-localitzacio="emitLocation" 
                 @get-map-serach-string="updateMapSearchString"
                 @localitzacio-error="showError"
@@ -45,7 +54,9 @@
             <!-- @is-form-valid="updateLocationValid" -->
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
-            <incident-form :incidentData="incidentData"
+            <incident-form 
+                :incidentData="incidentData"
+                :showHelp=showHelp  
                 @get-incident="emitIncident"
                 @incident-error="showError"
                 />
@@ -94,6 +105,7 @@ export default {
         localitzacio: {},
         incident: {},
         mapSearchString: '',
+        showHelp: false,
         interlocutorTab: Object,
         localitzacioTab: Object,
         incidentTab: Object
@@ -178,7 +190,6 @@ export default {
     }
   },
   mounted() {
-    
     /**
      * Observer sends the location string to the map component to search it
      * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
@@ -195,6 +206,10 @@ export default {
     this.interlocutorTab = new bootstrap.Tab(this.$refs.interlocutorTab);
     this.localitzacioTab = new bootstrap.Tab(this.$refs.localitzacioTab);
     this.incidentTab = new bootstrap.Tab(this.$refs.incidentTab);
+
+    /* Inits all tooltips */
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
   }
 }
 </script>
@@ -204,6 +219,47 @@ export default {
         background-color: #DFE2E6;
         border-bottom: 4px solid var(--primary);
         border-radius: 5px 5px 0 0;
+    }
+    #myTab {
+        position: relative;
+    }
+    #showHelpSwitch-container{
+        position: absolute;
+        right: 3%;
+        top: 60%;
+        transform: translateY(-50%);
+        padding-left: 20px;
+    }
+    #showHelpSwitch-container label {
+        transform: scale(1.4);
+        padding-right: 10px;
+    }
+    #showHelpSwitch {
+        position: relative;
+        background-image: none;
+        width: 140%;
+        transform: scale(1.4) translateX(10%);
+    }
+
+    #showHelpSwitch::before{
+        position: absolute;
+        font-size: 12px;
+        top: 1px;
+        left: 1px;
+        color: rgb(81, 81, 81);
+        display: inline-block;
+        font-family: bootstrap-icons !important;
+        content: '\F3EE';
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        transition: transform .2s ease-in-out;
+    }
+    #showHelpSwitch:checked::before{
+        transform: translateX(160%);
+        color: white
     }
     .nav-tabs:first-child {
         padding-left: 20px;
@@ -270,7 +326,7 @@ export default {
         }
 
     }
-    @media (max-width: 1030px) {
+    @media (max-width: 1029px) {
         .nav-item {
             height: 50%;
         }
@@ -278,7 +334,6 @@ export default {
     @media (max-width: 715px) {         
         .nav-item {
             width: fit-content;
-            height: 34%;
         }
     }
 </style>

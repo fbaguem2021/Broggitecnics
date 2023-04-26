@@ -5,22 +5,33 @@
     <div id="invalid-legend">
       <i class="bi bi-exclamation-circle me-2"></i><span>Els camps amb aquest icona son obligatoris</span>
     </div>
-    <div class="form-floating mb-3" id="tipusIncident-container">
-      <input v-model="tipusIncident.input" @input="handleInput($event.target, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
-      <label for="tipusIncident">Tipus d'incident</label>
-      <datalist  id="tipusIncidentsList">
-        <option v-for="(tipus, index) in tipusIncidents" :key="index" :value="tipus.nom"></option>
-      </datalist>
+    <div class="row">
+      <div class="col-5">
+        <div class="form-floating mb-3" id="tipusIncident-container">
+          <input v-model="tipusIncident.input" @input="handleInput($event.target, tipusIncidents)" type="text" class="form-control" id="tipusIncident" placeholder="Tipus incident" list="tipusIncidentsList" autocomplete="off" ref="tipusIncidentInput">
+          <label for="tipusIncident">Tipus d'incident</label>
+          <datalist  id="tipusIncidentsList">
+            <option v-for="(tipus, index) in tipusIncidents" :key="index" :value="tipus.nom"></option>
+          </datalist>
+        </div>
+        <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  data-bs-title="<p>What type of incident are you reporting?</p> <p>Opcions:</p> <ul><li>'Accident' (accident)</li> <li>'Other incidents' (altres incidències)</li> <li>'Medical assistance' (asistencia sanitaria)</li> <li>'Civic issues' (civisme)</li> <li>'Leakage' (fuita)</li> <li>'Fire' (incendi)</li> <li>'Environmental issue' (medi ambient)</li> <li>'Safety' (seguretat)</li> <li>'Traffic' (trànsit)</li></ul>"></i>
+      </div>
     </div>
-    <div class="form-floating mb-3" id="incident-container">
-      <input v-model="incident.input" @input="handleInput($event.target, incidents)" type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
-      <label for="incident">Incident</label>
-      <datalist  id="incidentsList">
-        <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
-      </datalist>
+    
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3" id="incident-container">
+          <input v-model="incident.input" @input="handleInput($event.target, incidents)" type="text" class="form-control is-invalid" id="incident" placeholder="Incident" list="incidentsList" autocomplete="off" ref="incidentInput">
+          <label for="incident">Incident</label>
+          <datalist  id="incidentsList">
+            <option v-for="(incident, index) in incidents" :key="index" :value="incident.nom"></option>
+          </datalist>
+        </div>
+        <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Can you please provide any additional details about the incident that may be helpful for us to know?"></i>
+      </div>
     </div>
-    <div v-show="incident.definicio">
-      <div class="form-floating">
+    <div v-show='incident.definicio'>
+      <div class='form-floating'>
         <textarea :value="incidentDefinicio" :style="textAreaHeight(incidentDefinicio)" class="form-control-plaintext" id="incidentDefinicio" placeholder="Definició de l'incident" readonly></textarea>
         <label for="incidentDefinicio">Descripció</label>
       </div>
@@ -34,6 +45,7 @@
   </form>
 </template>
 <script>
+import * as bootstrap from 'bootstrap';
 export default {
   emits: [
     'get-incident',
@@ -42,7 +54,10 @@ export default {
   props: {
     incidentData: {
       type: Object
-    }
+    },
+    showHelp: {
+      type: Boolean
+    },
   },
   data() {
     return {
@@ -171,6 +186,9 @@ export default {
   },
   mounted() {
     this.updateCartaData()
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
   },
 }
 </script>
@@ -184,7 +202,7 @@ export default {
   #invalid-legend {
     position: absolute;
     right: 0;
-    top: 0;
+    top: -10px;
   }
   #invalid-legend span {
     font-size: 14px;
@@ -195,7 +213,7 @@ export default {
     color: #e21212;
   }
   #tipusIncident-container {
-    width: 40%;
+    width: 100%;
     min-width: 230px;
   }
   .form-control-plaintext:focus {

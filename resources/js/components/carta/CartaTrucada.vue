@@ -46,7 +46,7 @@
               @agenciasSeleccionadas="agenciasSeleccionadas" />
           </div>
           <div id="expedients" style="position: relative;">
-            <!-- <form-expedients></form-expedients> -->
+            <form-expedients></form-expedients>
           </div>
         </div>
         <div id="bg"></div>
@@ -85,7 +85,7 @@ export default {
   components: {
     FormMain,
     FormNota,
-    // FormExpedients,
+    FormExpedients,
     MapApp,
     DataCarta,
     LoaderSplash,
@@ -160,8 +160,6 @@ export default {
         })
         .catch((error) => { 'error al obtenir el usuari' });
       this.isCartaDataLoaded = true
-
-
     },
     getNewCodi(codi) {
       let numberPart = parseInt(codi.match(/\d+/)[0]) + 1;
@@ -282,10 +280,10 @@ export default {
           this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
         })
         .catch(error => {
-          this.$refs.messageApp.createErrorAlert("Hi ha agut un error amb la base de dades: "+error, "danger")
+          this.$refs.messageApp.createErrorAlert(error)
         });
     },
-
+ 
     async insertFinal() {
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
@@ -492,5 +490,21 @@ export default {
 
 #mapa-app {
   height: 100%;
+}
+</style>
+<style>
+/* Tooltips */
+i.bi-chat-left-dots {
+  position: absolute;
+  right: -8px;
+  top: -20%;
+  z-index: 10;
+}
+.tooltip .tooltip-inner {
+  text-align: start !important;
+  padding: 10px 12px;
+}
+#form-main .row div[class^="col"] {
+  position: relative;
 }
 </style>

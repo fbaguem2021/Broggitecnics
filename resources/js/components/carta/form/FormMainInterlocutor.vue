@@ -20,12 +20,14 @@
                     <input v-model="name.input" type="text" class="form-control is-invalid" id="name" placeholder="Nom" autocomplete="off" autofocus ref="nameInput">
                     <label for="name">Nom</label>
                 </div>
+                <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="What is your first name?"></i>
             </div>
             <div class="col-8">
                 <div class="form-floating mb-3">
                     <input v-model="surnames.input" type="text" class="form-control is-invalid" id="surnames" placeholder="Cognoms" autocomplete="off" ref="surnamesInput">
                     <label for="surnames">Cognoms</label>
                 </div>
+                <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="What is your last name?"></i>
             </div>
         </div>
         <div class="form-floating" id="antecedents-textArea-container">
@@ -47,6 +49,11 @@ export default {
         'interlocutor-is-loaded',
         'interlocutor-error'
     ],
+    props: {
+        showHelp: {
+            type: Boolean
+        },
+    },
     data() {
         return {
             isLoaded: false,
@@ -225,7 +232,7 @@ export default {
     #invalid-legend {
         position: absolute;
         right: 0;
-        top: 0;
+        top: -10px;
     }
     #invalid-legend span {
         font-size: 14px;
