@@ -60,7 +60,6 @@ export default {
                 type: '',
                 data: ''
             }
-            
         }
     },
     methods: {
@@ -91,8 +90,10 @@ export default {
                         this.errorAlert.message = "Error intern del servidor - Posis en contacte amb un adminsitrador de l'aplicació";
                         if (error.response.data.message.startsWith("SQLSTATE")) {
                             const errorType = "SQLSTATE"
-                            const errorCode = error.response.data.message.split("[")[2].split("]")[0];
-                            this.errorAlert.data = `${errorType} Codi d'error: ${errorCode}`
+                            const regex = /\[(.*?)\]/g;
+                            const matches = error.response.data.message.match(regex);
+                            const errorCodes = matches ? matches.map(match => match.slice(1, -1)) : [];
+                            this.errorAlert.data = `${errorType} - Codi d'error/s: ${errorCodes}`
                         }
                         break;
                     default:

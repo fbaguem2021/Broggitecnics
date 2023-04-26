@@ -60,7 +60,7 @@
                 <h3 class="card-title fw-bold text-center">Sandbox</h3>
                 <p>El sandbox es un espai pensat per familiaritzar-se amb la la funcionalitat de la carta de trucada.</p>
                 <p>Premsa aquesta icona <i class="bi bi-info-circle"></i> per obtenir mes informació</p>
-                <a class="btn btn-secondary" href="#">Accedir a la carta</a>
+                <a class="btn btn-secondary disabled" href="#">Accedir a la carta</a>
             </div>
         </div>
     </div>
@@ -68,11 +68,11 @@
     <div class="block-rb" id="trucada">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title fw-bold text-center">Trucada</h3>
+                <h3 class="card-title fw-bold text-center">Trucada<i class="bi bi-telephone-inbound pe-1"></i></h3>
                 <p>Incia una carta de trucada amb un número de telèfon aleatori o intrudeix-ne un.</p>
                 <form action="{{ route('carta') }}" method="GET">
                     <div id="phone-selector" class="row w-100 justify-content-center">
-                        <label class="col-md-1 col-form-label d-flex justify-content-center"><i class="bi bi-telephone-inbound pe-1"></i></label>
+                        <label class="col-md-1 col-form-label d-flex justify-content-center pe-4">Telèfon</label>
                         <div class="col-md-8 d-flex align-items-center">
                             <div class="input-group align-items-center">
                                 <label class="switch">
@@ -89,7 +89,6 @@
                 </form>
             </div>
         </div>
-        
     </div>
     <div class="menu-bg"></div>
 </div>

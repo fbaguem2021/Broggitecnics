@@ -13,27 +13,27 @@
         <div id="operator-data">
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title fw-bold text-center">Trucades rebudes</h3>
-                    <div class="chart-container">
-                        <canvas id="callTypeChart"></canvas>
-                    </div>
+                    <h3 class="card-title fw-bold text-center mb-2">Gràfics<i class="bi bi-bar-chart-line"></i></h3>
+                    <ul aria-label="Tipus:"> 
+                        <li>Municipis amb més incidents</li>
+                        <li>Municipis amb més trucades</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a class="btn btn-primary" style="width: 200px" href="{{route('graphs')}}">Accedir</a>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-body">
-                    <h3 class="card-title fw-bold text-center">Temps mitjana trucada</h3>
-                    <div class="chart-container">
-                  
-                            <canvas id="avCallChart"></canvas>
-                            <span style="
-                                position: absolute;
-                                bottom: 0;
-                                left: 50%;
-                                transform: translateX(-50%);
-                            ">130s</span>
-                       
-                    </div>
+                    <h3 class="card-title fw-bold text-center mb-2">Gestió d'usuaris<i class="bi bi-person-gear"></i></h3>
+                    <ul aria-label="Accions:"> 
+                        <li>Cercar usuaris</li>
+                        <li>Crear, modifcar i eliminar usuaris</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a type="submit" class="btn btn-primary" style="width: 200px" href="{{route('operadors')}}">Accedir</a>
                 </div>
             </div>
         </div>
@@ -42,7 +42,13 @@
     <div class="block-rt" id="sandbox">
         <div class="card">
             <div class="card-body px-4">
-                <h3 class="card-title fw-bold text-center">Gestió d'expedients</h3>
+                <h3 class="card-title fw-bold text-center">Gestió d'expedients<i class="bi bi-folder-check"></i></h3>
+                <ul aria-label="Accions:"> 
+                    <li>Cercar expedients</li>
+                    <li>Modifcar el seus estats</li>
+                    <li>Inspeccionar les cartes asignades</li>
+                    <li>Modifcar els estats de les agències</li>
+                </ul>
                 <a class="btn btn-secondary" style="width: 200px" href="{{route('expedients')}}">Accedir</a>
             </div>
         </div>
@@ -51,11 +57,11 @@
     <div class="block-rb" id="trucada">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title fw-bold text-center">Trucada</h3>
+                <h3 class="card-title fw-bold text-center">Trucada<i class="bi bi-telephone-inbound pe-1"></i></h3>
                 <p>Incia una carta de trucada amb un número de telèfon aleatori o intrudeix-ne un.</p>
                 <form action="{{ route('carta') }}" method="GET">
-                    <div class="row w-100 justify-content-center">
-                        <label class="col-md-1 col-form-label d-flex justify-content-center"><i class="bi bi-telephone-inbound pe-1"></i></label>
+                    <div id="phone-selector" class="row w-100 justify-content-center">
+                        <label class="col-md-1 col-form-label d-flex justify-content-center pe-4">Telèfon</label>
                         <div class="col-md-8 d-flex align-items-center">
                             <div class="input-group align-items-center">
                                 <label class="switch">

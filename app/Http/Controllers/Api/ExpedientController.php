@@ -74,13 +74,16 @@ class ExpedientController extends Controller
                         $query->where('expedients.codi', 'LIKE' ,"%$value%");
                         break;
                     case 'loc':
-                        $query->havingRaw(" GROUP_CONCAT(DISTINCT provincies.nom) LIKE '%$value%' ");
+                        $value = strtolower($value);
+                        $query->havingRaw(" LOWER(GROUP_CONCAT(DISTINCT provincies.nom)) LIKE '%$value%' ");
                         break;
                     case 'inc':
-                        $query->havingRaw(" GROUP_CONCAT(DISTINCT tipus_incidents.nom) LIKE '%$value%' ");
+                        $value = strtolower($value);
+                        $query->havingRaw(" LOWER(GROUP_CONCAT(DISTINCT tipus_incidents.nom)) LIKE '%$value%' ");
                         break;
                     case 'cartes_count':
-                        $query->havingRaw(" COUNT(cartes_trucades.id) LIKE '%$value%' ");
+                        $value = strtolower($value);
+                        $query->havingRaw(" LOWER(COUNT(cartes_trucades.id)) LIKE '%$value%' ");
                         break;
                     case 'orderBy':
                         $query->orderBy($value, $direction);
