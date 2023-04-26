@@ -191,6 +191,7 @@ export default {
             this.modal.hide()
             let url = `/usuari/${this.edituser.id}`;
             if (this.tipoModal == 'pssw') {
+                this._userdata.contrasenya = this._newpssw;
                 url += '?password=true'
             }
             axios.put(url, this.edituser)

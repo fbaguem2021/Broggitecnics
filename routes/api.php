@@ -36,9 +36,17 @@ Route::get('usuari-buscar', [UsuariController::class, 'buscar'])->name('usuari.b
 Route::get('usuari-buscar-id', [UsuariController::class, 'buscarId'])->name('usuari.buscar.id');
 Route::apiResource('usuari', UsuariController::class);
 
+
 /* EXPEDIENTS */
 Route::get('expedients/{filter}', [ExpedientController::class, 'index']);
 Route::get('expedients-gestio/{filter}/{value?}/{dir?}', [ExpedientController::class, 'indexGestio']);
+/* EXPEDIENTS dev-cartaTrucada_Expedients */
+/*
+// Route::get('expedients-carta-trucada', [ExpedientController::class, 'expedients_carta']);
+// Route::get('expedients-carta-trucada/{provincia?}/{comarca?}/{municipi?}', [ExpedientController::class, 'expedients_carta']);
+// Route::get('expedients/{filter}/{value?}/{dir?}', [ExpedientController::class, 'index']);
+*/
+
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
 Route::post('/expedient', [ExpedientController::class, 'store']);
 Route::apiResource('/estatExpedient', EstatExpedientController::class);

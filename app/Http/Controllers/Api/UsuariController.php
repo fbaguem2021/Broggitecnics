@@ -20,11 +20,11 @@ class UsuariController extends Controller
      */
     public function index(Request $request)
     {
-        $rol = \App\Models\Rol::where('id',1)->get();
-        $queryid = $request->query('id', 4);
+        // $rol = \App\Models\Rol::where('id',1)->get();
+        $queryid = $request->query('id');
 
         $tipo = Usuari::find($queryid)->tipus_usuaris_id;
-        $usuaris = Usuari::where('tipus_usuaris_id', '<=', $tipo)->orderBy('id', 'asc')->paginate(5);
+        $usuaris = Usuari::whereRaw('id != ?',[$queryid])->where('tipus_usuaris_id','<=', $tipo)->orderBy('id', 'asc')->paginate(5);
         // $usuaris = Usuari::orderBy('id', 'asc')->paginate(5);
         return UsuariResource::collection($usuaris);
     }
@@ -130,7 +130,7 @@ class UsuariController extends Controller
 
         $data = $request->json()->all();
 
-        $usr = Usuari::find($usuari->id);
+        // $usr = Usuari::find($usuari->id);
         // $usr->username = $data['username'];
         $usuari->username = $data['username'];
         if ($pssw) {
