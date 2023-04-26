@@ -41,11 +41,11 @@ Route::apiResource('usuari', UsuariController::class);
 Route::get('expedients/{filter}', [ExpedientController::class, 'index']);
 Route::get('expedients-gestio/{filter}/{value?}/{dir?}', [ExpedientController::class, 'indexGestio']);
 /* EXPEDIENTS dev-cartaTrucada_Expedients */
-/*
+
 // Route::get('expedients-carta-trucada', [ExpedientController::class, 'expedients_carta']);
-// Route::get('expedients-carta-trucada/{provincia?}/{comarca?}/{municipi?}', [ExpedientController::class, 'expedients_carta']);
+Route::get('expedients-carta-trucada/{provincia?}/{comarca?}/{municipi?}', [ExpedientController::class, 'expedients_carta']);
 // Route::get('expedients/{filter}/{value?}/{dir?}', [ExpedientController::class, 'index']);
-*/
+
 
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
 Route::post('/expedient', [ExpedientController::class, 'store']);
