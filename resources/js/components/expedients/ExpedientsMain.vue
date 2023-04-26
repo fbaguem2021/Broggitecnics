@@ -227,6 +227,7 @@ export default {
         .then(response => {
           self.estats = response.data;
           self.estatsIsLoaded = true;
+          console.log(response)
         })
         .catch((error) => { 
             this.showError(error)
