@@ -97,6 +97,7 @@ export default {
   },
   data() {
     return {
+      cartaId: null,
       isCartaDataLoaded: false,
       isFormMainLoaded: false,
       codiTrucada: '',
@@ -109,7 +110,10 @@ export default {
       interlocutor: {},
       localitzacio: {},
       incident: {},
-      notaCoumna: '',
+      notaCoumna: {
+        input: '',
+        isValid: false
+      },
       newInterlocutor: true,
       saveInterlocutor: false,
       mapSearchString: '',
@@ -127,7 +131,7 @@ export default {
       return isLoaded
     },
     cartaIsValid() {
-      const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
+      const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid && this.notaCoumna.isValid
       return isValid
     }
   },
@@ -138,7 +142,6 @@ export default {
     },
     async getCartaData() {
       const self = this;
-
       await axios
         .get('cartaData')
         .then(response => {
@@ -146,7 +149,6 @@ export default {
           self.incidentData = response.data.incident
           self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
           self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
-          self.isCartaDataLoaded = true
         })
         .catch((error) => {
           self.showError(error)
@@ -234,6 +236,7 @@ export default {
           me.interlocutor.id = response.data.idInterlocutor
         })
         .catch(error => {
+          me.showError(error)
           console.log(error);
         });
     },
@@ -252,6 +255,7 @@ export default {
           me.expedient.id = response.data.idExpedient
         })
         .catch(error => {
+          me.showError(error)
           console.log(error);
         });
     },
@@ -281,9 +285,8 @@ export default {
       })
         .then(response => {
           console.log(response.data);
+          this.cartaId = response.data.carta_id
           this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
-          const redirectHome = "/Broggitecnics/public/home";
-          window.location.href = redirectHome;
         })
         .catch(error => {
           this.$refs.messageApp.createErrorAlert(error)
@@ -291,10 +294,11 @@ export default {
     },
  
     async insertFinal() {
-
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
-          await this.insertNewInterlocutor()
+          if (this.interlocutor.isNewInerlocutor) {
+            await this.insertNewInterlocutor()
+          }
         }
         if (this.isNewExpedient) {
           this.expedient.codi = this.codiNewExpedient
@@ -303,14 +307,47 @@ export default {
         }
         await this.insertCarta();
 
+        if (this.idAgenciasSeleccionadas.length > 0) {
+          await this.insertAgenciaHasEstat()
+        }
+          /* const redirectHome = "/Broggitecnics/public/home";
+          window.location.href = redirectHome; */
       } else {
         console.log("Carta it's not valid")
-        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning")
+        let invalidParts = []
+        if (!this.interlocutor.isValid) {
+          invalidParts.push("Formulari interlocutor")
+        }
+        if (!this.localitzacio.isValid) {
+         invalidParts.push("Formulari localització")
+        }
+        if (!this.incident.isValid) {
+          invalidParts.push("Formular incident")
+        }
+        if (!this.notaCoumna.isValid) {
+          invalidParts.push("Nota coumna")
+        }
+        console.log(invalidParts)
+        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning", invalidParts)
       }
     },
 
-    insertAgenciaHasEstat() {
-      //insert agencias has estat
+    async insertAgenciaHasEstat() {
+      const self = this
+      const promises = this.idAgenciasSeleccionadas.map(agenciaId => {
+        return axios.post('estatAgencies', 
+                            { "cartaTrucada_id": self.cartaId,
+                              "agencia_id": agenciaId
+                            }
+                          );
+      });
+      await Promise.all(promises)
+      .then(responses => {
+        console.log(responses);
+      })
+      .catch(error => {
+        self.showError(error);
+      });
     },
 
     showError(error) {

@@ -250,7 +250,7 @@ export default {
         this.$refs.messageApp.createErrorAlert(error)
     },
     showMessage(message, type, data = null) {
-        this.$refs.messageApp.createMessageAlert(message, type)
+        this.$refs.messageApp.createMessageAlert(message, type, data)
     }
   },
   mounted () {

@@ -70,16 +70,6 @@ export default {
                 isValid: false
             },
             record: '',
-            cartaInterlocutor: {
-                id: null,
-                telefon: '',
-                antecedents: '',
-                nom: '',
-                cognom: '',
-                isValid: false,
-                isNewInerlocutor: this.isNewInerlocutor,
-                saveInterlocutor: this.saveInterlocutor
-            }
         }
     },
     methods: {
@@ -91,8 +81,6 @@ export default {
          * If no phone number was typed it generates a random one
          */
         async getInterlocutorCookie () {
-            console.log("inside interlocutor cookie")
-
             const interlocutorCookie = this.getCookie('interlocutor_phone')
             if ( interlocutorCookie.isManual && interlocutorCookie.phone ) {
                 await this.checkInterlocutor(interlocutorCookie.phone)
@@ -130,8 +118,10 @@ export default {
                         } else {
                             self.phone = phone
                         }
+                        self.updateCartaData()
                     })
                     .catch((error) => {
+                        self.showError(error)
                         console.log(error)
                     })
         },
@@ -144,14 +134,15 @@ export default {
             const self = this
             axios.get( 'interlocutorGenerate' )
                   .then(response => {
-                    console.log(response)
                     if ( !response.data.match ) {
                         self.phone = response.data.phone
                     } else {
                         self.loadInterlocutor( response.data.interlocutor )
                     }
+                    self.updateCartaData()
                   })
                   .catch( (error) => {
+                    self.showError(error)
                     console.log( error )
                   })
         },
@@ -178,7 +169,7 @@ export default {
          * Updates the object that is sended to the father component with this component data values
          */
         updateCartaData () {
-           this.cartaInterlocutor = {
+           const cartaInterlocutor = {
                 id: this.id,
                 telefon: this.phone,
                 antecedents: this.record,
@@ -188,7 +179,8 @@ export default {
                 isNewInerlocutor: this.isNewInterlocutor,
                 saveInterlocutor: this.saveInterlocutor
             };
-            this.$emit('get-interlocutor', this.cartaInterlocutor)
+            
+            this.$emit('get-interlocutor', cartaInterlocutor)
         },
         /**
          * Removes all validation calsses when focusing an input to improve visability
