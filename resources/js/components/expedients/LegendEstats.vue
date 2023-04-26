@@ -33,11 +33,13 @@ export default {
     },
     methods: {
         estatsUppercase () {
-            const upperCaseStatus = this.estats.map(estat => ({
-            ...estat,
-            estat: estat.estat.toUpperCase()
-            }))
-            return upperCaseStatus;
+            if(Array.isArray(this.estats)) {
+                const upperCaseStatus = this.estats.map(estat => ({
+                ...estat,
+                estat: estat.estat.toUpperCase()
+                }))
+                return upperCaseStatus;
+            }
         },
         sendData (estatID) {
             this.$emit('selectByEstat', estatID);
