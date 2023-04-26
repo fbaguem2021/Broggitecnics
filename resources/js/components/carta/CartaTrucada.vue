@@ -20,7 +20,7 @@
           <!-- Form main Interlocutor, Localitzacio and Incident -->
           <div id="form-main" ref="formMain" class="expanded">
             <form-main :localitzacio-data="localitzacioData" :incident-data="incidentData" @get-carta-location="updateLoc"
-              @get-carta-interlocutor="updateInterlocutor" @get-carta-incident="updateIncident"
+              @get-carta-interlocutor="updateInterlocutor" @get-carta-incident="updateIncident" @get-carta-tipus-incident="updateTipusIncident"
               @get-map-search-string="updateSearchString" @form-main-is-loaded="formMainIsLoaded"
               @form-main-error="showError">
             </form-main>
@@ -48,6 +48,8 @@
           <div id="expedients" style="position: relative;">
                 <form-expedients
                     :localitzacio="localitzacio"
+                    :tipus-incident="tipusIncident"
+                    :info-incidents="infoIncidents"
                     :new-expedient-code="codiNewExpedient"></form-expedients>
             </div>
         </div>
@@ -111,6 +113,7 @@ export default {
       interlocutor: {},
       localitzacio: {},
       incident: {},
+      tipusIncident: {},
       notaCoumna: '',
       newInterlocutor: true,
       saveInterlocutor: false,
@@ -198,6 +201,9 @@ export default {
     },
     updateIncident(incident) {
       this.incident = incident
+    },
+    updateTipusIncident(tipusIncident) {
+      this.tipusIncident = tipusIncident
     },
     updateNotaCoumna(nota) {
       this.notaCoumna = nota

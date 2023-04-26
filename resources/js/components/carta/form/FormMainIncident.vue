@@ -17,7 +17,7 @@
         <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-html="true"  data-bs-title="<p>What type of incident are you reporting?</p> <p>Opcions:</p> <ul><li>'Accident' (accident)</li> <li>'Other incidents' (altres incidències)</li> <li>'Medical assistance' (asistencia sanitaria)</li> <li>'Civic issues' (civisme)</li> <li>'Leakage' (fuita)</li> <li>'Fire' (incendi)</li> <li>'Environmental issue' (medi ambient)</li> <li>'Safety' (seguretat)</li> <li>'Traffic' (trànsit)</li></ul>"></i>
       </div>
     </div>
-    
+
     <div class="row">
       <div class="col">
         <div class="form-floating mb-3" id="incident-container">
@@ -49,6 +49,7 @@ import * as bootstrap from 'bootstrap';
 export default {
   emits: [
     'get-incident',
+    'get-tipus-incident',
     'incident-error'
   ],
   props: {
@@ -162,6 +163,7 @@ export default {
         isValid: this.incident.isValid
       }
       this.$emit('get-incident', this.cartaIncident)
+      this.$emit('get-tipus-incident', this.tipusIncident)
     },
     toLowerCase (string) {
       return [string].map(item =>

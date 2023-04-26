@@ -17,7 +17,7 @@
                     <i v-else class="bi bi-clipboard2-x"></i>
                 </div>
             </button>
-            
+
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="incident-tab" data-bs-toggle="tab" data-bs-target="#incident" type="button" role="tab" aria-controls="Incident" aria-selected="false" ref="incidentTab">Incident
@@ -36,7 +36,7 @@
     </ul>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane show active" @keydown="handleTabKey($event)" id="interlocutor" role="tabpanel" aria-labelledby="interlocutor-tab" ref="interlocutorPanel">
-            <interlocutor-form 
+            <interlocutor-form
                 :showHelp=showHelp
                 @get-interlocutor="emitInterlocutor"
                 @interlocutor-error="showError"
@@ -44,20 +44,21 @@
             />
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="localitzacio" role="tabpanel" aria-labelledby="localitzacio-tab" ref="localitzacioPanel">
-            <localitzacio-form 
-                :localitzacioData="localitzacioData" 
+            <localitzacio-form
+                :localitzacioData="localitzacioData"
                 :showHelp=showHelp
-                @get-localitzacio="emitLocation" 
+                @get-localitzacio="emitLocation"
                 @get-map-serach-string="updateMapSearchString"
                 @localitzacio-error="showError"
                 />
             <!-- @is-form-valid="updateLocationValid" -->
         </div>
         <div class="tab-pane" @keydown="handleTabKey($event)" id="incident" role="tabpanel" aria-labelledby="incident-tab" ref="incidentPanel">
-            <incident-form 
+            <incident-form
                 :incidentData="incidentData"
-                :showHelp=showHelp  
+                :showHelp=showHelp
                 @get-incident="emitIncident"
+                @get-tipus-incident="emitTipusIncident"
                 @incident-error="showError"
                 />
         </div>
@@ -89,6 +90,7 @@ export default {
     'get-carta-interlocutor',
     'get-carta-location',
     'get-carta-incident',
+    'get-carta-tipus-incident',
     'get-map-search-string',
     'form-main-is-loaded',
     'form-main-error'
@@ -158,7 +160,7 @@ export default {
     updateMapSearchString (mapString) {
         this.mapSearchString = mapString
     },
-    /** 
+    /**
      * BRIDGE EMITS TO -> CARTA TRUCADA big daddy
      * -----------------------------------------------------
      * Emits localitzacio, interlocutor and incident object
@@ -181,6 +183,9 @@ export default {
         this.incidentValid = incident.isValid
         this.$emit('get-carta-incident', incident)
     },
+    emitTipusIncident(tipusIncident) {
+        this.$emit('get-carta-tipus-incident', tipusIncident)
+    },
     formMainIsLoaded (interlocutorIsLoaded) {
         this.interlocutorIsLoaded = interlocutorIsLoaded;
         this.$emit('form-main-is-loaded', this.interlocutorIsLoaded)
@@ -193,7 +198,7 @@ export default {
     /**
      * Observer sends the location string to the map component to search it
      * This is occurs when location tab is no longer active, aka doesn't have class 'active' no more. Hit the road jack
-     */ 
+     */
     const observer = new MutationObserver(mutation => {
         if (!mutation[0].target.classList.contains('active') && this.mapSearchString != '') {
             this.$emit('get-map-search-string', this.mapSearchString)
@@ -275,7 +280,7 @@ export default {
     }
     .nav-item button {
         width: 100%;
-        
+
     }
     .nav-link {
         display: inline-flex;
@@ -331,7 +336,7 @@ export default {
             height: 50%;
         }
     }
-    @media (max-width: 715px) {         
+    @media (max-width: 715px) {
         .nav-item {
             width: fit-content;
         }

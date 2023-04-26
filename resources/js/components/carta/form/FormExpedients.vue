@@ -69,6 +69,14 @@ export default {
             type: Object,
             required: true,
         },
+        tipusIncident: {
+            type: Object,
+            required: true
+        },
+        infoIncidents: {
+            type: Object,
+            required: true
+        },
         newExpedientCode: {
             type: String
         }
@@ -76,7 +84,7 @@ export default {
     data() {
         return {
             tooltip: {},
-            expedient_selected: 0,
+            expedient_selected: Number,
             expedients: [],
             tooltips: [],
         }
@@ -97,6 +105,25 @@ export default {
                 this.getExpedients(params)
             } else {
                 // console.log('fuera');
+            }
+        },
+        tipusIncident(NEW, OLD) {
+            const newUndefined = NEW == undefined
+            const oldUndefined = OLD == undefined
+            if ( ! newUndefined && !oldUndefined && NEW.input != '' && NEW.input != OLD.input) {
+                console.log('holamundocomoestas','if')
+                NEW = data.sort((a,b) => {
+                    if ( a.input.toLowerCase().includes('ASSISTÈNCIA'.toLowerCase()) ) {
+                        console.log('holamundocomoestas','sort 1',a)
+                        return -1
+                    }
+                    if ( b.input.toLowerCase().includes('ASSISTÈNCIA'.toLowerCase()) ) {
+                        console.log('holamundocomoestas','sort 2',b)
+                        return 1
+                    }
+                    return 0
+                })
+                this.tipusIncident = NEW
             }
         }
     },
@@ -123,15 +150,6 @@ export default {
                 return response.data
             })
             .then(data => {
-                // self.expedients = data.sort((a,b) => {
-                //     if ( a.localitzacions.toLowerCase().includes(tipus.toLowerCase()) ) {
-                //         return -1
-                //     }
-                //     if ( b.localitzacions.toLowerCase().includes(tipus.toLowerCase()) ) {
-                //         return 1
-                //     }
-                //     return 0
-                // })
                 self.expedients = data
                 // console.log('data',data);
                 if (data.length > 0) {
