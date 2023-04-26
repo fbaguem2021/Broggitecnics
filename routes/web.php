@@ -10,12 +10,6 @@ Route::get('/', function () {
     return view('index');
 });
 
-Route::get('agenciasMapa', function(){
-    return view('AgenciasMapa.index');
-});
-
-
-
 Route::get('/login', [UsuariController::class, 'showLogin'])->name('login');
 Route::post('/login', [UsuariController::class, 'login']);
 Route::get('/logout', [UsuariController::class, 'logout'])->name('logout');
