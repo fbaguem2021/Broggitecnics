@@ -9,7 +9,9 @@
                         <th scope="col" class="col-4 th-loc">Provincies</th>
                         <th scope="col" class="col-4 th-typ">Incidents</th>
                         <th scope="col" class="col-2 th-exp">
-                            <button class="col-12 btn btn-sm btn-tertiary text-white text-center">
+                            <button class="col-12 btn btn-sm text-center"
+                                :class="{ 'btn-tertiary text-white': isSelected(-1), 'btn-outline-secondary': !isSelected(-1) }"
+                                @click="seleccionarExpedient()">
                                 Nou Expedient
                             </button>
                         </th>
@@ -45,13 +47,13 @@
                         <td class="col-4"
                             :ref="'types'">{{ getTipus(e.tipus) }}</td>
                         <td class="col-2 centered">
-                            <button @click="seleccionarExpedient(e.id)"
+                            <button @click="seleccionarExpedient(e.id, index)"
                                 class="btn btn-exp col-9 text-center"
-                                :class="{ 'btn-outline-tertiary': isSelected(e.id), 'btn-outline-secondary': !isSelected(e.id) }">
-                                <i v-if="isSelected(e.id)" class="bi bi-check-all"></i>
-                                <span v-else>Vincular</span>
-                                <!-- <i v-if="isSelected(e.id)" class="bi bi-check-circle"></i>
-                                <i v-else class="bi bi-x-circle"></i> -->
+                                :class="{ 'btn-tertiary': isSelected(e.id), 'btn-outline-secondary': !isSelected(e.id) }">
+                                <!-- <i v-if="isSelected(e.id)" class="bi bi-check-all"></i>
+                                <span v-else>Vincular</span> -->
+                                <i v-if="isSelected(e.id)" class="bi bi-check-circle"></i>
+                                <i v-else class="bi bi-x-circle"></i>
                             </button>
                         </td>
                     </tr>
@@ -65,6 +67,7 @@ import * as bootstrap from 'bootstrap';
 import axios from 'axios';
 
 export default {
+    emits: ['get-expedient-info'],
     props: {
         localitzacio: {
             type: Object,
@@ -79,14 +82,19 @@ export default {
             required: true
         },
         newExpedientCode: {
-            type: String
+            type: String,
+            required: true
         }
     },
     data() {
         return {
             tooltip: { locations: [], incidents: [] },
             expedient_selected: Number,
-            expedient_in_new: false,
+            expedient_info: {
+                is_new: Boolean,
+                data: { id: Number, codi: String, estat_id: Number }
+            },
+            expedient_is_new: false,
             expedients: [],
             expedientsReady: false,
             tooltips: [],
@@ -180,7 +188,6 @@ export default {
             .catch(error => console.error('getExpedients\n',error))
         },
         initTooltips(data, self) {
-            self.tooltips = []
             self.tooltip['incidents'] = []
             self.tooltip['locations'] = []
             self.$refs.locs.forEach( (element, index) => {
@@ -218,12 +225,6 @@ export default {
                     })
                 )
             })
-            // self.tooltips[0].show()
-            // for ( const [index, element] of self.$refs.locs) {
-                // self.tooltips.push(
-                //     new bootstrap.Tooltip(element, {"title": `Localizaciones: ${data[index].localitzacions}`})
-                // )
-            // }
         },
         createTooltip(id, localitzacions) {
             const element = document.querySelector(`#expediente-${id}`)
@@ -231,15 +232,30 @@ export default {
                 "title":`Localizaciones: ${localitzacions}`,
             })
         },
-        seleccionarExpedient(selected_id) {
-            this.expedient_is_new = false
-            // console.log('expedient_selected: ',this.expedient_selected, ', selected_id: ',selected_id);
-            if ( this.expedient_selected != selected_id ) {
-                this.expedient_selected = selected_id
+        seleccionarExpedient(selected_id= 'default', index=undefined) {
+            this.expedient_selected = selected_id
+            let mode = String
+            if ( selected_id == 'default' ) {
+                mode = 'created'
             } else {
-                this.expedient_selected = 0
+                mode = 'selected'
             }
-            // console.log(selected_id);
+            this.emitExpedient(mode,index)
+        },
+        emitExpedient(expedient_mode, index=undefined) {
+            if (expedient_mode == 'selected') {
+                const exp = this.expedients[index]
+                this.expedient_info.is_new          = false
+                this.expedient_info.data.id         = exp.id
+                this.expedient_info.data.codi       = exp.codi
+                this.expedient_info.data.estat_id   = exp.estat_id
+            } else if (expedient_mode == 'created') {
+                this.expedient_info.is_new          = true
+                this.expedient_info.data.id         = null
+                this.expedient_info.data.codi       = this.$props.newExpedientCode
+                this.expedient_info.data.estat_id   = 1
+            }
+            this.$emit('get-expedient-info',this.$data.expedient_info)
         },
         checkInterlocutor() {
             return false
@@ -247,7 +263,6 @@ export default {
         isSelected(value) {
             const isSel = this.expedient_selected == value
             return isSel
-
         },
         getLoc(loc=false) {
             if (loc) {

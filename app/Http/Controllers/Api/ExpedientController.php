@@ -113,9 +113,6 @@ class ExpedientController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function expedients_carta(Request $request, mixed $provincia='', mixed $comarca='', mixed $municipi='') {
-
-        // $filtre = $request->query('municipi','');
-
         if ($provincia != '') {
             $provincia = Provincia::find($provincia)->nom;
         }
@@ -125,10 +122,9 @@ class ExpedientController extends Controller
         if ($comarca != '') {
             $comarca = Comarca::find($comarca)->nom;
         }
-
             $query = DB::table('expedients')
             ->select('expedients.id','expedients.codi',
-
+                DB::raw('expedients.estat_expedients_id as estat_id'),
                 // DB::raw('COUNT(expedients.id) as expedients_count'),
                 DB::raw('CONCAT("[",GROUP_CONCAT(DISTINCT \'"\',interlocutors.id,\'"\'),"]") as interlocutors'),
                 DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
@@ -148,7 +144,7 @@ class ExpedientController extends Controller
             ->leftJoin('comarques','municipis.comarques_id','comarques.id')
             ->leftJoin('interlocutors', 'cartes_trucades.interlocutors_id', '=', 'interlocutors.id')
             // ->where('expedients.id','>=',0)
-            ->groupBy('expedients.id','expedients.codi')
+            ->groupBy('expedients.id','expedients.codi','expedients.estat_expedients_id')
             // ->havingRaw('localitzacions like CONCAT("%", ? , "%") ',[$filtre])
             ->havingRaw('provincies LIKE CONCAT("%", ? , "%")',[$provincia])
             ->havingRaw('municipis LIKE CONCAT("%", ? , "%")',[$municipi])

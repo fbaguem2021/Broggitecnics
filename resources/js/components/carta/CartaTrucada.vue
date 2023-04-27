@@ -50,7 +50,8 @@
                     :localitzacio="localitzacio"
                     :tipus-incident="tipusIncident"
                     :info-incidents="infoIncidents"
-                    :new-expedient-code="codiNewExpedient"></form-expedients>
+                    :new-expedient-code="codiNewExpedient"
+                    @get-expedient-info="getExpedientInfo"></form-expedients>
             </div>
         </div>
         <div id="bg"></div>
@@ -104,10 +105,13 @@ export default {
       isCartaDataLoaded: false,
       isFormMainLoaded: false,
       codiTrucada: '',
+
       codiNewExpedient: '',
       //expedient: objeto que contiene {id, codi, estat_id}
       expedient: { id: null, codi: null, estat_id: null },
-      isNewExpedient: true,
+      isNewExpedient: false,
+
+
       dataHoraTrucada: null,
       durada: 0,
       interlocutor: {},
@@ -226,7 +230,13 @@ export default {
         }
       }
     },
-
+    getExpedientInfo(info) {
+        console.log('get-expedient-info',info)
+        // this.isNewExpedient     = info.is_new
+        // this.expedient.id       = info.data.id
+        // this.expedient.codi     = info.data.codi
+        // this.expedient.estat_id = info.data.estat_id
+    },
     async insertNewInterlocutor() {
       let me = this
       await axios.post('/postInterlocutor', {
@@ -245,7 +255,6 @@ export default {
           console.log(error);
         });
     },
-
     async insertExpedient() {
       let me = this
       await axios.post('/expedient', {
@@ -263,7 +272,6 @@ export default {
           console.log(error);
         });
     },
-
     async insertCarta() {
       let me = this
       await axios.post('/cartesTrucades', {
@@ -297,9 +305,7 @@ export default {
           this.$refs.messageApp.createErrorAlert(error)
         });
     },
-
     async insertFinal() {
-
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
           await this.insertNewInterlocutor()
@@ -316,18 +322,15 @@ export default {
         this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning")
       }
     },
-
     insertAgenciaHasEstat() {
       //insert agencias has estat
     },
-
     showError(error) {
       this.$refs.messageApp.createErrorAlert(error)
     },
     insertExpedient () {
       // Add rquest to insert Expedient
     },
-
   },
   mounted() {
     this.getCartaData()
