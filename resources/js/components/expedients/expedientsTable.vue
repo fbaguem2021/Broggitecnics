@@ -212,7 +212,7 @@ export default {
       const self = this;
       if (expIDs.length > 0) {
         const promises = expIDs.map(expID => {
-        return axios.put(`estatExpedient/${expID}`, { "estat_expedient_id": estatID });
+        return axios.post(`estatExpedient/update/${expID}`, { "estat_expedient_id": estatID });
         });
         Promise.all(promises)
         .then(responses => {

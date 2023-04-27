@@ -235,7 +235,7 @@ export default {
     updateAgenciaState(cartaTrucadaId, agenciaId, newEstatValue) {
       this.isCartaLoaded = false
       const self = this
-      axios.put(`updateEstatAgencia/${cartaTrucadaId}/${agenciaId}`, {new_estat_agencies_id: newEstatValue})
+      axios.post(`updateEstatAgencia/update/${cartaTrucadaId}/${agenciaId}`, {new_estat_agencies_id: newEstatValue})
           .then(response => {
               self.cartaSelected = response.data.updatedCarta
               self.isCartaLoaded = true

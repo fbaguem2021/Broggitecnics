@@ -50,11 +50,12 @@ Route::get('expedients-gestio/{filter}/{value?}/{dir?}', [ExpedientController::c
 Route::get('expedient/{id}', [ExpedientController::class, 'show']);
 Route::post('/expedient', [ExpedientController::class, 'store']);
 Route::apiResource('/estatExpedient', EstatExpedientController::class);
+Route::post('/estatExpedient/update/{id}', [EstatExpedientController::class, "update"]);
 
 /* AGENCIES */
 Route::apiResource('agencies', AgenciaController::class);
 Route::apiResource('estatAgencies', EstatAgencies::class);
-Route::put('updateEstatAgencia/{cartaTrucadaId}/{agenciaId}', [EstatAgencies::class, 'updateState']);
+Route::post('updateEstatAgencia/update/{cartaTrucadaId}/{agenciaId}', [EstatAgencies::class, 'updateState']);
 
 /* GRÀFICS */
 Route::get('/incidentesChart', [ChartController::class, 'index']);
