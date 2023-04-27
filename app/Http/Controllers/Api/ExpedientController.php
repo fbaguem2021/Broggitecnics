@@ -25,7 +25,7 @@ class ExpedientController extends Controller
     {
         try {
             if ($filter == 'none') {
-                $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', 
+                $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at',
                 DB::raw('COUNT(cartes_trucades.id) as cartes_count'),
                 DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
                 DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as incidents'))
@@ -48,7 +48,7 @@ class ExpedientController extends Controller
 
     public function indexGestio($filter , $value = null, $direction = null) {
         try {
-            $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at', 
+            $query = Expedient::select('expedients.id', 'expedients.codi', 'expedients.estat_expedients_id', 'expedients.created_at', 'expedients.updated_at',
                         DB::raw('COUNT(cartes_trucades.id) as cartes_count'),
                         DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
                         DB::raw('GROUP_CONCAT(DISTINCT tipus_incidents.nom) as incidents'))
@@ -110,18 +110,18 @@ class ExpedientController extends Controller
                         $query->orderBy($value, $direction);
                         break;
                 }
-                
+
             }
 
-            
+
         } catch (\Throwable $th) {
             //throw $th;
         }
 
         $expedients = $query->get();
 
-            
-        return ExpedientResource::collection($expedients);       
+
+        return ExpedientResource::collection($expedients);
     }
 
     /**
@@ -134,9 +134,6 @@ class ExpedientController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function expedients_carta(Request $request, mixed $provincia='', mixed $comarca='', mixed $municipi='') {
-
-        // $filtre = $request->query('municipi','');
-
         if ($provincia != '') {
             $provincia = Provincia::find($provincia)->nom;
         }
@@ -146,22 +143,14 @@ class ExpedientController extends Controller
         if ($comarca != '') {
             $comarca = Comarca::find($comarca)->nom;
         }
-
-        // $municipi  = Utilitat::getValueFromModel([Municipi::class, intval($request->query('municipi',  -1))],'nom','');
-        // $provincia = Utilitat::getValueFromModel([Provincia::class, intval($request->query('provincia',  -1))],'nom','');
-        // $comarca   = Utilitat::getValueFromModel([Comarca::class, intval($request->query('provincia',  -1))],'nom','');
-
-        // $municipi   = \App\Models\Municipi::find(intval($request->query('municipi',  -1)))->nom  ?: '';
-        // $provincia  = \App\Models\Provincia::find(intval($request->query('provincia', -1)))->nom ?: '';
-        // $comarca    = \App\Models\Comarca::find(intval($request->query('comarca',   -1)))->nom   ?: '';
-
             $query = DB::table('expedients')
             ->select('expedients.id','expedients.codi',
-
+                DB::raw('expedients.estat_expedients_id as estat_id'),
                 // DB::raw('COUNT(expedients.id) as expedients_count'),
                 DB::raw('CONCAT("[",GROUP_CONCAT(DISTINCT \'"\',interlocutors.id,\'"\'),"]") as interlocutors'),
                 DB::raw('GROUP_CONCAT(DISTINCT provincies.nom) as localitzacions'),
-                DB::raw('CONCAT(\'[\', GROUP_CONCAT(DISTINCT CONCAT(\'"\',provincies.nom,",",municipis.nom,",",comarques.nom,\'"\') SEPARATOR ",") , \']\') AS full_loc'),
+                DB::raw('CONCAT(\'[\', GROUP_CONCAT(CONCAT(\'"P: \',provincies.nom,", C: ",comarques.nom,", M: ",municipis.nom,\'"\') SEPARATOR ",") , \']\') AS full_loc'),
+                DB::raw('CONCAT(\'[\', GROUP_CONCAT(CONCAT(\'"\',tipus_incidents.nom,": ",incidents.nom,\'"\') SEPARATOR ",") , \']\') AS full_inc'),
                 DB::raw('GROUP_CONCAT(DISTINCT municipis.nom  ) as municipis'),
                 DB::raw('GROUP_CONCAT(DISTINCT provincies.nom ) as provincies'),
                 DB::raw('GROUP_CONCAT(DISTINCT comarques.nom  ) as comarques'),
@@ -176,7 +165,7 @@ class ExpedientController extends Controller
             ->leftJoin('comarques','municipis.comarques_id','comarques.id')
             ->leftJoin('interlocutors', 'cartes_trucades.interlocutors_id', '=', 'interlocutors.id')
             // ->where('expedients.id','>=',0)
-            ->groupBy('expedients.id','expedients.codi')
+            ->groupBy('expedients.id','expedients.codi','expedients.estat_expedients_id')
             // ->havingRaw('localitzacions like CONCAT("%", ? , "%") ',[$filtre])
             ->havingRaw('provincies LIKE CONCAT("%", ? , "%")',[$provincia])
             ->havingRaw('municipis LIKE CONCAT("%", ? , "%")',[$municipi])
@@ -205,13 +194,13 @@ class ExpedientController extends Controller
 
         try {
             $expedient->save();
-            $idExp = $expedient->id; 
+            $idExp = $expedient->id;
             $response = \response()->json(["idExpedient"=>$idExp], 201);;
         } catch (QueryException $ex) {
             $mensaje = Utilitat::errorMessage($ex);
             $response = \response()->json(["error" => $mensaje], 400);
         }
-        return $response;  
+        return $response;
     }
 
     /**
@@ -245,7 +234,7 @@ class ExpedientController extends Controller
      */
     public function update(Request $request, $id)
     {
-       
+
     }
 
     /**

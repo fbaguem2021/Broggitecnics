@@ -20,7 +20,7 @@
           <!-- Form main Interlocutor, Localitzacio and Incident -->
           <div id="form-main" ref="formMain" class="expanded">
             <form-main :localitzacio-data="localitzacioData" :incident-data="incidentData" @get-carta-location="updateLoc"
-              @get-carta-interlocutor="updateInterlocutor" @get-carta-incident="updateIncident"
+              @get-carta-interlocutor="updateInterlocutor" @get-carta-incident="updateIncident" @get-carta-tipus-incident="updateTipusIncident"
               @get-map-search-string="updateSearchString" @form-main-is-loaded="formMainIsLoaded"
               @form-main-error="showError">
             </form-main>
@@ -48,7 +48,10 @@
           <div id="expedients" style="position: relative;">
                 <form-expedients
                     :localitzacio="localitzacio"
-                    :new-expedient-code="codiNewExpedient"></form-expedients>
+                    :tipus-incident="tipusIncident"
+                    :info-incidents="infoIncidents"
+                    :new-expedient-code="codiNewExpedient"
+                    @get-expedient-info="getExpedientInfo"></form-expedients>
             </div>
         </div>
         <div id="bg"></div>
@@ -120,15 +123,19 @@ export default {
       isCartaDataLoaded: false,
       isFormMainLoaded: false,
       codiTrucada: '',
+
       codiNewExpedient: '',
       //expedient: objeto que contiene {id, codi, estat_id}
       expedient: { id: null, codi: null, estat_id: null },
-      isNewExpedient: true,
+      isNewExpedient: false,
+
+
       dataHoraTrucada: null,
       durada: 0,
       interlocutor: {},
       localitzacio: {},
       incident: {},
+      tipusIncident: {},
       notaCoumna: {
         input: '',
         isValid: false
@@ -217,6 +224,9 @@ export default {
     updateIncident(incident) {
       this.incident = incident
     },
+    updateTipusIncident(tipusIncident) {
+      this.tipusIncident = tipusIncident
+    },
     updateNotaCoumna(nota) {
       this.notaCoumna = nota
     },
@@ -238,6 +248,13 @@ export default {
         }
       }
     },
+    getExpedientInfo(info) {
+        console.log('get-expedient-info',info)
+        // this.isNewExpedient     = info.is_new
+        // this.expedient.id       = info.data.id
+        // this.expedient.codi     = info.data.codi
+        // this.expedient.estat_id = info.data.estat_id
+    },
     async insertNewInterlocutor() {
       let me = this
       await axios.post('/postInterlocutor', {
@@ -257,7 +274,6 @@ export default {
           console.log(error);
         });
     },
-
     async insertExpedient() {
       let me = this
       await axios.post('/expedient', {
@@ -275,7 +291,6 @@ export default {
           console.log(error);
         });
     },
-
     async insertCarta() {
       let me = this
       await axios.post('/cartesTrucades', {
@@ -309,7 +324,6 @@ export default {
           me.showError(error)
         });
     },
-
     async insertFinal() {
       this.error = false
       this.$refs.messageApp.createMessageAlert("Realitzant comprovacions i guardant la carta ...", "info")

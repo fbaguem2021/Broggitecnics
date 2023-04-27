@@ -13,19 +13,26 @@ import carta from './components/carta/CartaTrucada.vue'
 import rankingLoc from './components/graficos/chartLocalizaciones.vue'
 import chartLlamadas from './components/graficos/chartLlamadas.vue'
 
-
-
-
-
-
-
+const DOM={
+    carta:          document.querySelector('carta-app'),
+    expedients:     document.querySelector('expedients-app'),
+    operadors:      document.querySelector('operadors'),
+    rankingLoc:     document.querySelector('#rankingLoc'),
+    chartLlamadas:  document.querySelector('#chartLlamadas')
+}
 
 // createApp(agenciasPrimarias).mount('#agenciasPrimarias')
 // createApp(mapa).mount('#mapa')
 // createApp(mapaApp).mount('#mapaApp')
 
-createApp(carta).mount('carta-app');
-createApp(expedients).mount('expedients-app');
-createApp(operadors).mount('operadors');
-createApp(rankingLoc).mount('#rankingLoc')
+createApp(carta)        .mount('carta-app');
+createApp(expedients)   .mount('expedients-app');
+createApp(operadors)    .mount('operadors');
+createApp(rankingLoc)   .mount('#rankingLoc')
 createApp(chartLlamadas).mount('#chartLlamadas')
+
+// createApp(carta)        .mount(DOM.carta)
+// createApp(expedients)   .mount(DOM.expedients)
+// createApp(operadors)    .mount(DOM.operadors)
+// createApp(rankingLoc)   .mount(DOM.rankingLoc)
+// createApp(chartLlamadas).mount(DOM.chartLlamadas)
