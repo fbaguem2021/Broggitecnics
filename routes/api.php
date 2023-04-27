@@ -58,14 +58,13 @@ Route::put('updateEstatAgencia/{cartaTrucadaId}/{agenciaId}', [EstatAgencies::cl
 
 /* GRÀFICS */
 Route::get('/incidentesChart', [ChartController::class, 'index']);
-
 Route::get('/llamadasChart', [ChartCallController::class, 'index']);
 
 /* CARTES TRUCADA */
 Route::apiResource('/cartesTrucades', CartaTrucadaController::class);
-
 Route::get('/cartaData', [CartaData::class, 'index']);
 
 /* INTERLOCUTORS */
 Route::get('/interlocutorCheck/{number}', [CartaData::class, 'checkNumber']);
 Route::get('/interlocutorGenerate', [CartaData::class, 'generateNumber']);
+Route::post('/postInterlocutor', [CartaTrucadaController::class, 'storeInterlocutor']);

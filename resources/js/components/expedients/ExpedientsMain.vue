@@ -112,6 +112,20 @@
         </div>
         </div>
     </div>
+    <div id="stripes-1" style="top: 30%">
+    <svg width="200" height="80" viewBox="0 0 200 80" fill="none">
+        <path d="M0 0H200V20H0V0Z" fill="#E2AA12" />
+        <path d="M0 30H200V50H0V30Z" fill="#E1127A" />
+        <path d="M0 60H200V80H0V60Z" fill="#12C7E2" />
+    </svg>
+    </div>
+    <div id="stripes-2">
+        <svg width="200" height="80" viewBox="0 0 200 80" fill="none">
+            <path d="M0 0H200V20H0V0Z" fill="#E2AA12" />
+            <path d="M0 30H200V50H0V30Z" fill="#E1127A" />
+            <path d="M0 60H200V80H0V60Z" fill="#12C7E2" />
+        </svg>
+    </div>
 
 </template>
 <script>
@@ -214,7 +228,6 @@ export default {
     },
     isExpedientsSelected(isSelected) {
         this.showUpdateController = isSelected
-        console.log("at last one selected", isSelected)
     },
     updateSelectedExp(){
         this.filterBySelected.col = "all"
@@ -227,7 +240,6 @@ export default {
         .then(response => {
           self.estats = response.data;
           self.estatsIsLoaded = true;
-          console.log(response)
         })
         .catch((error) => { 
             this.showError(error)
@@ -241,16 +253,15 @@ export default {
     searchBarSubmit() {
         this.allExpedientsTab.show()
         const col = this.filterBySelected.col
-        let value = this.filterBySelected.col == 'all' ? '' : this.filterBySelected.input
+        let value = this.filterBySelected.input
         if(col === 'codi') { value = 'EXP-'+value}
-        console.log("Searching in", `'${col}'`, "value:", value)
         this.$refs.expedientsTable.selectExpedientsBy(col, value)
     },
     showError(error) {
         this.$refs.messageApp.createErrorAlert(error)
     },
     showMessage(message, type, data = null) {
-        this.$refs.messageApp.createMessageAlert(message, type)
+        this.$refs.messageApp.createMessageAlert(message, type, data)
     }
   },
   mounted () {
@@ -310,7 +321,7 @@ export default {
 }
 .table-container {
     position: relative;
-    height: 50%;
+    height: 60%;
 }
 .table-container .nav-item {
     width: 50%

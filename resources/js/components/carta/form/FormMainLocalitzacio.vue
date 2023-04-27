@@ -9,7 +9,7 @@
       <div class="row align-items-center">
         <div class="col-1 d-flex mb-2" id="isCat-conatiner">
           <label class="form-check-label pe-2" for="isCat">Catalunya</label>
-          <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" @click="toggleIsCat($event)">
+          <input v-model="isCat" class="form-check-input" type="checkbox" value="" id="isCat" @click="toggleIsCat($event)" @focusout.stop>
           <i class="bi bi-arrow-left" id="isCatFocus"></i>
           <i v-show="showHelp" class="bi bi-chat-left-dots" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Are you currently located in Catalonia?"></i>
         </div>
@@ -275,18 +275,23 @@ export default {
       this.descripcioLocalitzacio = `${this.provincia.input} ${this.municipi.input}`
     },
     validateInput (el) {
-      const validIds = ['provincia', 'comarca', 'municipi', 'tipusLoc']
-      if (validIds.includes(el.id)) {
-        if (el.id === 'tipusLoc') {
-          if (el.value === '') {
-            this.descripcioLocalitzacio = ''
+      if (this.isCat) {
+        const validIds = ['provincia', 'comarca', 'municipi', 'tipusLoc']
+        if (validIds.includes(el.id)) {
+          if (el.id === 'tipusLoc') {
+            if (el.value === '') {
+              this.descripcioLocalitzacio = ''
+            }
+          !this.tipusLoc.isValid ? this.tipusVia.input = '' : null;
           }
-        
-        !this.tipusLoc.isValid ? this.tipusVia.input = '' : null;
+          el.classList.toggle('is-invalid', !this[el.id].isValid)
+          el.classList.toggle('is-valid', this[el.id].isValid)
         }
-        el.classList.toggle('is-invalid', !this[el.id].isValid)
-        el.classList.toggle('is-valid', this[el.id].isValid)
+      } else {
+        el.classList.remove('is-invalid')
+        el.classList.remove('is-valid')
       }
+      
     },
     updateCartaData () {
       this.cartaLocation = {
@@ -478,9 +483,13 @@ export default {
   }
 
   #isCat-conatiner {
+    position: relative;
     min-width: 125px;
   }
-
+  #isCatFocus {
+    position: absolute;
+    right: 0;
+  }
   #isCatFocus::before {
     content: '';
     transform: translateX(5px);

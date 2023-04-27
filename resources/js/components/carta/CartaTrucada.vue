@@ -57,11 +57,30 @@
         <div id="bg"></div>
       </div>
       <div class="buttons">
-        <button id="cancel">Cancelar</button>
+        <button id="cancel" @click="cancelCallModalShow">Cancelar</button>
         <button id="submit" @click="insertFinal()">Finalitzar</button>
       </div>
     </div>
   </div>
+  <div class="modal fade" ref="exampleModalCenter" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="cancellCallModalTitle">Cancel·lar trucada</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Estas segur/a que vols cancel·lar la trucada?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Manetnir la trucada</button>
+        <button type="button" class="btn btn-danger" @click="condirmCancelCall">Cance·lar trucada</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
   <div id="stripes-1">
     <svg width="200" height="80" viewBox="0 0 200 80" fill="none">
       <path d="M0 0H200V20H0V0Z" fill="#E2AA12" />
@@ -85,9 +104,7 @@ import FormExpedients from './form/FormExpedients.vue';
 import DataCarta from './DataCarta.vue';
 import MapApp from './mapa/MapApp.vue';
 import MessageApp from '../MessageApp.vue';
-
-
-
+import * as bootstrap from 'bootstrap';
 
 export default {
   emits: ['agenciasSeleccionadas'],
@@ -102,6 +119,7 @@ export default {
   },
   data() {
     return {
+      cartaId: null,
       isCartaDataLoaded: false,
       isFormMainLoaded: false,
       codiTrucada: '',
@@ -118,7 +136,10 @@ export default {
       localitzacio: {},
       incident: {},
       tipusIncident: {},
-      notaCoumna: '',
+      notaCoumna: {
+        input: '',
+        isValid: false
+      },
       newInterlocutor: true,
       saveInterlocutor: false,
       mapSearchString: '',
@@ -128,6 +149,8 @@ export default {
       incidentData: {},
       idAgenciasSeleccionadas: [],
       userId: 0,
+      cancelCallModal: {},
+      error: false
     }
   },
   computed: {
@@ -136,18 +159,16 @@ export default {
       return isLoaded
     },
     cartaIsValid() {
-      const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid
+      const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid && this.notaCoumna.isValid
       return isValid
     }
   },
   methods: {
     agenciasSeleccionadas(idAgencias) {
-      alert('funcion en carta')
       this.idAgenciasSeleccionadas = idAgencias
     },
     async getCartaData() {
       const self = this;
-
       await axios
         .get('cartaData')
         .then(response => {
@@ -155,7 +176,6 @@ export default {
           self.incidentData = response.data.incident
           self.codiTrucada = self.getNewCodi(response.data.cartaLastCodi)
           self.codiNewExpedient = self.getNewCodi(response.data.expedientLatCodi)
-          self.isCartaDataLoaded = true
         })
         .catch((error) => {
           self.showError(error)
@@ -168,8 +188,6 @@ export default {
         .get(`usuari-buscar-id?username=` + username)
         .then(response => {
           self.userId = response.data.data[0].id;
-          console.log(response.data)
-          console.log(response.data.data[0].id)
         })
         .catch((error) => { 'error al obtenir el usuari' });
       this.isCartaDataLoaded = true
@@ -248,10 +266,11 @@ export default {
         }
       })
         .then(response => {
-          console.log(response.data);
           me.interlocutor.id = response.data.idInterlocutor
         })
         .catch(error => {
+          me.showError(error)
+          me.error = true
           console.log(error);
         });
     },
@@ -264,11 +283,11 @@ export default {
         }
       })
         .then(response => {
-          console.log('EXPEDIENT GUARDAT')
-          console.log(response.data);
           me.expedient.id = response.data.idExpedient
         })
         .catch(error => {
+          me.showError(error)
+          me.error = true
           console.log(error);
         });
     },
@@ -296,47 +315,102 @@ export default {
         }
       })
         .then(response => {
-          console.log(response.data);
-          this.$refs.messageApp.createMessageAlert("La carta s'ha guardat exitosament", "success")
-          const redirectHome = "/Broggitecnics/public/home";
-          window.location.href = redirectHome;
+          
+          me.cartaId = response.data.carta_id
         })
         .catch(error => {
-          this.$refs.messageApp.createErrorAlert(error)
+          console.log(error);
+          me.error = true
+          me.showError(error)
         });
     },
     async insertFinal() {
+      this.error = false
+      this.$refs.messageApp.createMessageAlert("Realitzant comprovacions i guardant la carta ...", "info")
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
-          await this.insertNewInterlocutor()
+          if (this.interlocutor.isNewInerlocutor) {
+            await this.insertNewInterlocutor()
+            if (!this.error) {
+              this.$refs.messageApp.addMessageData("Interlocutor guardat	&#x2714;", true)
+            }
+          }
         }
         if (this.isNewExpedient) {
           this.expedient.codi = this.codiNewExpedient
           this.expedient.estat_id = 1
           await this.insertExpedient()
+          if (!this.error) {
+            this.$refs.messageApp.addMessageData("Expedient guardat	&#x2714;", true)
+          }
+         
         }
         await this.insertCarta();
+        if (!this.error) {
+            this.$refs.messageApp.addMessageData("Formulari de la carta guardat	&#x2714;", true)
+          }
 
+        if (this.idAgenciasSeleccionadas.length > 0) {
+          this.$refs.messageApp.addMessageData("Contactant agencies...", true)
+          await this.insertAgenciaHasEstat()
+        }
+        if(!this.error) {
+          this.$refs.messageApp.createMessageAlert("La carta de trucada s'ha guardat correctament", "success", "Redirecionant al menu...")
+          setTimeout(()=>{
+            const redirectHome = "/Broggitecnics/public/home";
+            window.location.href = redirectHome;
+          }, 4000)
+        } 
       } else {
-        console.log("Carta it's not valid")
-        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning")
+        let invalidParts = []
+        if (!this.interlocutor.isValid) {
+          invalidParts.push("Formulari interlocutor")
+        }
+        if (!this.localitzacio.isValid) {
+         invalidParts.push("Formulari localització")
+        }
+        if (!this.incident.isValid) {
+          invalidParts.push("Formular incident")
+        }
+        if (!this.notaCoumna.isValid) {
+          invalidParts.push("Nota coumna")
+        }
+        this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning", invalidParts)
       }
     },
-    insertAgenciaHasEstat() {
-      //insert agencias has estat
+    async insertAgenciaHasEstat() {
+      const self = this
+      const promises = this.idAgenciasSeleccionadas.map(agenciaId => {
+        return axios.post('estatAgencies', 
+                            { "cartaTrucada_id": self.cartaId,
+                              "agencia_id": agenciaId
+                            }
+                          );
+      });
+      await Promise.all(promises)
+      .then(responses => {
+      })
+      .catch(error => {
+        self.error = true
+        self.showError(error);
+      });
+    },
+    cancelCallModalShow() {
+      this.cancelCallModal.show()
+    },
+    condirmCancelCall() {
+        const redirectHome = "/Broggitecnics/public/home";
+        window.location.href = redirectHome
     },
     showError(error) {
       this.$refs.messageApp.createErrorAlert(error)
-    },
-    insertExpedient () {
-      // Add rquest to insert Expedient
     },
   },
   mounted() {
     this.getCartaData()
     let inputDate = new Date().toISOString();
     this.dataHoraTrucada = inputDate.replace("T", " ").slice(0, -5);
-    // setTimeout(()=>{ this.isLoaded = true}, 1000)
+    this.cancelCallModal = new bootstrap.Modal(this.$refs.exampleModalCenter)
   },
 }
 </script>

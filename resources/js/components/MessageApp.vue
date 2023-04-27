@@ -22,7 +22,7 @@
             </symbol>
         </svg>
         <div class="alert-container">
-            <div v-if="errorAlert.display" ref="errorAlert" class="alert alert-dismissible fade" role="alert"
+            <div v-if="errorAlert.display" ref="errorAlert" class="alert alert-dismissible fade show" role="alert"
                 :class=" 'alert-'+errorAlert.type">
                 <svg id="alert-icon" class="bi flex-shrink-0 me-2" role="img"><use :xlink:href=" '#'+errorAlert.type "/></svg>
                 {{ errorAlert.message }}
@@ -32,13 +32,13 @@
                 </div>
                 <button type="button" class="btn-close" aria-label="Close" @click="closeErrorAlert"></button>
             </div>
-            <div v-if="messageAlert.display" ref="messageAlert" class="alert alert-dismissible fade" role="alert"
+            <div v-if="messageAlert.display" ref="messageAlert" class="alert alert-dismissible fade show" role="alert"
                 :class=" 'alert-'+messageAlert.type">
                 <svg id="alert-icon" class="bi flex-shrink-0 me-2" role="img"><use :xlink:href=" '#'+messageAlert.type "/></svg>
                 {{ messageAlert.message }}
                 <div v-if="messageAlert.data">
                     <hr>
-                    <span class="mb-0">{{ messageAlert.data }}</span>
+                    <p class="mb-0" v-html="messageAlert.data"></p>
                 </div>
                 <button type="button" class="btn-close" aria-label="Close" @click="closeMessageAlert"></button>
             </div>
@@ -66,16 +66,16 @@ export default {
         createMessageAlert(message, type, data = null) {
             this.messageAlert.message = message
             this.messageAlert.type = type
-            this.messageAlert.data = data
+            this.messageAlert.data = data ? data : ''
             this.showMessageAlert()
         },
-        createErrorAlert(error) {
+        createErrorAlert(error, data = null) {
             console.log(error)
             if (error.response) {
                 const status = error.response.status
                 switch (status) {
                     case 400:
-                        this.errorAlert.message = 'Petició incorrecta';
+                        this.errorAlert.message = 'Error 400 - El servidor no ha pogut interpretar la solicitud';
                         break;
                     case 401:
                         this.errorAlert.message = 'No autoritzat';
@@ -99,6 +99,9 @@ export default {
                     default:
                         this.errorAlert.message = 'Error';
                 }
+                if (data) {
+                    this.errorAlert.message = data
+                }
             } else if (error.request) {
                 this.errorAlert.message = "No s'ha rebut cap resposta"
             } else {
@@ -107,33 +110,42 @@ export default {
             }
             this.showErrorAlert()
         },
+        addMessageData(data, lineJump) {
+            this.messageAlert.data += lineJump ? data+"<br>" : data;
+        },
         showErrorAlert () {
             this.errorAlert.display = true;
             setTimeout(()=>{
                 this.$refs.errorAlert.classList.add('show')      
             }, 100)
-            setTimeout(()=>{this.closeErrorAlert()}, 10000)
+            setTimeout(()=>{this.closeErrorAlert()}, 14000)
         },
         showMessageAlert () {
             this.messageAlert.display = true;
             setTimeout(()=>{
                 this.$refs.messageAlert.classList.add('show')      
             }, 100)
-            // setTimeout(()=>{this.closeMessageAlert()}, 10000)
+            setTimeout(()=>{this.closeMessageAlert()}, 14000)
         },
         closeErrorAlert () {
-            this.$refs.errorAlert.classList.remove('show')
-            setTimeout(()=>{
-                this.$refs.errorAlert.style.display = 'none';
-                this.errorAlert.display = false
-            }, 100)
+            if (this.errorAlert.display) {
+                this.$refs.errorAlert.classList.remove('show')
+                setTimeout(()=>{
+                    this.$refs.errorAlert.style.display = 'none';
+                    this.errorAlert.display = false
+                }, 100)
+            }
+           
         },
         closeMessageAlert () {
-            this.$refs.messageAlert.classList.remove('show')
-            setTimeout(()=>{
-                this.$refs.messageAlert.style.display = 'none';
-                this.messageAlert.display = false
-            }, 100)
+            if (this.messageAlert.display) {
+                this.$refs.messageAlert.classList.remove('show')
+                setTimeout(()=>{
+                    this.$refs.messageAlert.style.display = 'none';
+                    this.messageAlert.display = false
+                }, 100)
+            }
+            
         }
     },
 }

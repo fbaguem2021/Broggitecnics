@@ -33,28 +33,28 @@
       <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-3 fw-bold" id="exampleModalLabel">CARTA #{{cartaSelected.codi_trucada}}</h1>
+              <h1 class="modal-title fs-3 fw-bold" id="exampleModalLabel">CARTA #{{codiCartaSelected}}</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div v-if="cartaSelected" class="modal-body">
+            <div v-if="isCartaLoaded" class="modal-body">
               <div id="interlocutor">
                 <h5>INTERLOCUTOR</h5>
                 <div class="row">
                   <div class="col-3">
                     <div class="form-floating mb-3">
-                      <input type="phone" class="form-control" id="phone" :value="cartaSelected.interlocutor.telefon" placeholder="Telèfon" disabled>
+                      <input type="phone" class="form-control" id="phone" :value="cartaSelected.telefon" placeholder="Telèfon" disabled>
                       <label for="phone">Telèfon</label>
                     </div>
                   </div>
                   <div class="col-9">
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" id="name" :value="cartaSelected.interlocutor.nom + ' ' +cartaSelected.interlocutor.cognom" placeholder="Nom" disabled>
+                      <input type="text" class="form-control" id="name" :value="cartaSelected.interlocutor?.nom ? cartaSelected.interlocutor.nom + ' ' + cartaSelected.interlocutor.cognom : 'N/A'" placeholder="Nom" disabled>
                       <label for="name">Nom</label>
                     </div>
                   </div>
                 </div>
                 <div class="form-floating mb-3">
-                  <textarea  type="text" class="form-control" id="record" :value="cartaSelected.interlocutor.antecedents" placeholder="Antecedents" disabled></textarea>
+                  <textarea  type="text" class="form-control" id="record" :value="cartaSelected.interlocutor?.antecedents ? cartaSelected.interlocutor.antecedents : 'N/A'"  placeholder="Antecedents" disabled></textarea>
                   <label for="record">Antecedents</label>
                 </div>
               </div>
@@ -146,10 +146,12 @@
                 </div>
               </div>
             </div>
-            <div v-else class="modal-body spinner-container">
-              <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+            <div v-else class="modal-body">
+              <div class="spinner-container">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
             </div>
             <button ref="collapseBtn" id="collapse-btn" class="btn btn-primary" type="button" @click="toggleCollapse">
               <i class="bi bi-arrows-expand"></i>
@@ -157,7 +159,7 @@
             <div id="collapse-container" class="d-flex flex-row-reverse">
               <div style="min-height: 200px;">
                 <div class="collapse collapse-horizontal" ref="collapse" id="collapseWidthExample" style="height:100%">
-                  <div class="card card-body" style="width: 300px; height:100%">
+                  <div v-if="isCartaLoaded" class="card card-body" style="width: 300px; height:100%">
                     <div class="form-floating mb-3" style="max-height:100%; height: 100%">
                       <textarea  type="text" class="form-control" style="max-height:100%; height: 50%" id="notaComuna" :value="cartaSelected.nota_comuna" placeholder="Antecedents" disabled></textarea>
                       <label for="notaComuna">Nota Comuna</label>
@@ -183,7 +185,9 @@ export default {
   data () {
     return {
       expedient: [],
+      codiCartaSelected: '',
       cartaSelected: '',
+      isCartaLoaded: false,
       th: [
         'Codi',
         'Localització',
@@ -212,7 +216,10 @@ export default {
           self.expedient = response.data;
           self.isLoaded = true;
         })
-        .catch((error) => { });
+        .catch((error) => { 
+          this.showError(error)
+          console.log(error)
+        });
     },
     getEstatAgencies() {
       const self = this;
@@ -221,19 +228,21 @@ export default {
         .then(response => {
           self.estatsAgencies = response.data;
         })
-        .catch((error) => { });
+        .catch((error) => { 
+          self.showError(error)
+        });
     },
     updateAgenciaState(cartaTrucadaId, agenciaId, newEstatValue) {
-      this.cartaSelected = false
+      this.isCartaLoaded = false
       const self = this
       axios.put(`updateEstatAgencia/${cartaTrucadaId}/${agenciaId}`, {new_estat_agencies_id: newEstatValue})
           .then(response => {
-            if (!response.data.error) {
               self.cartaSelected = response.data.updatedCarta
-            } 
+              self.isCartaLoaded = true
           })
           .catch((error)=>{
-            console.log(error)
+            self.showError(error)
+            this.cartaModal.hide()
           })
     },
     toLowerCase (string) {
@@ -243,14 +252,14 @@ export default {
       /* return string; */
     },
     showModal (carta) {
-      console.log("\nShowing carta with:")
-      console.log("carta id:", carta.id);
+      this.codiCartaSelected = carta.codi_trucada
       this.cartaSelected = carta
+      this.isCartaLoaded = true
       this.collapse.hide();
       this.cartaModal.show();
     },
     showError (error) {
-      this.$emit('show-expedient-errorr', error)
+      this.$emit('show-expedient-error', error)
     }
   },
   mounted() {

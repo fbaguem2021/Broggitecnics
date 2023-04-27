@@ -55,7 +55,7 @@ class CartaTrucadaController extends Controller
 
         try {
             $carta->save();            
-            $response = \response()->json(["S'ha guardat la carta correctament"], 201);;
+            $response = \response()->json(["message"=>"S'ha guardat la carta correctament", "carta_id"=>$carta->id], 201);
         } catch (QueryException $ex) {
             $mensaje = Utilitat::errorMessage($ex);
             $response = \response()->json(["error" => $mensaje], 400);

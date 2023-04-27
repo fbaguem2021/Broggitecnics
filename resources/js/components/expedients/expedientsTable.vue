@@ -2,7 +2,7 @@
     <table class="table table-hover text-center">
         <thead>
             <tr>
-                <th><input class="form-check-input" type="checkbox" v-model="isAllSelected" @click="toggleSelection"></th>
+                <th></th>
                 <th v-for="(filtre, index) in filtres" :key="index" 
                     :style = "{ 'text-align': filtre.label == 'Codi' ? 'end' : '' }"
                     :width = " filtre.id === 2 ? '20%' : filtre.id === 3 ? '25%' : '10%' ">
@@ -99,7 +99,11 @@ export default {
       expedientsIsLoaded: false,
       orderByColumn: 'updated_at',
       orderDir: 'desc',
-      isAllSelected: false
+      isAllSelected: false,
+      lastSelect: {
+        col: '',
+        value: ''
+      }
     }
   },
   computed: {
@@ -124,18 +128,11 @@ export default {
       }
     },
     handleRowClick(expId, event) {
-   /*    const selectEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] select`);
-      const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
-      console.log(selectEl)
-      if (!selectEl.contains(event.target)) {
-        checkboxEl.click();
-      } */
       const avoidElements = Array.from(this.$refs.tableBody.querySelectorAll(`[data-expid="${expId}"] .no-row-select`));
       const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
 
       if (!avoidElements.some(el => el.contains(event.target))) {
         checkboxEl.click();
-        console.log("Selected expedients ids", this.selectedIds)
       }
     },
     selectAll() {
@@ -144,7 +141,6 @@ export default {
         checkbox.checked = true;
         checkbox.dispatchEvent(new Event('change'));
       });
-      console.log("Selected expedients ids", this.selectedIds)
     },
     deselectAll() {
       const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
@@ -152,12 +148,8 @@ export default {
         checkbox.checked = false;
         checkbox.dispatchEvent(new Event('change'));
       });
-      console.log("Selected expedients ids", this.selectedIds)
     },
     changeTab (expID, expCodi) {
-      console.log("\nShowing expedient with:")
-      console.log("Expedient ID:", expID);
-      console.log("Expedient CODI:", expCodi);
       this.$emit('change-tab', expID, expCodi)
     },
     orderBy (orderCol) {
@@ -169,7 +161,6 @@ export default {
       } else {
         this.orderDir = 'desc';
       }
-      console.log("Orderning by:", orderCol, this.orderDir)
       this.orderByColumn = orderCol;
       this.submit(true, true)
     },
@@ -183,9 +174,9 @@ export default {
           .get(`expedients-gestio/orderBy/${self.orderByColumn}/${self.orderDir}`)
           .then(response => {
             self.expedients = response.data;
-            if (showReload) {
+        
               self.expedientsIsLoaded = true;
-            }
+            
           })
           .catch((error) => { 
             self.showError(error)
@@ -203,6 +194,8 @@ export default {
       }
     },
     selectExpedientsBy(col, value) {
+      this.lastSelect.col = col
+      this.lastSelect.value = value
       this.expedientsIsLoaded = false
       const self = this;
       axios
@@ -216,7 +209,6 @@ export default {
         });
     },
     updateSelect (expIDs, estatID) {
-      console.log("Expedients to update:", expIDs, "To state id:", estatID)
       const self = this;
       if (expIDs.length > 0) {
         const promises = expIDs.map(expID => {
@@ -226,8 +218,11 @@ export default {
         .then(responses => {
           this.$emit('refresh-legend');
           this.showMessage("Estat de l'expedient modificat correctament", "success")
-          self.submit(true, false);
-          console.log(responses);
+          if (this.lastSelect.col == 'all' || this.lastSelect.col == '') {
+            self.submit(true, true);
+          } else {
+            self.selectExpedientsBy(this.lastSelect.col, this.lastSelect.value)
+          }
         })
         .catch(error => {
           self.showError(error);

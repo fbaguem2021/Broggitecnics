@@ -133,7 +133,6 @@ export default {
       const tabIndex = this.getTabIndex(event.currentTarget);
       if (tabIndex < 2) {
         const nextTab = this.getTabObject(tabIndex + 1);
-        console.log(tabIndex)
         nextTab.show();
       }
     }
@@ -202,7 +201,6 @@ export default {
     const observer = new MutationObserver(mutation => {
         if (!mutation[0].target.classList.contains('active') && this.mapSearchString != '') {
             this.$emit('get-map-search-string', this.mapSearchString)
-            console.log("\n\nFORM MAIN: emiting map search string")
         }
     });
     observer.observe(this.$refs.localitzacioTab, { attributeFilter: ['class'] });
