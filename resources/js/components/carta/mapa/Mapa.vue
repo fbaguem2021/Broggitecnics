@@ -49,6 +49,13 @@ export default {
 
                 if (newVal) {
                     this.localizaciones = [],
+                    this.localizaciones1 = [],
+                        this.localizaciones2 = [],
+                        this.localizaciones3 = [],
+                        this.localizaciones4 = [],
+                        this.localizaciones5 = [],
+                        this.localizaciones6 = [],
+                        this.localizaciones7 = []
                         this.obtenerAgencias(this.seleccion);
                 }
                 else {
@@ -344,15 +351,19 @@ export default {
             //CREAR DISTINTOS GEOJSONS PARA CADA TIPO DE AGENCIA Y IMPRIMIR MARCADORES PERSONALIZADOS
             await Promise.all(this.localizaciones.map(async localizacion => {
                 //si el codigo postal tiene solo 4 digitos, se le añade un 0 delante (está mal en la base de datos)
-                let codiPostal = localizacion.codi_postal
-                if (codiPostal.toString().length == 4) {
-                    codiPostal = '0' + codiPostal.toString()
-                } else if (codiPostal.toString().length < 4) {
-                    alert('DANGER!! el codigo postal tiene menos de 4 digitos')
+                let codiPostal = localizacion.codi_postal.toString()
+                let codiPostalOk= null
+                if (codiPostal.length == 4) {
+                    codiPostalOk = '0' + codiPostal
+                    console.log(codiPostalOk)
+                } else{
+                    codiPostalOk = localizacion.codi_postal.toString()
                 }
-
+        
                 //guardar todas las localizaciones con sus coordenadas creadas con API forwardGeocode en cada JSON segun el tipo de agencia
-                let direccion = codiPostal + ", " + localizacion.carrer
+                let carrer= localizacion.carrer
+                let carrerOk= carrer.replace('s/n', '');
+                let direccion = codiPostalOk + ", " + carrerOk
                 axios
                     .get("https://api.mapbox.com/geocoding/v5/mapbox.places/" + direccion + ".json?access_token=" + me.accessToken)
                     .then((response) => {
