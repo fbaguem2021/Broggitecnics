@@ -42,7 +42,8 @@
                         </td>
                         <td class="col-4 align-middle"
                             :ref="'locs'">{{ getLoc(e.localitzacions) }}</td>
-                        <td class="col-4">{{ getTipus(e.tipus) }}</td>
+                        <td class="col-4"
+                            :ref="'types'">{{ getTipus(e.tipus) }}</td>
                         <td class="col-2 centered">
                             <button @click="seleccionarExpedient(e.id)"
                                 class="btn btn-exp col-9 text-center"
@@ -83,9 +84,11 @@ export default {
     },
     data() {
         return {
-            tooltip: {},
+            tooltip: { locations: [], incidents: [] },
             expedient_selected: Number,
+            expedient_in_new: false,
             expedients: [],
+            expedientsReady: false,
             tooltips: [],
         }
     },
@@ -104,30 +107,44 @@ export default {
                 // console.log('dentro',params);
                 this.getExpedients(params)
             } else {
+                this.getExpedients()
                 // console.log('fuera');
             }
         },
-        tipusIncident(NEW, OLD) {
-            const newUndefined = NEW == undefined
-            const oldUndefined = OLD == undefined
-            if ( ! newUndefined && !oldUndefined && NEW.input != '' && NEW.input != OLD.input) {
-                console.log('holamundocomoestas','if')
-                NEW = data.sort((a,b) => {
-                    if ( a.input.toLowerCase().includes('ASSISTÈNCIA'.toLowerCase()) ) {
-                        console.log('holamundocomoestas','sort 1',a)
-                        return -1
-                    }
-                    if ( b.input.toLowerCase().includes('ASSISTÈNCIA'.toLowerCase()) ) {
-                        console.log('holamundocomoestas','sort 2',b)
-                        return 1
-                    }
-                    return 0
-                })
-                this.tipusIncident = NEW
-            }
+        tipusIncident:{
+            handler(NEW, OLD) {
+                // if ( ! newUndefined && !oldUndefined && NEW.input != '' && NEW.input != OLD.input ) {
+                const expedientsExist=this.expedients!=null && this.expedients!=undefined && this.expedients.length!=0
+                if ( this.tipusIncidentChecker(NEW,OLD) && this.expedientsReady == true) {
+                    this.expedients = this.sortData(this.expedients, this.tipusIncident.input)
+                }
+            },
+            deep: true
         }
     },
     methods: {
+        tipusIncidentChecker(a=undefined, b=undefined) {
+            // const newUndefined = (a == undefined && a == null)
+            // const oldUndefined = (b == undefined && b == null)
+            const newExists   = a != undefined && a != null
+            const newHasValue = a.input != '' && a.input != undefined && a.input != null
+            // const oldExists   = b != undefined && b != null
+            // const oldHasValue = b.input != '' && b.input != undefined && b.input != null
+
+            return newExists && newHasValue
+        },
+        sortData(toSort=this.expedients, filter='') {
+            toSort.sort((a,b) => {
+                if ( a.tipus.toLowerCase().includes(filter.toLowerCase()) ) {
+                    return -1
+                }
+                if ( b.tipus.toLowerCase().includes(filter.toLowerCase()) ) {
+                    return 1
+                }
+                return 0
+            })
+            return toSort
+        },
         getStyles() {
             const tab = document.querySelector('#tabla-expedients');
             let styles;
@@ -140,7 +157,7 @@ export default {
         getExpedients(params='') {
             const self = this
             // const url = 'expedients/cartaTrucada'
-            this.num++
+            // this.num++
             console.log(params);
             // const url = 'expedients-carta-trucada'
             const url = `expedients-carta-trucada/${params}`
@@ -150,7 +167,9 @@ export default {
                 return response.data
             })
             .then(data => {
-                self.expedients = data
+                // self.expedients = data
+                self.expedients = self.sortData(data, this.tipusIncident.input)
+                this.expedientsReady = true
                 // console.log('data',data);
                 if (data.length > 0) {
                     setTimeout(() => {
@@ -158,17 +177,39 @@ export default {
                     }, 1000);
                 }
             })
+            .catch(error => console.error('getExpedients\n',error))
         },
         initTooltips(data, self) {
+            self.tooltips = []
+            self.tooltip['incidents'] = []
+            self.tooltip['locations'] = []
             self.$refs.locs.forEach( (element, index) => {
                 // const full_loc = JSON.parse(data[index].full_loc).join('\n')
                 const full_loc = JSON.parse(data[index].full_loc).join('<br>')
-                self.tooltips.push(
+                // self.tooltips.push(
+                self.tooltip['locations'].push(
                     // new bootstrap.Tooltip(element, {"title": `Localizaciones: ${data[index].localitzacions}`})
                     new bootstrap.Tooltip(element, {
                         "title": full_loc,
                         "html":true,
+                        "placement": 'left',
                         "template": /*html*/ `
+                        <div class="tooltip" name="holamundo" role="tooltip">
+                            <div class="tooltip-arrow"></div>
+                            <div class="tooltip-inner custom-tooltip"></div>
+                        </div>
+                        `
+                    })
+                )
+            })
+            self.$refs.types.forEach( (element, index) => {
+                const full_inc = JSON.parse(data[index].full_inc).join('<br>')
+                self.tooltip['incidents'].push(
+                    new bootstrap.Tooltip(element, {
+                        title: full_inc,
+                        html: true,
+                        placement: 'left',
+                        template: /*html*/ `
                         <div class="tooltip" name="holamundo" role="tooltip">
                             <div class="tooltip-arrow"></div>
                             <div class="tooltip-inner custom-tooltip"></div>
@@ -191,6 +232,7 @@ export default {
             })
         },
         seleccionarExpedient(selected_id) {
+            this.expedient_is_new = false
             // console.log('expedient_selected: ',this.expedient_selected, ', selected_id: ',selected_id);
             if ( this.expedient_selected != selected_id ) {
                 this.expedient_selected = selected_id
