@@ -133,7 +133,6 @@ export default {
 
       if (!avoidElements.some(el => el.contains(event.target))) {
         checkboxEl.click();
-        console.log("Selected expedients ids", this.selectedIds)
       }
     },
     selectAll() {
@@ -142,7 +141,6 @@ export default {
         checkbox.checked = true;
         checkbox.dispatchEvent(new Event('change'));
       });
-      console.log("Selected expedients ids", this.selectedIds)
     },
     deselectAll() {
       const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
@@ -150,12 +148,8 @@ export default {
         checkbox.checked = false;
         checkbox.dispatchEvent(new Event('change'));
       });
-      console.log("Selected expedients ids", this.selectedIds)
     },
     changeTab (expID, expCodi) {
-      console.log("\nShowing expedient with:")
-      console.log("Expedient ID:", expID);
-      console.log("Expedient CODI:", expCodi);
       this.$emit('change-tab', expID, expCodi)
     },
     orderBy (orderCol) {
@@ -167,7 +161,6 @@ export default {
       } else {
         this.orderDir = 'desc';
       }
-      console.log("Orderning by:", orderCol, this.orderDir)
       this.orderByColumn = orderCol;
       this.submit(true, true)
     },
@@ -223,7 +216,6 @@ export default {
         });
         Promise.all(promises)
         .then(responses => {
-          console.log("LAST SELECT", this.lastSelect)
           this.$emit('refresh-legend');
           this.showMessage("Estat de l'expedient modificat correctament", "success")
           if (this.lastSelect.col == 'all' || this.lastSelect.col == '') {
@@ -231,7 +223,6 @@ export default {
           } else {
             self.selectExpedientsBy(this.lastSelect.col, this.lastSelect.value)
           }
-          console.log(responses);
         })
         .catch(error => {
           self.showError(error);

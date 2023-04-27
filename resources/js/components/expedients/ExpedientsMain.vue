@@ -228,7 +228,6 @@ export default {
     },
     isExpedientsSelected(isSelected) {
         this.showUpdateController = isSelected
-        console.log("at least one selected", isSelected)
     },
     updateSelectedExp(){
         this.filterBySelected.col = "all"
@@ -256,7 +255,6 @@ export default {
         const col = this.filterBySelected.col
         let value = this.filterBySelected.input
         if(col === 'codi') { value = 'EXP-'+value}
-        console.log("Searching in", `'${col}'`, "value:", value)
         this.$refs.expedientsTable.selectExpedientsBy(col, value)
     },
     showError(error) {

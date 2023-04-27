@@ -213,12 +213,12 @@ export default {
       axios
         .get(`expedient/${expID}`)
         .then(response => {
-          console.log(response)
           self.expedient = response.data;
           self.isLoaded = true;
         })
         .catch((error) => { 
           this.showError(error)
+          console.log(error)
         });
     },
     getEstatAgencies() {
@@ -233,7 +233,6 @@ export default {
         });
     },
     updateAgenciaState(cartaTrucadaId, agenciaId, newEstatValue) {
-      console.log("CARTA ID", cartaTrucadaId, "AGENCIA ID", agenciaId, "NEW ESTAT", newEstatValue)
       this.isCartaLoaded = false
       const self = this
       axios.put(`updateEstatAgencia/${cartaTrucadaId}/${agenciaId}`, {new_estat_agencies_id: newEstatValue})
@@ -253,9 +252,6 @@ export default {
       /* return string; */
     },
     showModal (carta) {
-      console.log("\nShowing carta with:")
-      console.log("carta id:", carta.id);
-      console.log(carta)
       this.codiCartaSelected = carta.codi_trucada
       this.cartaSelected = carta
       this.isCartaLoaded = true

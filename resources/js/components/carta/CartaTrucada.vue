@@ -149,7 +149,7 @@ export default {
   computed: {
     cartaIsLoaded() {
       const isLoaded = this.isCartaDataLoaded && this.isFormMainLoaded;
-      return true
+      return isLoaded
     },
     cartaIsValid() {
       const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid && this.notaCoumna.isValid
@@ -249,7 +249,6 @@ export default {
         }
       })
         .then(response => {
-          console.log(response.data);
           me.interlocutor.id = response.data.idInterlocutor
         })
         .catch(error => {
@@ -268,8 +267,6 @@ export default {
         }
       })
         .then(response => {
-          console.log('EXPEDIENT GUARDAT')
-          console.log(response.data);
           me.expedient.id = response.data.idExpedient
         })
         .catch(error => {
@@ -303,10 +300,11 @@ export default {
         }
       })
         .then(response => {
-          console.log(response.data);
+          
           me.cartaId = response.data.carta_id
         })
         .catch(error => {
+          console.log(error);
           me.error = true
           me.showError(error)
         });
@@ -347,11 +345,9 @@ export default {
           setTimeout(()=>{
             const redirectHome = "/Broggitecnics/public/home";
             window.location.href = redirectHome;
-            // window.location.href = "/home";
           }, 4000)
         } 
       } else {
-        console.log("Carta it's not valid")
         let invalidParts = []
         if (!this.interlocutor.isValid) {
           invalidParts.push("Formulari interlocutor")
@@ -365,7 +361,6 @@ export default {
         if (!this.notaCoumna.isValid) {
           invalidParts.push("Nota coumna")
         }
-        console.log(invalidParts)
         this.$refs.messageApp.createMessageAlert("No s'ha pogut guardar la carta hi han camps requerits sense omplir", "warning", invalidParts)
       }
     },
@@ -380,7 +375,6 @@ export default {
       });
       await Promise.all(promises)
       .then(responses => {
-        console.log(responses);
       })
       .catch(error => {
         self.error = true
@@ -393,7 +387,6 @@ export default {
     condirmCancelCall() {
         const redirectHome = "/Broggitecnics/public/home";
         window.location.href = redirectHome
-        // window.location.href = "/home";
     },
     showError(error) {
       this.$refs.messageApp.createErrorAlert(error)
