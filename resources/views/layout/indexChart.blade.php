@@ -1,4 +1,5 @@
 @extends('layout.base')
+@section('tab-title', "Gràfics")
 @section('page-title', "Gràfics")
 @section('style')
     @vite('resources/css/landing.css')    

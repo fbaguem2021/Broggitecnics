@@ -38,7 +38,7 @@
                 {{ messageAlert.message }}
                 <div v-if="messageAlert.data">
                     <hr>
-                    <span class="mb-0">{{ messageAlert.data }}</span>
+                    <p class="mb-0" v-html="messageAlert.data"></p>
                 </div>
                 <button type="button" class="btn-close" aria-label="Close" @click="closeMessageAlert"></button>
             </div>
@@ -66,7 +66,7 @@ export default {
         createMessageAlert(message, type, data = null) {
             this.messageAlert.message = message
             this.messageAlert.type = type
-            this.messageAlert.data = data
+            this.messageAlert.data = data ? data : ''
             this.showMessageAlert()
         },
         createErrorAlert(error, data = null) {
@@ -109,6 +109,9 @@ export default {
                 this.errorAlert.data = error.message;
             }
             this.showErrorAlert()
+        },
+        addMessageData(data, lineJump) {
+            this.messageAlert.data += lineJump ? data+"<br>" : data;
         },
         showErrorAlert () {
             this.errorAlert.display = true;

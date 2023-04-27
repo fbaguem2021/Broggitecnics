@@ -1,4 +1,5 @@
 @extends('layout.base')
+@section('tab-title', "Usuaris")
 @section('page-title', "Gestió d'usuaris")
 @section('title', 'Operadors')
 @section('links')

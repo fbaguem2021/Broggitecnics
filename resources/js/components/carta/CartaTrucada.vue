@@ -4,7 +4,7 @@
 
   <!-- Splash loading animation -->
   <Transition name="fade">
-    <loader-splash v-if="!isLoaded"></loader-splash>
+    <loader-splash v-if="!cartaIsLoaded"></loader-splash>
   </Transition>
 
   <!-- Mostrar alertas success -->
@@ -70,8 +70,8 @@
         <p>Estas segur/a que vols cancel·lar la trucada?</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tornar a la trucada</button>
-        <button type="button" class="btn btn-success" @click="condirmCancelCall">Cance·lar trucada</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Manetnir la trucada</button>
+        <button type="button" class="btn btn-danger" @click="condirmCancelCall">Cance·lar trucada</button>
       </div>
     </div>
   </div>
@@ -116,7 +116,6 @@ export default {
   },
   data() {
     return {
-      isLoaded: false,
       cartaId: null,
       isCartaDataLoaded: false,
       isFormMainLoaded: false,
@@ -150,7 +149,7 @@ export default {
   computed: {
     cartaIsLoaded() {
       const isLoaded = this.isCartaDataLoaded && this.isFormMainLoaded;
-      return isLoaded
+      return true
     },
     cartaIsValid() {
       const isValid = this.localitzacio.isValid && this.interlocutor.isValid && this.incident.isValid && this.notaCoumna.isValid
@@ -239,7 +238,6 @@ export default {
         }
       }
     },
-
     async insertNewInterlocutor() {
       let me = this
       await axios.post('/postInterlocutor', {
@@ -316,20 +314,32 @@ export default {
 
     async insertFinal() {
       this.error = false
+      this.$refs.messageApp.createMessageAlert("Realitzant comprovacions i guardant la carta ...", "info")
       if (this.cartaIsValid) {
         if (this.interlocutor.saveInterlocutor) {
           if (this.interlocutor.isNewInerlocutor) {
             await this.insertNewInterlocutor()
+            if (!this.error) {
+              this.$refs.messageApp.addMessageData("Interlocutor guardat	&#x2714;", true)
+            }
           }
         }
         if (this.isNewExpedient) {
           this.expedient.codi = this.codiNewExpedient
           this.expedient.estat_id = 1
           await this.insertExpedient()
+          if (!this.error) {
+            this.$refs.messageApp.addMessageData("Expedient guardat	&#x2714;", true)
+          }
+         
         }
         await this.insertCarta();
+        if (!this.error) {
+            this.$refs.messageApp.addMessageData("Formulari de la carta guardat	&#x2714;", true)
+          }
 
         if (this.idAgenciasSeleccionadas.length > 0) {
+          this.$refs.messageApp.addMessageData("Contactant agencies...", true)
           await this.insertAgenciaHasEstat()
         }
         if(!this.error) {
@@ -394,7 +404,6 @@ export default {
     let inputDate = new Date().toISOString();
     this.dataHoraTrucada = inputDate.replace("T", " ").slice(0, -5);
     this.cancelCallModal = new bootstrap.Modal(this.$refs.exampleModalCenter)
-    setTimeout(()=>{ this.isLoaded = true}, 4500)
   },
 }
 </script>
