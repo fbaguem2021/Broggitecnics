@@ -58,7 +58,6 @@ Route::put('updateEstatAgencia/{cartaTrucadaId}/{agenciaId}', [EstatAgencies::cl
 
 /* GRÀFICS */
 Route::get('/incidentesChart', [ChartController::class, 'index']);
-Route::post('/postInterlocutor', [CartaTrucadaController::class, 'storeInterlocutor']);
 Route::get('/llamadasChart', [ChartCallController::class, 'index']);
 
 /* CARTES TRUCADA */

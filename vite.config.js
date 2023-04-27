@@ -6,11 +6,12 @@ export default defineConfig({
   plugins: [
     laravel({
       input: [
+        'resources/css/app.css',
         'resources/css/landing.css',
+        'resources/css/menus.css',
         'resources/scss/app.scss',
-        'resources/css/login.css',
         'resources/js/app.js',
-        'resources/js/menu.js',
+        'resources/js/scripts/menu.js',
         'node_modules/bootstrap/dist/js/bootstrap.min.js'
       ],
       refresh: true
