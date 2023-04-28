@@ -250,10 +250,10 @@ export default {
     },
     getExpedientInfo(info) {
         console.log('get-expedient-info',info)
-        // this.isNewExpedient     = info.is_new
-        // this.expedient.id       = info.data.id
-        // this.expedient.codi     = info.data.codi
-        // this.expedient.estat_id = info.data.estat_id
+        this.isNewExpedient     = info.is_new
+        this.expedient.id       = info.data.id
+        this.expedient.codi     = info.data.codi
+        this.expedient.estat_id = info.data.estat_id
     },
     async insertNewInterlocutor() {
       let me = this
@@ -315,7 +315,7 @@ export default {
         }
       })
         .then(response => {
-          
+
           me.cartaId = response.data.carta_id
         })
         .catch(error => {
@@ -343,7 +343,7 @@ export default {
           if (!this.error) {
             this.$refs.messageApp.addMessageData("Expedient guardat	&#x2714;", true)
           }
-         
+
         }
         await this.insertCarta();
         if (!this.error) {
@@ -360,7 +360,7 @@ export default {
             const redirectHome = "/Broggitecnics/public/home";
             window.location.href = redirectHome;
           }, 4000)
-        } 
+        }
       } else {
         let invalidParts = []
         if (!this.interlocutor.isValid) {
@@ -381,7 +381,7 @@ export default {
     async insertAgenciaHasEstat() {
       const self = this
       const promises = this.idAgenciasSeleccionadas.map(agenciaId => {
-        return axios.post('estatAgencies', 
+        return axios.post('estatAgencies',
                             { "cartaTrucada_id": self.cartaId,
                               "agencia_id": agenciaId
                             }

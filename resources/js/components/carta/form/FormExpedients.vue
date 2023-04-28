@@ -10,7 +10,7 @@
                         <th scope="col" class="col-4 th-typ">Incidents</th>
                         <th scope="col" class="col-2 th-exp">
                             <button class="col-12 btn btn-sm text-center"
-                                :class="{ 'btn-tertiary text-white': isSelected(-1), 'btn-outline-secondary': !isSelected(-1) }"
+                                :class="{ 'btn-tertiary text-white': isSelected(), 'btn-outline-secondary': !isSelected() }"
                                 @click="seleccionarExpedient()">
                                 Nou Expedient
                             </button>
@@ -260,7 +260,7 @@ export default {
         checkInterlocutor() {
             return false
         },
-        isSelected(value) {
+        isSelected(value='default') {
             const isSel = this.expedient_selected == value
             return isSel
         },
