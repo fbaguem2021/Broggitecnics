@@ -357,7 +357,8 @@ export default {
         if(!this.error) {
           this.$refs.messageApp.createMessageAlert("La carta de trucada s'ha guardat correctament", "success", "Redirecionant al menu...")
           setTimeout(()=>{
-            const redirectHome = "/Broggitecnics/public/home";
+            // const redirectHome = "/Broggitecnics/public/home";
+            const redirectHome = "/home";
             window.location.href = redirectHome;
           }, 4000)
         }
@@ -388,8 +389,6 @@ export default {
                           );
       });
       await Promise.all(promises)
-      .then(responses => {
-      })
       .catch(error => {
         self.error = true
         self.showError(error);
@@ -399,7 +398,8 @@ export default {
       this.cancelCallModal.show()
     },
     condirmCancelCall() {
-        const redirectHome = "/Broggitecnics/public/home";
+        // const redirectHome = "/Broggitecnics/public/home";
+        const redirectHome = "/home";
         window.location.href = redirectHome
     },
     showError(error) {
