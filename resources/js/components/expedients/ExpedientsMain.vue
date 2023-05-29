@@ -207,7 +207,6 @@ export default {
     }
   },
   computed: {
-
   }, 
   methods: {
     switchTab (expID, expCodi) {
@@ -227,11 +226,12 @@ export default {
         this.$refs.expedientsTable.deselectAll();
     },
     isExpedientsSelected(isSelected) {
-        this.showUpdateController = isSelected
+        this.showUpdateController = isSelected.length > 0 ? true : false
     },
     updateSelectedExp(){
         this.filterBySelected.col = "all"
-        this.$refs.expedientsTable.updateSelect(this.$refs.expedientsTable.selectedIds, this.selectedEstatUpdate);
+        
+        this.$refs.expedientsTable.updateSelect(this.$refs.expedientsTable.selectedIds(), this.selectedEstatUpdate);
     },
     selectEstats () {
       const self = this;

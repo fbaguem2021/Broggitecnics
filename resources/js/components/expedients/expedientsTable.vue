@@ -111,12 +111,9 @@ export default {
       const isLoaded = this.expedientsIsLoaded && this.estatsIsLoaded;
       return isLoaded
     },
-    selectedIds() {
-      const selectedIds = this.expedients.filter((exp) => exp.isChecked).map((exp) => exp.id)
-      this.$emit('is-expedients-selected', selectedIds.length)
-      return selectedIds;
-    },
+
   },
+  
   methods: {
     toggleSelection() {
       if (this.isAllSelected) {
@@ -127,13 +124,17 @@ export default {
         this.selectAll();
       }
     },
+    selectedIds() {
+      const selectedIds = this.expedients.filter((exp) => exp.isChecked).map((exp) => exp.id)
+      return selectedIds;
+    },
     handleRowClick(expId, event) {
       const avoidElements = Array.from(this.$refs.tableBody.querySelectorAll(`[data-expid="${expId}"] .no-row-select`));
       const checkboxEl = this.$refs.tableBody.querySelector(`[data-expid="${expId}"] input[type="checkbox"]`);
-
       if (!avoidElements.some(el => el.contains(event.target))) {
         checkboxEl.click();
       }
+      this.$emit('is-expedients-selected', this.selectedIds() )
     },
     selectAll() {
       const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
